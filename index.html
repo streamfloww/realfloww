@@ -232,7 +232,7 @@
       height: 5px;
       background: rgba(255, 255, 255, 0.2);
       border-radius: 10px;
-      margin: 0 auto 16px auto;
+      margin: 0 auto 20px auto;
       cursor: pointer;
     }
 
@@ -243,7 +243,7 @@
       font-size: 14px;
       font-weight: 600;
       color: var(--text-sub);
-      margin-bottom: 16px;
+      margin-bottom: 24px;
     }
 
     .close-btn {
@@ -257,9 +257,9 @@
     .full-art-container {
       width: 100%;
       aspect-ratio: 1;
-      max-height: 220px;
-      margin: 0 auto 16px auto;
-      border-radius: 18px;
+      max-height: 280px;
+      margin: 0 auto 24px auto;
+      border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
     }
@@ -270,52 +270,21 @@
       object-fit: cover;
     }
 
-    .full-meta { margin-bottom: 14px; }
+    .full-meta { margin-bottom: 20px; }
 
     .full-title {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 800;
       margin-bottom: 4px;
     }
 
     .full-artist {
-      font-size: 14px;
+      font-size: 15px;
       color: var(--text-sub);
     }
 
-    /* TIMED LYRICS DISPLAY AREA */
-    .lyrics-box {
-      flex: 1;
-      overflow-y: auto;
-      margin-bottom: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding: 10px 0;
-      mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-    }
-
-    .lyrics-box::-webkit-scrollbar { display: none; }
-
-    .lyrics-line {
-      font-size: 16px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.25);
-      cursor: pointer;
-      transition: color 0.3s ease, transform 0.3s ease;
-      line-height: 1.3;
-      text-align: left;
-    }
-
-    .lyrics-line.active {
-      color: #ffffff;
-      transform: scale(1.04);
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
-    }
-
     /* SEEK BAR */
-    .progress-box { margin-bottom: 16px; }
+    .progress-box { margin-bottom: 24px; }
 
     .seek-bar {
       width: 100%;
@@ -337,9 +306,9 @@
     .time-labels {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--text-sub);
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
     /* CONTROLS */
@@ -357,8 +326,8 @@
     }
 
     .play-btn-full {
-      width: 58px;
-      height: 58px;
+      width: 64px;
+      height: 64px;
       background: #ffffff;
       color: #000;
       border-radius: 50%;
@@ -446,9 +415,6 @@
       <div class="full-artist" id="fullArtist">Artist</div>
     </div>
 
-    <!-- TIMED LYRICS CONTAINER -->
-    <div class="lyrics-box" id="lyricsBox"></div>
-
     <div class="progress-box">
       <input type="range" class="seek-bar" id="seekBar" value="0" max="100">
       <div class="time-labels">
@@ -486,64 +452,39 @@
 
   <script>
     // ==============================================================
-    // PLAYLIST WITH TIMED LYRICS
-    // Time represents seconds from start when that line should highlight
+    // EDIT YOUR PLAYLIST HERE
+    // Change titles, artist names, image links, and MP3 URLs below:
     // ==============================================================
     const playlist = [
       {
         id: 0,
-        title: "Belenciaga",
-        artist: "Ken Carson",
-        art: "https://i.discogs.com/_1LiCLioJDgC0hoHHRVI7pUxqpUgWqdI7fOnFRPBPBk/rs:fit/g:sm/q:90/h:600/w:488/czM6Ly9kaXNjb2dz/LWRhdGFiYXNlLWlt/YWdlcy9BLTkxNjE4/NDUtMTcyOTQwODkw/Ny03MDE3LmpwZWc.jpeg",
-        src: "Kc92025.m4a",
-        glow: "rgba(233, 30, 99, 0.3)",
-        lyrics: [
-          { time: 0, text: "♪ yeah (wake up f1lthy)" },
-          { time: 2, text: "teen x, high as shit" },
-          { time: 6, text: "balenciaga,yeah" },
-          { time: 8, text: "Balenci-lenci-lenciaga" },
-          { time: 10, text: "we got" },
-          { time: 12, text: "balenciaga every street" }
-          { time: 14, text: "Balenci, Balenci, Balenciaga shopping spree" }
-          { time: 15, text: "If you want Balenci, then you know it's gon' cost a fee" }
-          { time: 18, text: "If you ain't rocking Balenciaga, then you can't talk to me" }
-          { time: 20, text: "I bought you Balenciaga shoes, you better walk to me" }
-          { time: 23, text: "Eat, fuck, sleep, Balenciaga" }
-        ]
+        title: "Like Damn",
+        artist: "Osamason",
+        art: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&auto=format&fit=crop&q=80",
+        src: "like damn.mp3",
+        glow: "rgba(233, 30, 99, 0.3)"
       },
       {
         id: 1,
-        title: "Cyberpunk Resonance",
-        artist: "SynthWave 84",
+        title: "balenciaga",
+        artist: "ken carson",
         art: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80",
-        src: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3?filename=synthwave-80s-110045.mp3",
-        glow: "rgba(0, 188, 212, 0.3)",
-        lyrics: [
-          { time: 0, text: "♪ (Synthesizer Arpeggio)" },
-          { time: 5, text: "System boot... line initialized" },
-          { time: 10, text: "Electric dreams inside your eyes" },
-          { time: 16, text: "Riding through the digital grid" }
-        ]
+        src: "Kc92025.m4a",
+        glow: "rgba(0, 188, 212, 0.3)"
       },
       {
         id: 2,
-        title: "Acoustic Sunset",
-        artist: "Maya Lin",
+        title: "Song Title 3",
+        artist: "Artist Name",
         art: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop&q=80",
         src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=acoustic-guitars-ambient-18544.mp3",
-        glow: "rgba(255, 152, 0, 0.3)",
-        lyrics: [
-          { time: 0, text: "♪ (Gentle guitar strumming)" },
-          { time: 4, text: "Golden rays hit the ocean floor" },
-          { time: 9, text: "I couldn't ask for anything more" }
-        ]
+        glow: "rgba(255, 152, 0, 0.3)"
       }
     ];
 
     let currentTrackIndex = null;
     const audio = document.getElementById("audio");
     const songList = document.getElementById("songList");
-    const lyricsBox = document.getElementById("lyricsBox");
 
     // RENDER PLAYLIST
     function renderPlaylist() {
@@ -556,43 +497,6 @@
           </div>
         </div>
       `).join('');
-    }
-
-    // RENDER LYRICS
-    function renderLyrics(lyrics) {
-      if (!lyrics || lyrics.length === 0) {
-        lyricsBox.innerHTML = `<div class="lyrics-line active">No lyrics available</div>`;
-        return;
-      }
-
-      lyricsBox.innerHTML = lyrics.map((line, idx) => `
-        <div class="lyrics-line" id="lyric-${idx}" onclick="jumpToTime(${line.time})">${line.text}</div>
-      `).join('');
-    }
-
-    // HIGHLIGHT & AUTO-SCROLL ACTIVE LYRIC
-    function highlightLyrics(currentTime) {
-      const track = playlist[currentTrackIndex];
-      if (!track || !track.lyrics) return;
-
-      const lyrics = track.lyrics;
-      lyrics.forEach((line, idx) => {
-        const lyricEl = document.getElementById(`lyric-${idx}`);
-        if (!lyricEl) return;
-
-        const nextLine = lyrics[idx + 1];
-        if (currentTime >= line.time && (!nextLine || currentTime < nextLine.time)) {
-          if (!lyricEl.classList.contains("active")) {
-            document.querySelectorAll(".lyrics-line").forEach(el => el.classList.remove("active"));
-            lyricEl.classList.add("active");
-            lyricEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-        }
-      });
-    }
-
-    function jumpToTime(time) {
-      audio.currentTime = time;
     }
 
     // PLAY TRACK FUNCTION
@@ -613,7 +517,6 @@
       document.getElementById("ambientGlow").style.background = 
         `radial-gradient(circle at 50% 20%, ${track.glow || 'rgba(254,44,85,0.25)'} 0%, transparent 70%)`;
 
-      renderLyrics(track.lyrics);
       renderPlaylist();
       audio.play();
       togglePlayState(true);
@@ -674,7 +577,6 @@
         seekBar.value = (audio.currentTime / audio.duration) * 100;
         document.getElementById("currentTime").innerText = formatTime(audio.currentTime);
         document.getElementById("duration").innerText = formatTime(audio.duration);
-        highlightLyrics(audio.currentTime);
       }
     });
 
