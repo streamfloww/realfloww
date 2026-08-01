@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
-  <title>StreamFlow - Custom Music Player</title>
+  <title>StreamFlow - Official Music Stream</title>
   <style>
     /* RESET & CORE MOBILE STYLES */
     * {
@@ -59,7 +59,7 @@
 
     .app-viewport::-webkit-scrollbar { display: none; }
 
-    /* HEADER & UPLOAD ACTION */
+    /* HEADER */
     .header {
       display: flex;
       justify-content: space-between;
@@ -84,27 +84,6 @@
       border-radius: 50%;
       box-shadow: 0 0 10px var(--accent);
     }
-
-    .upload-btn {
-      background: var(--accent);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700;
-      padding: 8px 14px;
-      border-radius: 20px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
-      transition: transform 0.15s ease;
-    }
-
-    .upload-btn:active {
-      transform: scale(0.95);
-    }
-
-    #fileInput { display: none; }
 
     /* SONG LIST */
     .section-title {
@@ -166,14 +145,6 @@
       font-size: 13px;
       color: var(--text-sub);
       margin-top: 2px;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 40px 20px;
-      color: var(--text-sub);
-      font-size: 14px;
-      line-height: 1.5;
     }
 
     /* MINI PLAYER BAR */
@@ -407,15 +378,9 @@
         <div class="brand-dot"></div>
         StreamFlow
       </div>
-
-      <!-- Add Audio Button -->
-      <label class="upload-btn" for="fileInput">
-        + Add Audio
-      </label>
-      <input type="file" id="fileInput" accept="audio/*" multiple />
     </header>
 
-    <h2 class="section-title">Your Playlist</h2>
+    <h2 class="section-title">Featured Tracks</h2>
     <div class="song-list" id="songList"></div>
   </main>
 
@@ -424,8 +389,8 @@
     <div class="mini-info" id="openFullPlayer">
       <img id="miniArt" src="https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=200&auto=format&fit=crop&q=80" alt="Art">
       <div class="mini-text">
-        <div class="mini-title" id="miniTitle">Select or Upload a Track</div>
-        <div class="mini-artist" id="miniArtist">Tap + Add Audio above</div>
+        <div class="mini-title" id="miniTitle">Select a Track</div>
+        <div class="mini-artist" id="miniArtist">Tap to play</div>
       </div>
     </div>
     <button class="play-btn-mini" id="miniPlayBtn">
@@ -486,41 +451,43 @@
   <audio id="audio"></audio>
 
   <script>
-    // 1. DEFAULT PLAYLIST DATA
-    let playlist = [
+    // ==============================================================
+    // EDIT YOUR PLAYLIST HERE
+    // Change titles, artist names, image links, and MP3 URLs below:
+    // ==============================================================
+    const playlist = [
       {
         id: 0,
-        title: "Midnight Street Lights",
-        artist: "Lo-Fi Collective",
+        title: "Song Title 1",
+        artist: "Artist Name",
         art: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400&auto=format&fit=crop&q=80",
         src: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3",
         glow: "rgba(233, 30, 99, 0.3)"
       },
       {
         id: 1,
-        title: "Cyberpunk Resonance",
-        artist: "SynthWave 84",
-        art: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80",
+        title: "Like Damn",
+        artist: "Osamason",
+        art: "https://i.scdn.co/image/ab67616d00001e02b819e2ad1172cbd45fe0f1f8",
         src: "likedamn.mp3",
         glow: "rgba(0, 188, 212, 0.3)"
+      },
+      {
+        id: 2,
+        title: "Song Title 3",
+        artist: "Artist Name",
+        art: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&auto=format&fit=crop&q=80",
+        src: "https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=acoustic-guitars-ambient-18544.mp3",
+        glow: "rgba(255, 152, 0, 0.3)"
       }
     ];
 
     let currentTrackIndex = null;
     const audio = document.getElementById("audio");
     const songList = document.getElementById("songList");
-    const fileInput = document.getElementById("fileInput");
 
-    // 2. RENDER PLAYLIST
+    // RENDER PLAYLIST
     function renderPlaylist() {
-      if (playlist.length === 0) {
-        songList.innerHTML = `
-          <div class="empty-state">
-            No audio files loaded yet.<br>Tap <b>"+ Add Audio"</b> at the top to select MP3s from your device!
-          </div>`;
-        return;
-      }
-
       songList.innerHTML = playlist.map((s, i) => `
         <div class="song-item ${i === currentTrackIndex ? 'active' : ''}" onclick="playSong(${i})">
           <img src="${s.art}" alt="${s.title}">
@@ -532,7 +499,7 @@
       `).join('');
     }
 
-    // 3. PLAY TRACK FUNCTION
+    // PLAY TRACK FUNCTION
     function playSong(index) {
       currentTrackIndex = index;
       const track = playlist[index];
@@ -584,47 +551,16 @@
     document.getElementById("fullPlayBtn").addEventListener("click", togglePlay);
 
     document.getElementById("prevBtn").addEventListener("click", () => {
-      if (playlist.length === 0) return;
       let prev = (currentTrackIndex - 1 + playlist.length) % playlist.length;
       playSong(prev);
     });
 
     document.getElementById("nextBtn").addEventListener("click", () => {
-      if (playlist.length === 0) return;
       let next = (currentTrackIndex + 1) % playlist.length;
       playSong(next);
     });
 
-    // 4. ADD MP3 / AUDIO FILES SYSTEM
-    fileInput.addEventListener("change", (e) => {
-      const files = Array.from(e.target.files);
-      if (!files || files.length === 0) return;
-
-      files.forEach((file) => {
-        // Create a local blob URL for instant playback
-        const objectURL = URL.createObjectURL(file);
-        
-        // Clean up file name to use as title
-        const cleanName = file.name.replace(/\.[^/.]+$/, "");
-
-        const newTrack = {
-          id: playlist.length,
-          title: cleanName,
-          artist: "Local Upload",
-          art: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=400&auto=format&fit=crop&q=80",
-          src: objectURL,
-          glow: "rgba(254, 44, 85, 0.3)"
-        };
-
-        playlist.unshift(newTrack); // Add to beginning of playlist
-      });
-
-      renderPlaylist();
-      playSong(0); // Auto-play the newly added track
-      fileInput.value = ""; // Reset input
-    });
-
-    // 5. FULL PLAYER SHEET CONTROLS
+    // FULL PLAYER SHEET CONTROLS
     const fullPlayer = document.getElementById("fullPlayer");
     document.getElementById("openFullPlayer").addEventListener("click", () => {
       fullPlayer.classList.add("open");
@@ -634,7 +570,7 @@
     document.getElementById("closeBtn").addEventListener("click", closeSheet);
     document.getElementById("closeFullPlayer").addEventListener("click", closeSheet);
 
-    // 6. SEEK BAR & DURATION CONTROLS
+    // SEEK BAR & DURATION CONTROLS
     const seekBar = document.getElementById("seekBar");
     audio.addEventListener("timeupdate", () => {
       if (!isNaN(audio.duration)) {
