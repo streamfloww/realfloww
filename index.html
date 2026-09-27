@@ -2,10 +2,10 @@
 <html lang="en" class="dark h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sphere Mobile - NextGen Social</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NEXUS // NEURAL STREAM v3.08</title>
     
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,580 +13,793 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            accent: '#8b5cf6'
-                        },
-                        dark: {
-                            bg: '#000000',
-                            card: '#121212',
-                            surface: '#18181b',
-                            border: '#27272a',
-                            muted: '#71717a',
-                            text: '#f4f4f5'
+                        cyber: {
+                            bg: '#030508',
+                            surface: '#090d16',
+                            card: '#0f172a',
+                            border: '#1e293b',
+                            cyan: '#06b6d4',
+                            magenta: '#ec4899',
+                            violet: '#8b5cf6',
+                            neon: '#22d3ee',
+                            glow: 'rgba(6, 182, 212, 0.25)'
                         }
                     },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
+                        sans: ['Inter', '-apple-system', 'sans-serif']
+                    },
                     keyframes: {
-                        heartPop: {
-                            '0%': { transform: 'scale(1)' },
-                            '50%': { transform: 'scale(1.35)' },
-                            '100%': { transform: 'scale(1)' }
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 8px rgba(6, 182, 212, 0.6))' },
+                            '50%': { opacity: '0.9', filter: 'drop-shadow(0 0 16px rgba(236, 72, 153, 0.8))' }
                         },
-                        slideUp: {
-                            '0%': { transform: 'translateY(100%)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
                         },
-                        fadeIn: {
-                            '0%': { opacity: '0', transform: 'scale(0.97)' },
-                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        hudBorder: {
+                            '0%, 100%': { borderColor: 'rgba(6, 182, 212, 0.4)' },
+                            '50%': { borderColor: 'rgba(236, 72, 153, 0.6)' }
                         }
                     },
                     animation: {
-                        heartPop: 'heartPop 0.35s ease-in-out',
-                        slideUp: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        fadeIn: 'fadeIn 0.2s ease-out forwards'
+                        'pulse-glow': 'pulseGlow 4s infinite ease-in-out',
+                        'scanline': 'scanline 8s linear infinite',
+                        'hud-border': 'hudBorder 3s infinite ease-in-out'
                     }
                 }
             }
-        }
+        };
     </script>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Mobile Web App Custom Styling -->
     <style>
-        /* Safe Area and Touch Handling */
+        /* Cyberpunk HUD Visual Aesthetics */
         body {
-            background-color: #000000;
-            color: #f4f4f5;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #030508;
+            color: #f1f5f9;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            overflow: hidden; /* Main scroll handles inner content */
         }
 
-        /* Smooth iOS-style scrollbars */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        .glass-header {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background-color: rgba(0, 0, 0, 0.82);
+        /* Glassmorphism & Neon HUD Elements */
+        .hud-glass {
+            background: rgba(9, 13, 22, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
-        .glass-bottom {
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            background-color: rgba(0, 0, 0, 0.88);
-            padding-bottom: env(safe-area-inset-bottom);
+        .hud-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(30, 41, 59, 0.8);
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        /* Active Navigation Indicator */
-        .nav-active {
-            color: #3b82f6 !important;
+        .hud-card:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+        }
+
+        .hud-corner-tl {
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            width: 8px;
+            height: 8px;
+            border-top: 2px solid #06b6d4;
+            border-left: 2px solid #06b6d4;
+        }
+
+        .hud-corner-br {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 8px;
+            height: 8px;
+            border-bottom: 2px solid #ec4899;
+            border-right: 2px solid #ec4899;
+        }
+
+        /* Animated Holographic Scanning Beam */
+        .hologram-overlay {
+            position: relative;
+            overflow: hidden;
+        }
+        .hologram-overlay::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.15) 50%, transparent 100%);
+            height: 30%;
+            animation: scanline 4s linear infinite;
+            pointer-events: none;
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030508;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #06b6d4;
         }
     </style>
 </head>
-<body class="h-full w-full flex justify-center items-center bg-zinc-950 sm:py-4">
+<body class="h-full flex flex-col antialiased selection:bg-cyber-cyan selection:text-black">
 
-    <!-- MOBILE VIEWPORT CONTAINER -->
-    <div class="w-full h-full max-w-md sm:h-[880px] sm:rounded-[40px] sm:border-[8px] sm:border-zinc-800 bg-black flex flex-col relative overflow-hidden shadow-2xl">
-        
-        <!-- TOP APP BAR -->
-        <header class="glass-header sticky top-0 z-30 border-b border-dark-border flex flex-col shrink-0">
-            <div class="flex items-center justify-between px-4 pt-3 pb-2">
-                <!-- User Profile Avatar (Opens profile modal/toast) -->
-                <button onclick="showToast('Profile drawer clicked')" class="relative group">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" 
-                         alt="User profile" 
-                         class="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500/40">
-                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-black"></span>
-                </button>
+    <!-- CANVAS BACKGROUND PARTICLE GRID -->
+    <canvas id="cyber-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
 
-                <!-- Brand Header -->
-                <div class="flex items-center gap-2">
-                    <div class="w-7 h-7 rounded-lg bg-gradient-to-tr from-brand-600 via-brand-accent to-pink-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
-                        <i data-lucide="orbit" class="w-4 h-4"></i>
-                    </div>
-                    <span class="font-black text-lg tracking-wider bg-gradient-to-r from-white via-zinc-200 to-brand-500 bg-clip-text text-transparent">
-                        SPHERE
-                    </span>
+    <!-- APP WRAPPER -->
+    <div class="relative z-10 min-h-screen flex flex-col max-w-7xl mx-auto w-full">
+
+        <!-- HEADER HUD BAR -->
+        <header class="sticky top-0 z-40 hud-glass border-b border-cyber-cyan/30 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative flex items-center justify-center w-9 h-9 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan text-cyber-cyan shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                    <i data-lucide="cpu" class="w-5 h-5 animate-pulse"></i>
+                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyber-magenta rounded-full animate-ping"></span>
                 </div>
-
-                <!-- Action Button (Search / Filter) -->
-                <button onclick="toggleSearchOverlay()" class="p-2 text-zinc-300 hover:text-white rounded-full transition active:scale-95">
-                    <i data-lucide="search" class="w-5 h-5"></i>
-                </button>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-mono font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-white to-cyber-magenta text-base sm:text-lg">NEXUS</span>
+                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan">v3.08</span>
+                    </div>
+                    <p class="text-[10px] font-mono text-slate-400 hidden sm:block">QUANTUM NEURAL FEED // LOCAL ENCRYPTION ACTIVE</p>
+                </div>
             </div>
 
-            <!-- FEED CATEGORY TABS -->
-            <div id="feed-tab-header" class="flex text-center font-bold text-sm border-t border-dark-border/40">
-                <button onclick="setActiveTab('for-you')" id="tab-for-you" class="flex-1 py-2.5 relative text-white transition">
-                    For You
-                    <div id="tab-indicator" class="absolute bottom-0 left-1/4 -translate-x-1/2 w-8 h-1 bg-brand-500 rounded-full transition-all duration-300"></div>
-                </button>
-                <button onclick="setActiveTab('following')" id="tab-following" class="flex-1 py-2.5 text-dark-muted transition">
-                    Following
-                </button>
-                <button onclick="setActiveTab('media')" id="tab-media" class="flex-1 py-2.5 text-dark-muted transition flex items-center justify-center gap-1">
-                    <i data-lucide="film" class="w-3.5 h-3.5"></i> Video
+            <!-- Header System Status Metrics -->
+            <div class="flex items-center gap-4 text-xs font-mono">
+                <div class="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800">
+                    <div class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-slate-300">PING: <span id="sys-ping" class="text-cyber-cyan">14ms</span></span>
+                    </div>
+                    <span class="text-slate-600">|</span>
+                    <div class="flex items-center gap-1.5">
+                        <i data-lucide="activity" class="w-3.5 h-3.5 text-cyber-magenta"></i>
+                        <span class="text-slate-300">NODES: <span class="text-cyber-magenta">1,024</span></span>
+                    </div>
+                </div>
+
+                <!-- SFX Mute/Unmute Audio Toggle -->
+                <button onclick="toggleAudioSFX()" id="audio-btn" class="p-2 rounded-lg bg-slate-900 border border-cyber-cyan/30 text-cyber-cyan hover:border-cyber-cyan transition" title="Toggle HUD SFX Audio">
+                    <i data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
-        <!-- MAIN SCROLLABLE CONTENT AREA -->
-        <main id="main-scroll-view" class="flex-1 overflow-y-auto no-scrollbar divide-y divide-dark-border relative">
-            <!-- Feed stream dynamically rendered via JS -->
-            <div id="feed-container"></div>
-        </main>
+        <!-- MAIN LAYOUT (3-COLUMN DESKTOP / 1-COLUMN MOBILE) -->
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 p-2 sm:p-4 md:p-6">
+            
+            <!-- LEFT NAVIGATION HUD (DESKTOP) -->
+            <aside class="hidden md:block md:col-span-3 space-y-4">
+                <div class="hud-glass rounded-2xl p-4 sticky top-20 border border-cyber-cyan/20">
+                    <div class="hud-corner-tl"></div>
+                    <div class="hud-corner-br"></div>
 
-        <!-- FLOATING ACTION BUTTON (POST CREATOR FAB) -->
-        <button onclick="openComposerModal()" 
-                class="absolute right-4 bottom-20 z-30 w-14 h-14 bg-gradient-to-tr from-brand-600 to-brand-accent text-white rounded-full flex items-center justify-center shadow-lg shadow-brand-500/30 active:scale-90 transition-transform">
-            <i data-lucide="plus" class="w-7 h-7"></i>
-        </button>
+                    <!-- User Identity Badge -->
+                    <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3 mb-6">
+                        <div class="relative">
+                            <img id="user-avatar-desktop" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-11 h-11 rounded-lg object-cover ring-2 ring-cyber-cyan">
+                            <div class="absolute -bottom-1 -right-1 bg-cyber-bg p-0.5 rounded">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyber-cyan"></i>
+                            </div>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="font-bold text-sm truncate text-white">AGENT // KIRA-9</h4>
+                            <span class="text-[10px] font-mono text-cyber-cyan block truncate">ID: #0089-ALPHA</span>
+                        </div>
+                    </div>
 
-        <!-- FIXED BOTTOM NAVIGATION BAR -->
-        <nav class="glass-bottom border-t border-dark-border z-30 flex justify-around items-center h-16 shrink-0 px-2 select-none">
-            <button onclick="switchBottomNav('home')" id="nav-home" class="flex flex-col items-center justify-center w-16 h-full text-brand-500 transition active:scale-95">
-                <i data-lucide="home" class="w-6 h-6"></i>
-                <span class="text-[10px] font-medium mt-1">Home</span>
-            </button>
-            <button onclick="switchBottomNav('explore')" id="nav-explore" class="flex flex-col items-center justify-center w-16 h-full text-dark-muted transition active:scale-95">
-                <i data-lucide="compass" class="w-6 h-6"></i>
-                <span class="text-[10px] font-medium mt-1">Explore</span>
-            </button>
-            <button onclick="switchBottomNav('notifications')" id="nav-notifications" class="flex flex-col items-center justify-center w-16 h-full text-dark-muted transition relative active:scale-95">
-                <div class="relative">
-                    <i data-lucide="bell" class="w-6 h-6"></i>
-                    <span class="absolute -top-1 -right-1 w-2 h-2 bg-brand-500 rounded-full"></span>
+                    <!-- Navigation Items -->
+                    <nav class="space-y-1.5 font-mono text-xs">
+                        <button onclick="switchCategory('all')" id="nav-d-all" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="rss" class="w-4 h-4"></i> ALL_NEURAL_FEEDS</span>
+                            <span id="badge-count-all" class="text-[10px] bg-cyber-cyan/20 px-1.5 py-0.5 rounded text-cyber-cyan">0</span>
+                        </button>
+                        <button onclick="switchCategory('text')" id="nav-d-text" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="terminal" class="w-4 h-4"></i> TEXT_NODES</span>
+                        </button>
+                        <button onclick="switchCategory('media')" id="nav-d-media" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="image" class="w-4 h-4"></i> VISUAL_DATA</span>
+                        </button>
+                        <button onclick="switchCategory('video')" id="nav-d-video" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="film" class="w-4 h-4"></i> CYBER_CLIPS (MP4)</span>
+                        </button>
+                    </nav>
+
+                    <hr class="border-slate-800 my-4">
+
+                    <!-- System Diagnostics Widget -->
+                    <div class="font-mono text-[11px] space-y-2 text-slate-400">
+                        <div class="flex justify-between">
+                            <span>NEURAL SYNC:</span>
+                            <span class="text-emerald-400">99.8%</span>
+                        </div>
+                        <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-cyber-cyan to-cyber-magenta h-full w-[99.8%]"></div>
+                        </div>
+                        <div class="flex justify-between pt-1">
+                            <span>QUANTUM BUFFER:</span>
+                            <span class="text-cyber-cyan">CLEAR</span>
+                        </div>
+                    </div>
                 </div>
-                <span class="text-[10px] font-medium mt-1">Activity</span>
-            </button>
-            <button onclick="switchBottomNav('profile')" id="nav-profile" class="flex flex-col items-center justify-center w-16 h-full text-dark-muted transition active:scale-95">
-                <i data-lucide="user" class="w-6 h-6"></i>
-                <span class="text-[10px] font-medium mt-1">Profile</span>
-            </button>
-        </nav>
+            </aside>
 
-        <!-- CREATE POST MODAL (BOTTOM SHEET FOR MOBILE) -->
-        <div id="composer-modal" class="hidden absolute inset-0 bg-black/80 backdrop-blur-md z-50 flex flex-col justify-end">
-            <div class="bg-dark-surface border-t border-dark-border rounded-t-3xl p-4 w-full animate-slideUp flex flex-col max-h-[90%]">
+            <!-- CENTER MAIN STREAM (DESKTOP + MOBILE) -->
+            <main class="col-span-1 md:col-span-6 space-y-4">
                 
-                <!-- Modal Header -->
-                <div class="flex items-center justify-between pb-3 border-b border-dark-border">
-                    <button onclick="closeComposerModal()" class="p-1 text-dark-muted hover:text-white transition">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                    <span class="font-bold text-sm text-white">Create New Post</span>
-                    <button onclick="publishPost()" id="modal-post-btn" class="bg-brand-500 hover:bg-brand-600 text-white font-bold px-4 py-1.5 rounded-full text-xs shadow-md shadow-brand-500/20 active:scale-95 transition">
-                        Post
-                    </button>
+                <!-- TOP MOBILE TABS (HIDDEN ON DESKTOP) -->
+                <div class="md:hidden flex rounded-xl hud-glass p-1 font-mono text-xs border border-cyber-cyan/30">
+                    <button onclick="switchCategory('all')" id="tab-m-all" class="flex-1 py-2 text-center rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 font-bold">ALL</button>
+                    <button onclick="switchCategory('media')" id="tab-m-media" class="flex-1 py-2 text-center rounded-lg text-slate-400">VISUALS</button>
+                    <button onclick="switchCategory('video')" id="tab-m-video" class="flex-1 py-2 text-center rounded-lg text-slate-400">CLIPS</button>
                 </div>
 
-                <!-- Input Body -->
-                <div class="pt-4 flex gap-3 flex-1 overflow-y-auto">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Avatar" class="w-10 h-10 rounded-full object-cover ring-1 ring-dark-border">
-                    <div class="flex-1 flex flex-col">
-                        <textarea id="modal-composer-text" 
-                                  rows="3" 
-                                  placeholder="What's happening? Share photos or MP4 video clips..." 
-                                  class="w-full bg-transparent text-white placeholder-dark-muted text-sm border-none focus:outline-none resize-none leading-relaxed"></textarea>
+                <!-- COMPOSER CARD (DESKTOP INLINE) -->
+                <div class="hud-glass rounded-2xl p-4 border border-cyber-cyan/30 relative overflow-hidden">
+                    <div class="hud-corner-tl"></div>
+                    <div class="hud-corner-br"></div>
 
-                        <!-- Media Attachment Preview -->
-                        <div id="modal-media-preview" class="hidden relative rounded-xl overflow-hidden my-2 border border-dark-border bg-black">
-                            <button onclick="clearMediaAttachment()" class="absolute top-2 right-2 bg-black/70 text-white p-1.5 rounded-full z-10 backdrop-blur-sm">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                            <div id="modal-preview-content"></div>
+                    <div class="flex gap-3">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-lg object-cover ring-1 ring-cyber-cyan shrink-0">
+                        <div class="flex-1 space-y-3">
+                            <textarea id="composer-input" rows="3" placeholder="TRANSMIT NEURAL MESSAGE OR ATTACH MEDIA (JPG/MP4)..." class="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 text-xs sm:text-sm font-mono p-3 rounded-xl border border-slate-800 focus:outline-none focus:border-cyber-cyan resize-none transition leading-relaxed"></textarea>
+
+                            <!-- Attachment Holographic Preview Container -->
+                            <div id="media-preview-container" class="hidden relative rounded-xl overflow-hidden border border-cyber-cyan/50 bg-black hologram-overlay p-1">
+                                <button onclick="clearComposerMedia()" class="absolute top-2 right-2 z-20 p-1.5 rounded-lg bg-black/80 text-cyber-magenta hover:bg-cyber-magenta hover:text-white transition">
+                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                </button>
+                                <div id="media-preview-target" class="max-h-64 flex items-center justify-center overflow-hidden"></div>
+                                <div class="px-2 py-1 bg-cyber-surface/90 text-[10px] font-mono text-cyber-cyan flex items-center justify-between border-t border-cyber-cyan/30">
+                                    <span id="media-file-info">FILE_SCANNED.DAT</span>
+                                    <span class="text-emerald-400">ENCRYPTION: READY</span>
+                                </div>
+                            </div>
+
+                            <!-- Uploading Simulated Progress Bar -->
+                            <div id="upload-progress-bar" class="hidden space-y-1">
+                                <div class="flex justify-between font-mono text-[10px] text-cyber-cyan">
+                                    <span>QUANTUM TRANSMISSION IN PROGRESS...</span>
+                                    <span id="upload-perc">0%</span>
+                                </div>
+                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-cyber-cyan/30">
+                                    <div id="upload-fill" class="h-full bg-gradient-to-r from-cyber-cyan via-cyber-violet to-cyber-magenta w-0 transition-all duration-150"></div>
+                                </div>
+                            </div>
+
+                            <!-- Hidden Native File Inputs -->
+                            <input type="file" id="image-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleComposerFile(event, 'image')">
+                            <input type="file" id="video-file-input" accept="video/mp4,video/webm" class="hidden" onchange="handleComposerFile(event, 'video')">
+
+                            <!-- Action Toolbar -->
+                            <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
+                                <div class="flex items-center gap-1 sm:gap-2">
+                                    <button onclick="document.getElementById('image-file-input').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-cyber-cyan font-mono text-xs flex items-center gap-1.5 transition">
+                                        <i data-lucide="image" class="w-4 h-4"></i>
+                                        <span class="hidden sm:inline">PHOTO (.JPG)</span>
+                                    </button>
+                                    <button onclick="document.getElementById('video-file-input').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-violet text-cyber-violet font-mono text-xs flex items-center gap-1.5 transition">
+                                        <i data-lucide="video" class="w-4 h-4"></i>
+                                        <span class="hidden sm:inline">VIDEO (.MP4)</span>
+                                    </button>
+                                </div>
+
+                                <button onclick="transmitPost()" id="btn-transmit" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-cyber-cyan to-cyber-violet text-black font-mono font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:shadow-[0_0_25px_rgba(6,182,212,0.7)] active:scale-95 transition">
+                                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                    <span>TRANSMIT</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Hidden Inputs for Files -->
-                <input type="file" id="modal-image-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleFileSelected(event, 'image')">
-                <input type="file" id="modal-video-input" accept="video/mp4,video/webm" class="hidden" onchange="handleFileSelected(event, 'video')">
+                <!-- POSTS FEED STREAM -->
+                <div id="posts-stream" class="space-y-4">
+                    <!-- Dynamic Posts Injected Here -->
+                </div>
+            </main>
 
-                <!-- Toolbar Bottom Actions -->
-                <div class="flex items-center justify-between pt-3 border-t border-dark-border mt-2">
-                    <div class="flex items-center gap-2">
-                        <button onclick="document.getElementById('modal-image-input').click()" class="p-2 text-brand-500 hover:bg-brand-500/10 rounded-xl transition flex items-center gap-1 text-xs font-semibold">
-                            <i data-lucide="image" class="w-5 h-5"></i>
-                            <span>Photo</span>
-                        </button>
-                        <button onclick="document.getElementById('modal-video-input').click()" class="p-2 text-brand-accent hover:bg-brand-accent/10 rounded-xl transition flex items-center gap-1 text-xs font-semibold">
-                            <i data-lucide="video" class="w-5 h-5"></i>
-                            <span>MP4 Video</span>
+            <!-- RIGHT HUD WIDGETS & AI ASSISTANT (DESKTOP) -->
+            <aside class="hidden md:block md:col-span-3 space-y-4">
+                
+                <!-- CYBER-AI ASSISTANT WIDGET -->
+                <div class="hud-glass rounded-2xl p-4 border border-cyber-violet/30 sticky top-20">
+                    <div class="hud-corner-tl"></div>
+                    <div class="hud-corner-br"></div>
+
+                    <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
+                        <i data-lucide="bot" class="w-5 h-5 text-cyber-violet animate-bounce"></i>
+                        <h3 class="font-mono font-bold text-xs text-white">NEXUS_AI ASSISTANT</h3>
+                    </div>
+
+                    <!-- AI Chat Response Display -->
+                    <div id="ai-chat-response" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-300 leading-relaxed mb-3 min-h-[70px]">
+                        Greetings Agent. Request neural post ideas or automated cyber-transmissions...
+                    </div>
+
+                    <!-- AI Prompt Bar -->
+                    <div class="flex gap-2">
+                        <input type="text" id="ai-prompt-input" placeholder="Ask AI to generate idea..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-cyber-violet">
+                        <button onclick="queryAIAssistant()" class="p-1.5 rounded-lg bg-cyber-violet/20 border border-cyber-violet text-cyber-violet hover:bg-cyber-violet hover:text-white transition">
+                            <i data-lucide="sparkles" class="w-4 h-4"></i>
                         </button>
                     </div>
-                    <span id="char-counter" class="text-xs text-dark-muted">0 / 280</span>
                 </div>
-            </div>
+
+                <!-- NEURAL TRENDS WIDGET -->
+                <div class="hud-glass rounded-2xl p-4 border border-cyber-cyan/20">
+                    <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-cyber-cyan"></i>
+                        <h3 class="font-mono font-bold text-xs text-white">NEURAL_TRENDS</h3>
+                    </div>
+
+                    <div class="space-y-3 font-mono text-xs">
+                        <div onclick="filterByTag('QuantumComputing')" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyber-cyan/50 cursor-pointer transition">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>#TECH_CYBER</span>
+                                <span class="text-cyber-cyan">42.8k PULSES</span>
+                            </div>
+                            <div class="font-bold text-slate-200 mt-0.5">#QuantumComputing</div>
+                        </div>
+
+                        <div onclick="filterByTag('Cyberpunk2026')" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyber-cyan/50 cursor-pointer transition">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>#NEURAL_STREAM</span>
+                                <span class="text-cyber-magenta">19.2k PULSES</span>
+                            </div>
+                            <div class="font-bold text-slate-200 mt-0.5">#Cyberpunk2026</div>
+                        </div>
+
+                        <div onclick="filterByTag('Web3Media')" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyber-cyan/50 cursor-pointer transition">
+                            <div class="flex justify-between text-[10px] text-slate-500">
+                                <span>#SYNTH_AUDIO</span>
+                                <span class="text-emerald-400">11.4k PULSES</span>
+                            </div>
+                            <div class="font-bold text-slate-200 mt-0.5">#Web3Media</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
 
-        <!-- SEARCH OVERLAY MODAL -->
-        <div id="search-modal" class="hidden absolute inset-0 bg-black z-40 flex flex-col p-4 animate-fadeIn">
-            <div class="flex items-center gap-2 pb-3 border-b border-dark-border">
-                <div class="flex-1 relative">
-                    <i data-lucide="search" class="absolute left-3.5 top-3 w-4 h-4 text-dark-muted"></i>
-                    <input type="text" id="mobile-search-input" onkeyup="handleSearch(this.value)" placeholder="Search keywords or #hashtags..." 
-                           class="w-full bg-dark-card text-white text-sm rounded-xl pl-10 pr-4 py-2.5 border border-dark-border focus:outline-none focus:border-brand-500">
-                </div>
-                <button onclick="toggleSearchOverlay()" class="text-xs text-brand-500 font-bold px-2 py-1">Cancel</button>
-            </div>
-            <div id="search-results" class="flex-1 overflow-y-auto py-3 divide-y divide-dark-border/40">
-                <div class="text-xs text-dark-muted py-2">Suggested Trending Topics</div>
-                <div onclick="applyHashtagSearch('WebDev')" class="py-2.5 flex justify-between items-center cursor-pointer">
-                    <div>
-                        <div class="text-sm font-bold text-white">#WebDev</div>
-                        <div class="text-[11px] text-dark-muted">24.5K posts</div>
-                    </div>
-                    <i data-lucide="arrow-up-right" class="w-4 h-4 text-dark-muted"></i>
-                </div>
-                <div onclick="applyHashtagSearch('MobileDesign')" class="py-2.5 flex justify-between items-center cursor-pointer">
-                    <div>
-                        <div class="text-sm font-bold text-white">#MobileDesign</div>
-                        <div class="text-[11px] text-dark-muted">18.1K posts</div>
-                    </div>
-                    <i data-lucide="arrow-up-right" class="w-4 h-4 text-dark-muted"></i>
-                </div>
-            </div>
+        <!-- MOBILE HUD FIXED BOTTOM BAR -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 hud-glass border-t border-cyber-cyan/30 flex justify-around items-center px-4 py-2">
+            <button onclick="switchCategory('all')" class="flex flex-col items-center gap-1 text-cyber-cyan">
+                <i data-lucide="rss" class="w-5 h-5"></i>
+                <span class="text-[9px] font-mono">STREAM</span>
+            </button>
+            <button onclick="switchCategory('media')" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="image" class="w-5 h-5"></i>
+                <span class="text-[9px] font-mono">VISUALS</span>
+            </button>
+
+            <!-- Floating Transmit FAB -->
+            <button onclick="scrollToComposer()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyber-cyan to-cyber-magenta text-black flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.6)] active:scale-90 transition -mt-5 border-2 border-black">
+                <i data-lucide="plus" class="w-6 h-6 stroke-[3]"></i>
+            </button>
+
+            <button onclick="switchCategory('video')" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="film" class="w-5 h-5"></i>
+                <span class="text-[9px] font-mono">CLIPS</span>
+            </button>
+            <button onclick="triggerAIAssistantMobile()" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="bot" class="w-5 h-5"></i>
+                <span class="text-[9px] font-mono">AI_BOT</span>
+            </button>
+        </nav>
+
+        <!-- IMAGE MODAL VIEWER -->
+        <div id="image-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+            <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white p-2 rounded-lg bg-slate-800/80 hover:bg-cyber-magenta transition">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <img id="modal-img-target" src="" class="max-w-full max-h-[85vh] rounded-xl border border-cyber-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)] object-contain">
         </div>
 
-        <!-- TOAST NOTIFICATION OVERLAY -->
-        <div id="toast-overlay" class="absolute top-16 left-1/2 -translate-x-1/2 z-50 pointer-events-none w-11/12 max-w-xs"></div>
+        <!-- HUD TOAST NOTIFICATION CONTAINER -->
+        <div id="toast-container" class="fixed top-16 right-4 z-50 space-y-2 pointer-events-none max-w-xs w-full"></div>
 
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // State variables
-        let selectedMedia = null; // { type: 'image' | 'video', url: string, file: File }
-        let currentFeedTab = 'for-you';
-        let currentNavTab = 'home';
-        let searchQuery = '';
+        // GLOBAL STATE AND PERSISTENCE
+        let audioEnabled = true;
+        let currentFilter = 'all';
+        let selectedFileAttachment = null; // { type: 'image' | 'video', url: string, name: string }
 
-        // Initial Mobile Data Feed
-        let feedPosts = [
+        // Web Audio API Synthesizer Sound Generator
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSynthTone(freq = 440, type = 'sine', duration = 0.1) {
+            if (!audioEnabled) return;
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log('Audio disabled by browser policy', e);
+            }
+        }
+
+        function toggleAudioSFX() {
+            audioEnabled = !audioEnabled;
+            const btn = document.getElementById('audio-btn');
+            if (audioEnabled) {
+                btn.classList.add('text-cyber-cyan');
+                btn.classList.remove('text-slate-600');
+                showToast('AUDIO HUD SFX: ENABLED');
+                playSynthTone(880, 'triangle', 0.15);
+            } else {
+                btn.classList.remove('text-cyber-cyan');
+                btn.classList.add('text-slate-600');
+                showToast('AUDIO HUD SFX: MUTED');
+            }
+        }
+
+        // DEFAULT PRELOADED POSTS
+        const defaultPosts = [
             {
-                id: 'p1',
+                id: 'post-1',
                 author: {
-                    name: 'dev',
-                    handle: 'dev',
-                    avatar: 'https://cdn.discordapp.com/attachments/1269573734822314036/1553787589390245908/IMG_9390.jpg?ex=6aba84f5&is=6ab93375&hm=c03771ff66da9d26dda9b30f499d2711e3d341e0775fac572a0dddbdd6d37ecd&',
-                    verified: true
+                    name: 'NEURAL_ARCHITECT',
+                    handle: 'architect_01',
+                    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80',
+                    verified: true,
+                    rank: 'SYS_ADMIN'
                 },
-                content: '267-707-5179',
-                timestamp: '8m',
+                content: 'Quantum encryption stream initialized across 1,024 peripheral nodes. Visual data rendering is live. #QuantumComputing #Web3Media',
+                timestamp: '02M AGO',
                 media: {
                     type: 'image',
-                    url: 'https://cdn.discordapp.com/attachments/1269573734822314036/1553787589390245908/IMG_9390.jpg?ex=6aba84f5&is=6ab93375&hm=c03771ff66da9d26dda9b30f499d2711e3d341e0775fac572a0dddbdd6d37ecd&'
+                    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
                 },
-                stats: { replies: 5, reposts: 12, likes: 88, views: '1.2K' },
+                stats: { energy: 142, echoes: 28, bookmarks: 12 },
                 isLiked: false,
-                isReposted: false,
-                isBookmarked: false,
-                tab: 'for-you'
+                isEchoed: false,
+                isBookmarked: false
             },
             {
-                id: 'p2',
+                id: 'post-2',
                 author: {
-                    name: 'Motion Cinema',
-                    handle: 'motion_shorts',
+                    name: 'CYBER_CINEMA',
+                    handle: 'synth_motion',
                     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-                    verified: true
+                    verified: true,
+                    rank: 'CREATOR'
                 },
-                content: 'Sample MP4 video stream rendered in native HTML5 player. Double tap or click to interact! 🎬✨ #Cinema',
-                timestamp: '42m',
+                content: 'MP4 visual clip payload transmitted via high-frequency neural feed. Test playback controls below. #Cyberpunk2026',
+                timestamp: '14M AGO',
                 media: {
                     type: 'video',
                     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
                 },
-                stats: { replies: 19, reposts: 44, likes: 310, views: '8.9K' },
+                stats: { energy: 389, echoes: 94, bookmarks: 45 },
                 isLiked: true,
-                isReposted: false,
-                isBookmarked: true,
-                tab: 'media'
-            },
-            {
-                id: 'p3',
-                author: {
-                    name: 'Alex Rivera',
-                    handle: 'arivera_ui',
-                    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80',
-                    verified: false
-                },
-                content: 'Just launched my new UI kit. Works seamlessly on both iOS and Android browsers! 🚀',
-                timestamp: '2h',
-                media: null,
-                stats: { replies: 2, reposts: 6, likes: 45, views: '620' },
-                isLiked: false,
-                isReposted: false,
-                isBookmarked: false,
-                tab: 'following'
+                isEchoed: false,
+                isBookmarked: true
             }
         ];
 
-        function handleFileSelected(event, mediaType) {
+        let posts = [];
+
+        function loadPostsFromStorage() {
+            const saved = localStorage.getItem('nexus_neural_posts');
+            if (saved) {
+                try {
+                    posts = JSON.parse(saved);
+                } catch (e) {
+                    posts = defaultPosts;
+                }
+            } else {
+                posts = defaultPosts;
+            }
+        }
+
+        function savePostsToStorage() {
+            localStorage.setItem('nexus_neural_posts', JSON.stringify(posts));
+        }
+
+        function handleComposerFile(event, type) {
             const file = event.target.files[0];
             if (!file) return;
 
-            if (mediaType === 'video' && !file.type.includes('mp4') && !file.type.includes('webm')) {
-                showToast('Please select a valid MP4 video.');
-                return;
-            }
+            playSynthTone(600, 'square', 0.1);
 
             const objectUrl = URL.createObjectURL(file);
-            selectedMedia = {
-                type: mediaType,
+            selectedFileAttachment = {
+                type: type,
                 url: objectUrl,
-                file: file
+                name: file.name
             };
 
-            renderModalMediaPreview();
+            // Show Uploading Animation Simulation
+            const progressBar = document.getElementById('upload-progress-bar');
+            const progressFill = document.getElementById('upload-fill');
+            const progressPerc = document.getElementById('upload-perc');
+
+            progressBar.classList.remove('hidden');
+            progressFill.style.width = '0%';
+
+            let currentPerc = 0;
+            const interval = setInterval(() => {
+                currentPerc += 20;
+                progressFill.style.width = currentPerc + '%';
+                progressPerc.innerText = currentPerc + '%';
+
+                if (currentPerc >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        progressBar.classList.add('hidden');
+                        renderComposerMediaPreview();
+                        showToast('FILE HOLOGRAPHIC SCAN COMPLETE');
+                        playSynthTone(1200, 'sine', 0.2);
+                    }, 200);
+                }
+            }, 60);
         }
 
-        function renderModalMediaPreview() {
-            const container = document.getElementById('modal-media-preview');
-            const content = document.getElementById('modal-preview-content');
+        function renderComposerMediaPreview() {
+            const container = document.getElementById('media-preview-container');
+            const target = document.getElementById('media-preview-target');
+            const fileInfo = document.getElementById('media-file-info');
 
-            if (!selectedMedia) {
+            if (!selectedFileAttachment) {
                 container.classList.add('hidden');
-                content.innerHTML = '';
+                target.innerHTML = '';
                 return;
             }
 
             container.classList.remove('hidden');
+            fileInfo.innerText = selectedFileAttachment.name.toUpperCase();
 
-            if (selectedMedia.type === 'image') {
-                content.innerHTML = `<img src="${selectedMedia.url}" class="max-h-60 w-full object-cover rounded-xl">`;
-            } else if (selectedMedia.type === 'video') {
-                content.innerHTML = `
-                    <video controls class="max-h-60 w-full bg-black rounded-xl">
-                        <source src="${selectedMedia.url}" type="${selectedMedia.file.type || 'video/mp4'}">
-                        Your browser does not support HTML5 video playback.
+            if (selectedFileAttachment.type === 'image') {
+                target.innerHTML = `<img src="${selectedFileAttachment.url}" class="max-h-60 w-full object-cover rounded-lg">`;
+            } else if (selectedFileAttachment.type === 'video') {
+                target.innerHTML = `
+                    <video controls class="max-h-60 w-full bg-black rounded-lg">
+                        <source src="${selectedFileAttachment.url}" type="video/mp4">
                     </video>
                 `;
             }
-            refreshIcons();
+            lucide.createIcons();
         }
 
-        function clearMediaAttachment() {
-            if (selectedMedia && selectedMedia.url) {
-                URL.revokeObjectURL(selectedMedia.url);
+        function clearComposerMedia() {
+            if (selectedFileAttachment && selectedFileAttachment.url) {
+                URL.revokeObjectURL(selectedFileAttachment.url);
             }
-            selectedMedia = null;
-            document.getElementById('modal-image-input').value = '';
-            document.getElementById('modal-video-input').value = '';
-            renderModalMediaPreview();
+            selectedFileAttachment = null;
+            document.getElementById('image-file-input').value = '';
+            document.getElementById('video-file-input').value = '';
+            renderComposerMediaPreview();
+            playSynthTone(300, 'sawtooth', 0.1);
         }
 
-        function openComposerModal() {
-            document.getElementById('composer-modal').classList.remove('hidden');
-            document.getElementById('modal-composer-text').focus();
-        }
+        function transmitPost() {
+            const input = document.getElementById('composer-input');
+            const content = input.value.trim();
 
-        function closeComposerModal() {
-            document.getElementById('composer-modal').classList.add('hidden');
-            clearMediaAttachment();
-            document.getElementById('modal-composer-text').value = '';
-        }
-
-        function publishPost() {
-            const textarea = document.getElementById('modal-composer-text');
-            const textVal = textarea.value.trim();
-
-            if (!textVal && !selectedMedia) {
-                showToast('Add text or media to publish!');
+            if (!content && !selectedFileAttachment) {
+                showToast('ERROR: INPUT PAYLOAD EMPTY');
+                playSynthTone(200, 'sawtooth', 0.2);
                 return;
             }
 
+            playSynthTone(900, 'sine', 0.25);
+
             const newPost = {
-                id: 'p-' + Date.now(),
+                id: 'post-' + Date.now(),
                 author: {
-                    name: 'Elena Rostova',
-                    handle: 'elena_ui',
+                    name: 'AGENT // KIRA-9',
+                    handle: 'kira_0089',
                     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-                    verified: true
+                    verified: true,
+                    rank: 'AGENT'
                 },
-                content: textVal,
-                timestamp: 'Just now',
-                media: selectedMedia ? { type: selectedMedia.type, url: selectedMedia.url } : null,
-                stats: { replies: 0, reposts: 0, likes: 0, views: '1' },
+                content: content,
+                timestamp: 'JUST NOW',
+                media: selectedFileAttachment ? { type: selectedFileAttachment.type, url: selectedFileAttachment.url } : null,
+                stats: { energy: 1, echoes: 0, bookmarks: 0 },
                 isLiked: false,
-                isReposted: false,
-                isBookmarked: false,
-                tab: 'for-you'
+                isEchoed: false,
+                isBookmarked: false
             };
 
-            feedPosts.unshift(newPost);
-            closeComposerModal();
-            renderFeed();
-            showToast('Post published!');
+            posts.unshift(newPost);
+            savePostsToStorage();
+
+            input.value = '';
+            clearComposerMedia();
+            renderPostsFeed();
+            showToast('NEURAL TRANSMISSION SUCCESSFUL');
         }
 
-        function toggleLike(postId) {
-            const post = feedPosts.find(p => p.id === postId);
-            if (post) {
-                post.isLiked = !post.isLiked;
-                post.stats.likes += post.isLiked ? 1 : -1;
-                renderFeed();
+        function toggleEnergy(postId) {
+            const p = posts.find(post => post.id === postId);
+            if (p) {
+                p.isLiked = !p.isLiked;
+                p.stats.energy += p.isLiked ? 1 : -1;
+                savePostsToStorage();
+                renderPostsFeed();
+                playSynthTone(p.isLiked ? 1000 : 400, 'sine', 0.15);
             }
         }
 
-        function toggleRepost(postId) {
-            const post = feedPosts.find(p => p.id === postId);
-            if (post) {
-                post.isReposted = !post.isReposted;
-                post.stats.reposts += post.isReposted ? 1 : -1;
-                renderFeed();
-                showToast(post.isReposted ? 'Reposted' : 'Repost removed');
+        function toggleEcho(postId) {
+            const p = posts.find(post => post.id === postId);
+            if (p) {
+                p.isEchoed = !p.isEchoed;
+                p.stats.echoes += p.isEchoed ? 1 : -1;
+                savePostsToStorage();
+                renderPostsFeed();
+                showToast(p.isEchoed ? 'NEURAL ECHO TRANSMITTED' : 'ECHO RECALLED');
+                playSynthTone(750, 'triangle', 0.15);
             }
         }
 
         function toggleBookmark(postId) {
-            const post = feedPosts.find(p => p.id === postId);
-            if (post) {
-                post.isBookmarked = !post.isBookmarked;
-                renderFeed();
-                showToast(post.isBookmarked ? 'Saved to Bookmarks' : 'Removed from Bookmarks');
+            const p = posts.find(post => post.id === postId);
+            if (p) {
+                p.isBookmarked = !p.isBookmarked;
+                p.stats.bookmarks += p.isBookmarked ? 1 : -1;
+                savePostsToStorage();
+                renderPostsFeed();
+                showToast(p.isBookmarked ? 'SAVED TO QUANTUM MEMORY' : 'REMOVED FROM MEMORY');
+                playSynthTone(600, 'sine', 0.1);
             }
         }
 
-        function sharePost(postId) {
-            showToast('Link copied to clipboard!');
-        }
+        function switchCategory(cat) {
+            currentFilter = cat;
+            playSynthTone(500, 'sine', 0.1);
 
-        function setActiveTab(tab) {
-            currentFeedTab = tab;
-            const indicator = document.getElementById('tab-indicator');
-            const tabForYou = document.getElementById('tab-for-you');
-            const tabFollowing = document.getElementById('tab-following');
-            const tabMedia = document.getElementById('tab-media');
-
-            [tabForYou, tabFollowing, tabMedia].forEach(t => t.className = t.className.replace('text-white', 'text-dark-muted'));
-
-            if (tab === 'for-you') {
-                tabForYou.classList.add('text-white');
-                indicator.style.left = '16.6%';
-            } else if (tab === 'following') {
-                tabFollowing.classList.add('text-white');
-                indicator.style.left = '50%';
-            } else if (tab === 'media') {
-                tabMedia.classList.add('text-white');
-                indicator.style.left = '83.3%';
-            }
-
-            renderFeed();
-        }
-
-        function switchBottomNav(nav) {
-            currentNavTab = nav;
-            const navIds = ['home', 'explore', 'notifications', 'profile'];
-            
-            navIds.forEach(id => {
-                const btn = document.getElementById('nav-' + id);
-                if (id === nav) {
-                    btn.className = 'flex flex-col items-center justify-center w-16 h-full text-brand-500 transition active:scale-95';
-                } else {
-                    btn.className = 'flex flex-col items-center justify-center w-16 h-full text-dark-muted transition active:scale-95';
+            // Update UI Desktop Nav Items
+            ['all', 'text', 'media', 'video'].forEach(c => {
+                const btn = document.getElementById('nav-d-' + c);
+                if (btn) {
+                    if (c === cat) {
+                        btn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition";
+                    } else {
+                        btn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition";
+                    }
                 }
             });
 
-            if (nav === 'explore') {
-                toggleSearchOverlay();
-            } else if (nav === 'notifications' || nav === 'profile') {
-                showToast(`${nav.charAt(0).toUpperCase() + nav.slice(1)} view coming soon!`);
-            } else {
-                renderFeed();
-            }
+            renderPostsFeed();
         }
 
-        function toggleSearchOverlay() {
-            const modal = document.getElementById('search-modal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                document.getElementById('mobile-search-input').focus();
-            } else {
-                searchQuery = '';
-                renderFeed();
-            }
+        function filterByTag(tag) {
+            showToast(`FILTERING BY HASHTAG: #${tag}`);
+            renderPostsFeed(tag);
         }
 
-        function handleSearch(val) {
-            searchQuery = val.toLowerCase().trim();
-            renderFeed();
-        }
+        function queryAIAssistant() {
+            const input = document.getElementById('ai-prompt-input');
+            const prompt = input.value.trim();
+            const output = document.getElementById('ai-chat-response');
 
-        function applyHashtagSearch(tag) {
-            document.getElementById('mobile-search-input').value = '#' + tag;
-            handleSearch('#' + tag);
-            toggleSearchOverlay();
-        }
+            if (!prompt) return;
 
-        function showToast(msg) {
-            const container = document.getElementById('toast-overlay');
-            const toast = document.createElement('div');
-            toast.className = 'bg-zinc-800 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-2xl flex items-center justify-center gap-2 border border-zinc-700 animate-fadeIn my-1';
-            toast.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 text-brand-500"></i> ${msg}`;
-            container.appendChild(toast);
-            refreshIcons();
+            playSynthTone(800, 'square', 0.15);
+            output.innerText = "NEXUS_AI PROCESSING NEURAL PROMPT...";
 
             setTimeout(() => {
-                toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-                setTimeout(() => toast.remove(), 300);
-            }, 2500);
+                const responses = [
+                    `AI SUGGESTION: "Quantum neural link established at 100% capacity. Node synchronization optimal." #QuantumComputing`,
+                    `AI SUGGESTION: "Scanning dark fiber networks for localized MP4 video feeds. Transmission stable." #Cyberpunk2026`,
+                    `AI SUGGESTION: "Encrypted memory stream saved to holographic cloud storage." #Web3Media`
+                ];
+                const randomChoice = responses[Math.floor(Math.random() * responses.length)];
+                output.innerText = randomChoice;
+                input.value = '';
+                playSynthTone(1100, 'sine', 0.2);
+            }, 600);
         }
 
-        function renderFeed() {
-            const container = document.getElementById('feed-container');
-            container.innerHTML = '';
+        function triggerAIAssistantMobile() {
+            const result = prompt("NEXUS_AI Prompt Request:", "Generate neural post topic...");
+            if (result) {
+                document.getElementById('composer-input').value = `NEXUS_AI: ${result} #NeuralStream`;
+                scrollToComposer();
+            }
+        }
 
-            let filtered = feedPosts.filter(post => {
-                if (searchQuery) {
-                    return post.content.toLowerCase().includes(searchQuery) || post.author.name.toLowerCase().includes(searchQuery);
+        function scrollToComposer() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('composer-input').focus();
+        }
+
+        function openImageModal(url) {
+            document.getElementById('modal-img-target').src = url;
+            document.getElementById('image-modal').classList.remove('hidden');
+            playSynthTone(700, 'sine', 0.15);
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.add('hidden');
+        }
+
+        function renderPostsFeed(hashtagFilter = null) {
+            const stream = document.getElementById('posts-stream');
+            stream.innerHTML = '';
+
+            let filtered = posts.filter(p => {
+                if (hashtagFilter) {
+                    return p.content.toLowerCase().includes(hashtagFilter.toLowerCase());
                 }
-                if (currentFeedTab === 'media') return post.media !== null;
+                if (currentFilter === 'text') return !p.media;
+                if (currentFilter === 'media') return p.media && p.media.type === 'image';
+                if (currentFilter === 'video') return p.media && p.media.type === 'video';
                 return true;
             });
 
+            // Update badge counter
+            const badge = document.getElementById('badge-count-all');
+            if (badge) badge.innerText = posts.length;
+
             if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="p-10 text-center text-dark-muted space-y-2">
-                        <i data-lucide="sparkles" class="w-10 h-10 mx-auto text-dark-muted/50"></i>
-                        <p class="text-sm font-semibold">No posts in this view</p>
-                        <p class="text-xs">Create a post or try switching tabs above.</p>
+                stream.innerHTML = `
+                    <div class="hud-glass rounded-2xl p-8 text-center text-slate-500 font-mono space-y-2 border border-slate-800">
+                        <i data-lucide="radio-tower" class="w-8 h-8 mx-auto text-cyber-cyan/40 animate-pulse"></i>
+                        <p class="text-xs">NO NEURAL TRANSMISSIONS FOUND IN THIS FILTER</p>
                     </div>
                 `;
-                refreshIcons();
+                lucide.createIcons();
                 return;
             }
 
-            filtered.forEach(post => {
+            filtered.forEach(p => {
                 const card = document.createElement('article');
-                card.className = 'p-3.5 hover:bg-dark-surface/40 transition border-b border-dark-border/60 flex gap-3 animate-fadeIn';
+                card.className = "hud-card rounded-2xl p-4 border border-slate-800 space-y-3 font-mono";
 
-                let mediaElement = '';
-                if (post.media) {
-                    if (post.media.type === 'image') {
-                        mediaElement = `
-                            <div class="mt-2.5 rounded-xl overflow-hidden border border-dark-border bg-black max-h-80">
-                                <img src="${post.media.url}" alt="Post attachment" class="w-full h-auto object-cover max-h-80">
+                let mediaHtml = '';
+                if (p.media) {
+                    if (p.media.type === 'image') {
+                        mediaHtml = `
+                            <div onclick="openImageModal('${p.media.url}')" class="rounded-xl overflow-hidden border border-cyber-cyan/30 cursor-pointer hologram-overlay group">
+                                <img src="${p.media.url}" class="w-full max-h-80 object-cover group-hover:scale-105 transition duration-300">
                             </div>
                         `;
-                    } else if (post.media.type === 'video') {
-                        mediaElement = `
-                            <div class="mt-2.5 rounded-xl overflow-hidden border border-dark-border bg-black">
+                    } else if (p.media.type === 'video') {
+                        mediaHtml = `
+                            <div class="rounded-xl overflow-hidden border border-cyber-violet/40 bg-black">
                                 <video controls preload="metadata" class="w-full max-h-80 object-contain">
-                                    <source src="${post.media.url}" type="video/mp4">
-                                    Your browser does not support playing HTML5 MP4 video.
+                                    <source src="${p.media.url}" type="video/mp4">
                                 </video>
                             </div>
                         `;
@@ -594,79 +807,146 @@
                 }
 
                 card.innerHTML = `
-                    <img src="${post.author.avatar}" alt="${post.author.name}" class="w-9 h-9 rounded-full object-cover ring-1 ring-dark-border shrink-0">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center gap-1 truncate">
-                                <span class="font-bold text-xs text-white truncate">${post.author.name}</span>
-                                ${post.author.verified ? `<i data-lucide="badge-check" class="w-3.5 h-3.5 text-brand-500 fill-brand-500 text-black shrink-0"></i>` : ''}
-                                <span class="text-dark-muted text-[11px] truncate">@${post.author.handle}</span>
-                                <span class="text-dark-muted text-[10px]">· ${post.timestamp}</span>
+                    <div class="hud-corner-tl"></div>
+                    <div class="hud-corner-br"></div>
+
+                    <!-- Post Header -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <img src="${p.author.avatar}" class="w-9 h-9 rounded-lg object-cover ring-1 ring-cyber-cyan">
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-xs text-white">${p.author.name}</span>
+                                    <span class="text-[9px] px-1 bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan rounded">${p.author.rank}</span>
+                                </div>
+                                <span class="text-[10px] text-slate-500">@${p.author.handle} · ${p.timestamp}</span>
                             </div>
-                            <button class="text-dark-muted p-1">
-                                <i data-lucide="more-horizontal" class="w-4 h-4"></i>
-                            </button>
                         </div>
+                        <i data-lucide="shield" class="w-4 h-4 text-slate-600"></i>
+                    </div>
 
-                        ${post.content ? `<p class="mt-1 text-xs text-zinc-200 leading-relaxed">${formatText(post.content)}</p>` : ''}
-                        ${mediaElement}
+                    <!-- Post Payload Text -->
+                    ${p.content ? `<p class="text-xs text-slate-200 leading-relaxed font-sans">${formatHashtags(p.content)}</p>` : ''}
 
-                        <!-- Action Bar -->
-                        <div class="flex items-center justify-between mt-3 text-dark-muted text-[11px]">
-                            <!-- Reply -->
-                            <button class="flex items-center gap-1 hover:text-brand-500 active:scale-90 transition">
-                                <i data-lucide="message-square" class="w-4 h-4"></i>
-                                <span>${post.stats.replies || ''}</span>
-                            </button>
+                    <!-- Post Media -->
+                    ${mediaHtml}
 
-                            <!-- Repost -->
-                            <button onclick="toggleRepost('${post.id}')" class="flex items-center gap-1 ${post.isReposted ? 'text-emerald-500' : 'hover:text-emerald-500'} active:scale-90 transition">
-                                <i data-lucide="repeat" class="w-4 h-4"></i>
-                                <span>${post.stats.reposts || ''}</span>
-                            </button>
+                    <!-- Post Interactive Actions -->
+                    <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs text-slate-400">
+                        <!-- Energy Pulse (Like) -->
+                        <button onclick="toggleEnergy('${p.id}')" class="flex items-center gap-1.5 ${p.isLiked ? 'text-cyber-magenta' : 'hover:text-cyber-magenta'} transition">
+                            <i data-lucide="zap" class="w-4 h-4 ${p.isLiked ? 'fill-cyber-magenta' : ''}"></i>
+                            <span class="text-[11px]">${p.stats.energy}</span>
+                        </button>
 
-                            <!-- Like -->
-                            <button onclick="toggleLike('${post.id}')" class="flex items-center gap-1 ${post.isLiked ? 'text-rose-500' : 'hover:text-rose-500'} active:scale-90 transition">
-                                <i data-lucide="heart" class="w-4 h-4 ${post.isLiked ? 'fill-rose-500 animate-heartPop' : ''}"></i>
-                                <span>${post.stats.likes || ''}</span>
-                            </button>
+                        <!-- Echo (Repost) -->
+                        <button onclick="toggleEcho('${p.id}')" class="flex items-center gap-1.5 ${p.isEchoed ? 'text-emerald-400' : 'hover:text-emerald-400'} transition">
+                            <i data-lucide="repeat" class="w-4 h-4"></i>
+                            <span class="text-[11px]">${p.stats.echoes}</span>
+                        </button>
 
-                            <!-- Share -->
-                            <button onclick="sharePost('${post.id}')" class="hover:text-brand-500 active:scale-90 transition">
-                                <i data-lucide="share-2" class="w-4 h-4"></i>
-                            </button>
+                        <!-- Bookmark -->
+                        <button onclick="toggleBookmark('${p.id}')" class="flex items-center gap-1.5 ${p.isBookmarked ? 'text-cyber-cyan' : 'hover:text-cyber-cyan'} transition">
+                            <i data-lucide="bookmark" class="w-4 h-4 ${p.isBookmarked ? 'fill-cyber-cyan' : ''}"></i>
+                        </button>
 
-                            <!-- Bookmark -->
-                            <button onclick="toggleBookmark('${post.id}')" class="${post.isBookmarked ? 'text-brand-500' : 'hover:text-brand-500'} active:scale-90 transition">
-                                <i data-lucide="bookmark" class="w-4 h-4 ${post.isBookmarked ? 'fill-brand-500' : ''}"></i>
-                            </button>
-                        </div>
+                        <!-- Share -->
+                        <button onclick="showToast('TRANSMISSION LINK COPIED')" class="hover:text-white transition">
+                            <i data-lucide="share-2" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 `;
 
-                container.appendChild(card);
+                stream.appendChild(card);
             });
 
-            refreshIcons();
-        }
-
-        function formatText(str) {
-            const escaped = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-            return escaped.replace(/#(\w+)/g, '<span class="text-brand-500 font-medium" onclick="applyHashtagSearch(\'$1\')">#$1</span>');
-        }
-
-        function refreshIcons() {
             lucide.createIcons();
         }
 
-        // Initialize on load
-        window.onload = function() {
-            renderFeed();
-            refreshIcons();
+        function formatHashtags(text) {
+            return text.replace(/#(\w+)/g, '<span class="text-cyber-cyan font-semibold cursor-pointer hover:underline" onclick="filterByTag(\'$1\')">#$1</span>');
+        }
 
-            // Track character count in mobile modal composer
-            document.getElementById('modal-composer-text').addEventListener('input', function() {
-                document.getElementById('char-counter').innerText = `${this.value.length} / 280`;
-            });
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = "hud-glass p-3 rounded-xl border border-cyber-cyan/50 text-cyber-cyan font-mono text-xs shadow-2xl flex items-center gap-2 animate-bounce";
+            toast.innerHTML = `<i data-lucide="terminal" class="w-4 h-4 text-cyber-cyan"></i> <span>${msg}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function initCanvasGrid() {
+            const canvas = document.getElementById('cyber-canvas');
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const nodes = Array.from({ length: 35 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            }));
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                nodes.forEach(node => {
+                    node.x += node.vx;
+                    node.y += node.vy;
+
+                    if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                    if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+
+                    ctx.fillStyle = '#06b6d4';
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                // Connect adjacent nodes
+                for (let i = 0; i < nodes.length; i++) {
+                    for (let j = i + 1; j < nodes.length; j++) {
+                        const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
+                        if (dist < 130) {
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${1 - dist / 130})`;
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(nodes[i].x, nodes[i].y);
+                            ctx.lineTo(nodes[j].x, nodes[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // INITIALIZE APP
+        window.onload = function() {
+            initCanvasGrid();
+            loadPostsFromStorage();
+            renderPostsFeed();
+            
+            // Random simulated ping fluctuation
+            setInterval(() => {
+                const ping = Math.floor(12 + Math.random() * 8);
+                const pingElem = document.getElementById('sys-ping');
+                if (pingElem) pingElem.innerText = ping + 'ms';
+            }, 3000);
         };
     </script>
+</body>
+</html>
