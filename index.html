@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS // NEURAL STREAM v3.08</title>
+    <title>NEXUS // CHRONICLES - Digital Journal & Visual Archive</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,14 +14,15 @@
                 extend: {
                     colors: {
                         cyber: {
-                            bg: '#030508',
+                            bg: '#030509',
                             surface: '#090d16',
-                            card: '#0f172a',
-                            border: '#1e293b',
+                            card: 'rgba(15, 23, 42, 0.65)',
+                            border: 'rgba(6, 182, 212, 0.25)',
                             cyan: '#06b6d4',
-                            magenta: '#ec4899',
+                            emerald: '#10b981',
                             violet: '#8b5cf6',
-                            neon: '#22d3ee',
+                            pink: '#ec4899',
+                            amber: '#f59e0b',
                             glow: 'rgba(6, 182, 212, 0.25)'
                         }
                     },
@@ -31,22 +32,17 @@
                     },
                     keyframes: {
                         pulseGlow: {
-                            '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 8px rgba(6, 182, 212, 0.6))' },
-                            '50%': { opacity: '0.9', filter: 'drop-shadow(0 0 16px rgba(236, 72, 153, 0.8))' }
+                            '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 8px rgba(6, 182, 212, 0.5))' },
+                            '50%': { opacity: '0.9', filter: 'drop-shadow(0 0 16px rgba(16, 185, 129, 0.8))' }
                         },
                         scanline: {
                             '0%': { transform: 'translateY(-100%)' },
                             '100%': { transform: 'translateY(1000%)' }
-                        },
-                        hudBorder: {
-                            '0%, 100%': { borderColor: 'rgba(6, 182, 212, 0.4)' },
-                            '50%': { borderColor: 'rgba(236, 72, 153, 0.6)' }
                         }
                     },
                     animation: {
                         'pulse-glow': 'pulseGlow 4s infinite ease-in-out',
-                        'scanline': 'scanline 8s linear infinite',
-                        'hud-border': 'hudBorder 3s infinite ease-in-out'
+                        'scanline': 'scanline 6s linear infinite'
                     }
                 }
             }
@@ -57,26 +53,24 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        /* Cyberpunk HUD Visual Aesthetics */
         body {
-            background-color: #030508;
+            background-color: #030509;
             color: #f1f5f9;
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Glassmorphism & Neon HUD Elements */
         .hud-glass {
-            background: rgba(9, 13, 22, 0.75);
+            background: rgba(9, 13, 22, 0.8);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(6, 182, 212, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
         }
 
         .hud-card {
-            background: rgba(15, 23, 42, 0.6);
+            background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(30, 41, 59, 0.8);
             position: relative;
@@ -88,6 +82,7 @@
             box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
         }
 
+        /* Decorative HUD Corner Tech Accents */
         .hud-corner-tl {
             position: absolute;
             top: -1px;
@@ -104,11 +99,11 @@
             right: -1px;
             width: 8px;
             height: 8px;
-            border-bottom: 2px solid #ec4899;
-            border-right: 2px solid #ec4899;
+            border-bottom: 2px solid #10b981;
+            border-right: 2px solid #10b981;
         }
 
-        /* Animated Holographic Scanning Beam */
+        /* Custom Holographic Scan Effect */
         .hologram-overlay {
             position: relative;
             overflow: hidden;
@@ -117,19 +112,19 @@
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.15) 50%, transparent 100%);
-            height: 30%;
-            animation: scanline 4s linear infinite;
+            background: linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.12) 50%, transparent 100%);
+            height: 35%;
+            animation: scanline 5s linear infinite;
             pointer-events: none;
         }
 
-        /* Scrollbars */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #030508;
+            background: #030509;
         }
         ::-webkit-scrollbar-thumb {
             background: #1e293b;
@@ -142,297 +137,340 @@
 </head>
 <body class="h-full flex flex-col antialiased selection:bg-cyber-cyan selection:text-black">
 
-    <!-- CANVAS BACKGROUND PARTICLE GRID -->
+    <!-- CANVAS BACKGROUND PARTICLE NETWORK -->
     <canvas id="cyber-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
 
-    <!-- APP WRAPPER -->
+    <!-- MAIN APP WRAPPER -->
     <div class="relative z-10 min-h-screen flex flex-col max-w-7xl mx-auto w-full">
 
-        <!-- HEADER HUD BAR -->
+        <!-- HEADER HUD NAVBAR -->
         <header class="sticky top-0 z-40 hud-glass border-b border-cyber-cyan/30 px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="relative flex items-center justify-center w-9 h-9 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan text-cyber-cyan shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-                    <i data-lucide="cpu" class="w-5 h-5 animate-pulse"></i>
-                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyber-magenta rounded-full animate-ping"></span>
+                <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan text-cyber-cyan shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                    <i data-lucide="book-open-check" class="w-5 h-5 animate-pulse"></i>
+                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyber-emerald rounded-full animate-ping"></span>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="font-mono font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-white to-cyber-magenta text-base sm:text-lg">NEXUS</span>
-                        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan">v3.08</span>
+                        <span class="font-mono font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-white to-cyber-emerald text-base sm:text-lg">NEXUS</span>
+                        <span class="text-xs font-mono font-bold text-slate-400">// CHRONICLES</span>
                     </div>
-                    <p class="text-[10px] font-mono text-slate-400 hidden sm:block">QUANTUM NEURAL FEED // LOCAL ENCRYPTION ACTIVE</p>
+                    <p class="text-[10px] font-mono text-slate-400 hidden sm:block">PUBLIC DIARY LOGS & VISUAL ARCHIVE</p>
                 </div>
             </div>
 
-            <!-- Header System Status Metrics -->
-            <div class="flex items-center gap-4 text-xs font-mono">
-                <div class="hidden md:flex items-center gap-3 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800">
-                    <div class="flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span class="text-slate-300">PING: <span id="sys-ping" class="text-cyber-cyan">14ms</span></span>
-                    </div>
-                    <span class="text-slate-600">|</span>
-                    <div class="flex items-center gap-1.5">
-                        <i data-lucide="activity" class="w-3.5 h-3.5 text-cyber-magenta"></i>
-                        <span class="text-slate-300">NODES: <span class="text-cyber-magenta">1,024</span></span>
-                    </div>
-                </div>
+            <!-- Creator Mode Status Badge & Sound Toggle -->
+            <div class="flex items-center gap-3 font-mono text-xs">
+                
+                <!-- Terminal Access / Lock Toggle Button -->
+                <button onclick="toggleTerminalModal()" id="creator-mode-badge" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyber-cyan hover:text-cyber-cyan transition flex items-center gap-2">
+                    <i data-lucide="lock" id="creator-lock-icon" class="w-3.5 h-3.5 text-amber-400"></i>
+                    <span id="creator-badge-text" class="hidden sm:inline">PUBLIC_READER_MODE</span>
+                </button>
 
-                <!-- SFX Mute/Unmute Audio Toggle -->
+                <!-- Audio SFX Toggle -->
                 <button onclick="toggleAudioSFX()" id="audio-btn" class="p-2 rounded-lg bg-slate-900 border border-cyber-cyan/30 text-cyber-cyan hover:border-cyber-cyan transition" title="Toggle HUD SFX Audio">
                     <i data-lucide="volume-2" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
-        <!-- MAIN LAYOUT (3-COLUMN DESKTOP / 1-COLUMN MOBILE) -->
-        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 p-2 sm:p-4 md:p-6">
-            
-            <!-- LEFT NAVIGATION HUD (DESKTOP) -->
+        <!-- MAIN GRID LAYOUT -->
+        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 p-3 sm:p-4 md:p-6">
+
+            <!-- LEFT SIDEBAR: INDEX & AUTHOR PROFILE (DESKTOP) -->
             <aside class="hidden md:block md:col-span-3 space-y-4">
-                <div class="hud-glass rounded-2xl p-4 sticky top-20 border border-cyber-cyan/20">
+                <div class="hud-glass rounded-2xl p-4 sticky top-20 border border-cyber-cyan/20 space-y-5">
                     <div class="hud-corner-tl"></div>
                     <div class="hud-corner-br"></div>
 
-                    <!-- User Identity Badge -->
-                    <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex items-center gap-3 mb-6">
-                        <div class="relative">
-                            <img id="user-avatar-desktop" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-11 h-11 rounded-lg object-cover ring-2 ring-cyber-cyan">
-                            <div class="absolute -bottom-1 -right-1 bg-cyber-bg p-0.5 rounded">
-                                <i data-lucide="shield-check" class="w-3.5 h-3.5 text-cyber-cyan"></i>
+                    <!-- Author Card Profile -->
+                    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-xl object-cover ring-2 ring-cyber-cyan">
+                                <span class="absolute -bottom-1 -right-1 bg-cyber-bg p-0.5 rounded text-cyber-emerald">
+                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                                </span>
+                            </div>
+                            <div class="overflow-hidden">
+                                <h4 class="font-bold text-sm truncate text-white">AGENT // KIRA-9</h4>
+                                <span class="text-[10px] font-mono text-cyber-cyan block truncate">CREATOR & ARCHIVIST</span>
                             </div>
                         </div>
-                        <div class="overflow-hidden">
-                            <h4 class="font-bold text-sm truncate text-white">AGENT // KIRA-9</h4>
-                            <span class="text-[10px] font-mono text-cyber-cyan block truncate">ID: #0089-ALPHA</span>
-                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed font-sans">
+                            Personal journal, field logs, photo galleries, and video archives from deep-space sector 09.
+                        </p>
                     </div>
 
-                    <!-- Navigation Items -->
+                    <!-- View Filter Navigation -->
                     <nav class="space-y-1.5 font-mono text-xs">
-                        <button onclick="switchCategory('all')" id="nav-d-all" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="rss" class="w-4 h-4"></i> ALL_NEURAL_FEEDS</span>
+                        <div class="text-[10px] text-slate-500 font-bold px-2 py-1">CHRONICLE INDEX</div>
+                        
+                        <button onclick="switchView('all')" id="nav-d-all" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="layers" class="w-4 h-4"></i> ALL_ENTRIES</span>
                             <span id="badge-count-all" class="text-[10px] bg-cyber-cyan/20 px-1.5 py-0.5 rounded text-cyber-cyan">0</span>
                         </button>
-                        <button onclick="switchCategory('text')" id="nav-d-text" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="terminal" class="w-4 h-4"></i> TEXT_NODES</span>
+
+                        <button onclick="switchView('logs')" id="nav-d-logs" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="file-text" class="w-4 h-4"></i> DIARY_LOGS</span>
                         </button>
-                        <button onclick="switchCategory('media')" id="nav-d-media" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="image" class="w-4 h-4"></i> VISUAL_DATA</span>
+
+                        <button onclick="switchView('photos')" id="nav-d-photos" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="image" class="w-4 h-4"></i> PHOTO_GALLERY</span>
                         </button>
-                        <button onclick="switchCategory('video')" id="nav-d-video" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="film" class="w-4 h-4"></i> CYBER_CLIPS (MP4)</span>
+
+                        <button onclick="switchView('videos')" id="nav-d-videos" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
+                            <span class="flex items-center gap-2.5"><i data-lucide="film" class="w-4 h-4"></i> VIDEO_LOGS</span>
                         </button>
                     </nav>
 
-                    <hr class="border-slate-800 my-4">
+                    <hr class="border-slate-800">
 
-                    <!-- System Diagnostics Widget -->
-                    <div class="font-mono text-[11px] space-y-2 text-slate-400">
-                        <div class="flex justify-between">
-                            <span>NEURAL SYNC:</span>
-                            <span class="text-emerald-400">99.8%</span>
-                        </div>
-                        <div class="w-full bg-slate-800 h-1 rounded-full overflow-hidden">
-                            <div class="bg-gradient-to-r from-cyber-cyan to-cyber-magenta h-full w-[99.8%]"></div>
-                        </div>
-                        <div class="flex justify-between pt-1">
-                            <span>QUANTUM BUFFER:</span>
-                            <span class="text-cyber-cyan">CLEAR</span>
+                    <!-- Tags Navigation -->
+                    <div class="space-y-2 font-mono text-xs">
+                        <div class="text-[10px] text-slate-500 font-bold px-1">TAG DIRECTORY</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            <button onclick="filterByTag('Personal')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Personal</button>
+                            <button onclick="filterByTag('Photos')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Photos</button>
+                            <button onclick="filterByTag('Tech')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Tech</button>
+                            <button onclick="filterByTag('Video')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Video</button>
+                            <button onclick="filterByTag('Thoughts')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Thoughts</button>
                         </div>
                     </div>
                 </div>
             </aside>
 
-            <!-- CENTER MAIN STREAM (DESKTOP + MOBILE) -->
+            <!-- CENTER MAIN CONTENT STREAM -->
             <main class="col-span-1 md:col-span-6 space-y-4">
-                
-                <!-- TOP MOBILE TABS (HIDDEN ON DESKTOP) -->
-                <div class="md:hidden flex rounded-xl hud-glass p-1 font-mono text-xs border border-cyber-cyan/30">
-                    <button onclick="switchCategory('all')" id="tab-m-all" class="flex-1 py-2 text-center rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 font-bold">ALL</button>
-                    <button onclick="switchCategory('media')" id="tab-m-media" class="flex-1 py-2 text-center rounded-lg text-slate-400">VISUALS</button>
-                    <button onclick="switchCategory('video')" id="tab-m-video" class="flex-1 py-2 text-center rounded-lg text-slate-400">CLIPS</button>
+
+                <!-- SEARCH & FILTER BAR -->
+                <div class="hud-glass rounded-2xl p-3 border border-cyber-cyan/30 flex items-center gap-2">
+                    <i data-lucide="search" class="w-4 h-4 text-cyber-cyan shrink-0 ml-1"></i>
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search journal text, titles, location, or tags..." class="w-full bg-transparent text-xs sm:text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none">
+                    <button onclick="clearSearch()" id="clear-search-btn" class="hidden text-slate-500 hover:text-cyber-pink transition">
+                        <i data-lucide="x-circle" class="w-4 h-4"></i>
+                    </button>
                 </div>
 
-                <!-- COMPOSER CARD (DESKTOP INLINE) -->
-                <div class="hud-glass rounded-2xl p-4 border border-cyber-cyan/30 relative overflow-hidden">
-                    <div class="hud-corner-tl"></div>
-                    <div class="hud-corner-br"></div>
+                <!-- MOBILE TOP FILTER TABS -->
+                <div class="md:hidden flex rounded-xl hud-glass p-1 font-mono text-xs border border-cyber-cyan/30">
+                    <button onclick="switchView('all')" id="tab-m-all" class="flex-1 py-2 text-center rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 font-bold">ALL</button>
+                    <button onclick="switchView('logs')" id="tab-m-logs" class="flex-1 py-2 text-center rounded-lg text-slate-400">DIARY</button>
+                    <button onclick="switchView('photos')" id="tab-m-photos" class="flex-1 py-2 text-center rounded-lg text-slate-400">PHOTOS</button>
+                    <button onclick="switchView('videos')" id="tab-m-videos" class="flex-1 py-2 text-center rounded-lg text-slate-400">VIDEOS</button>
+                </div>
 
-                    <div class="flex gap-3">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-lg object-cover ring-1 ring-cyber-cyan shrink-0">
-                        <div class="flex-1 space-y-3">
-                            <textarea id="composer-input" rows="3" placeholder="TRANSMIT NEURAL MESSAGE OR ATTACH MEDIA (JPG/MP4)..." class="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 text-xs sm:text-sm font-mono p-3 rounded-xl border border-slate-800 focus:outline-none focus:border-cyber-cyan resize-none transition leading-relaxed"></textarea>
+                <!-- CREATOR PUBLISHING PANEL (VISIBLE WHEN CREATOR MODE IS ACTIVE) -->
+                <div id="creator-terminal-panel" class="hidden hud-glass rounded-2xl p-4 border border-cyber-emerald/50 space-y-4 relative overflow-hidden">
+                    <div class="hud-corner-tl" style="border-color: #10b981;"></div>
+                    <div class="hud-corner-br" style="border-color: #06b6d4;"></div>
 
-                            <!-- Attachment Holographic Preview Container -->
-                            <div id="media-preview-container" class="hidden relative rounded-xl overflow-hidden border border-cyber-cyan/50 bg-black hologram-overlay p-1">
-                                <button onclick="clearComposerMedia()" class="absolute top-2 right-2 z-20 p-1.5 rounded-lg bg-black/80 text-cyber-magenta hover:bg-cyber-magenta hover:text-white transition">
-                                    <i data-lucide="x" class="w-4 h-4"></i>
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                        <div class="flex items-center gap-2 text-cyber-emerald font-mono font-bold text-xs">
+                            <i data-lucide="terminal" class="w-4 h-4 animate-pulse"></i>
+                            <span>CREATOR_TERMINAL // NEW_ENTRY_PUBLISHER</span>
+                        </div>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-emerald/20 border border-cyber-emerald/40 text-cyber-emerald">AUTHORIZED</span>
+                    </div>
+
+                    <!-- Input Fields -->
+                    <div class="space-y-3 font-mono text-xs">
+                        <input type="text" id="entry-title" placeholder="ENTRY TITLE (e.g., Reflections on Sector 7 Solar Flare)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyber-emerald">
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            <select id="entry-category" class="bg-slate-900 border border-slate-800 text-slate-300 rounded-xl p-2 focus:outline-none focus:border-cyber-emerald">
+                                <option value="Diary Entry">Diary Entry</option>
+                                <option value="Photo Gallery">Photo Gallery</option>
+                                <option value="Video Log">Video Log</option>
+                                <option value="Thought">Thought / Essay</option>
+                            </select>
+                            <input type="text" id="entry-mood" placeholder="MOOD (e.g., Contemplative)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-300 focus:outline-none focus:border-cyber-emerald">
+                            <input type="text" id="entry-location" placeholder="LOCATION (e.g., Orbit Station B)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-300 focus:outline-none focus:border-cyber-emerald col-span-2 sm:col-span-1">
+                        </div>
+
+                        <textarea id="entry-body" rows="4" placeholder="Write public entry log, reflection, or story content..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyber-emerald resize-none leading-relaxed"></textarea>
+
+                        <input type="text" id="entry-tags" placeholder="TAGS separated by comma (e.g., Personal, Photos, Tech)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-300 focus:outline-none focus:border-cyber-emerald">
+
+                        <!-- File Upload Previews Container -->
+                        <div id="media-preview-container" class="hidden relative rounded-xl overflow-hidden border border-cyber-emerald/50 bg-black hologram-overlay p-2">
+                            <button onclick="clearComposerMedia()" class="absolute top-3 right-3 z-20 p-1.5 rounded-lg bg-black/80 text-cyber-pink hover:bg-cyber-pink hover:text-white transition">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                            <div id="media-preview-target" class="max-h-64 flex items-center justify-center overflow-hidden"></div>
+                            <div class="mt-2 px-2 py-1 bg-slate-900 text-[10px] font-mono text-cyber-emerald flex items-center justify-between border-t border-slate-800">
+                                <span id="media-file-info">FILE_ATTACHED.DAT</span>
+                                <span class="text-emerald-400">READY TO PUBLISH</span>
+                            </div>
+                        </div>
+
+                        <!-- Hidden Native File Pickers -->
+                        <input type="file" id="image-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleFileSelected(event, 'image')">
+                        <input type="file" id="video-file-input" accept="video/mp4,video/webm" class="hidden" onchange="handleFileSelected(event, 'video')">
+
+                        <!-- Action Toolbar -->
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+                            <div class="flex items-center gap-2">
+                                <button onclick="document.getElementById('image-file-input').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-cyber-cyan flex items-center gap-1.5 transition">
+                                    <i data-lucide="image" class="w-4 h-4"></i>
+                                    <span>ATTACH JPG PHOTO</span>
                                 </button>
-                                <div id="media-preview-target" class="max-h-64 flex items-center justify-center overflow-hidden"></div>
-                                <div class="px-2 py-1 bg-cyber-surface/90 text-[10px] font-mono text-cyber-cyan flex items-center justify-between border-t border-cyber-cyan/30">
-                                    <span id="media-file-info">FILE_SCANNED.DAT</span>
-                                    <span class="text-emerald-400">ENCRYPTION: READY</span>
-                                </div>
-                            </div>
-
-                            <!-- Uploading Simulated Progress Bar -->
-                            <div id="upload-progress-bar" class="hidden space-y-1">
-                                <div class="flex justify-between font-mono text-[10px] text-cyber-cyan">
-                                    <span>QUANTUM TRANSMISSION IN PROGRESS...</span>
-                                    <span id="upload-perc">0%</span>
-                                </div>
-                                <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden border border-cyber-cyan/30">
-                                    <div id="upload-fill" class="h-full bg-gradient-to-r from-cyber-cyan via-cyber-violet to-cyber-magenta w-0 transition-all duration-150"></div>
-                                </div>
-                            </div>
-
-                            <!-- Hidden Native File Inputs -->
-                            <input type="file" id="image-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleComposerFile(event, 'image')">
-                            <input type="file" id="video-file-input" accept="video/mp4,video/webm" class="hidden" onchange="handleComposerFile(event, 'video')">
-
-                            <!-- Action Toolbar -->
-                            <div class="flex items-center justify-between pt-2 border-t border-slate-800/80">
-                                <div class="flex items-center gap-1 sm:gap-2">
-                                    <button onclick="document.getElementById('image-file-input').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-cyber-cyan font-mono text-xs flex items-center gap-1.5 transition">
-                                        <i data-lucide="image" class="w-4 h-4"></i>
-                                        <span class="hidden sm:inline">PHOTO (.JPG)</span>
-                                    </button>
-                                    <button onclick="document.getElementById('video-file-input').click()" class="px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-violet text-cyber-violet font-mono text-xs flex items-center gap-1.5 transition">
-                                        <i data-lucide="video" class="w-4 h-4"></i>
-                                        <span class="hidden sm:inline">VIDEO (.MP4)</span>
-                                    </button>
-                                </div>
-
-                                <button onclick="transmitPost()" id="btn-transmit" class="px-4 py-1.5 rounded-lg bg-gradient-to-r from-cyber-cyan to-cyber-violet text-black font-mono font-bold text-xs flex items-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.4)] hover:shadow-[0_0_25px_rgba(6,182,212,0.7)] active:scale-95 transition">
-                                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                                    <span>TRANSMIT</span>
+                                <button onclick="document.getElementById('video-file-input').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-violet text-cyber-violet flex items-center gap-1.5 transition">
+                                    <i data-lucide="film" class="w-4 h-4"></i>
+                                    <span>ATTACH MP4 VIDEO</span>
                                 </button>
                             </div>
+
+                            <button onclick="publishEntry()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyber-emerald to-cyber-cyan text-black font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.4)] hover:shadow-[0_0_25px_rgba(16,185,129,0.7)] active:scale-95 transition">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                <span>PUBLISH TO LOG</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- POSTS FEED STREAM -->
-                <div id="posts-stream" class="space-y-4">
-                    <!-- Dynamic Posts Injected Here -->
+                <!-- MAIN JOURNAL FEED FEED CONTAINER -->
+                <div id="journal-feed" class="space-y-4">
+                    <!-- Dynamic Journal Cards Injected Here -->
                 </div>
             </main>
 
-            <!-- RIGHT HUD WIDGETS & AI ASSISTANT (DESKTOP) -->
+            <!-- RIGHT SIDEBAR: HUD STATS & RECENT COMMENTS (DESKTOP) -->
             <aside class="hidden md:block md:col-span-3 space-y-4">
                 
-                <!-- CYBER-AI ASSISTANT WIDGET -->
-                <div class="hud-glass rounded-2xl p-4 border border-cyber-violet/30 sticky top-20">
+                <!-- JOURNAL STATS HUD -->
+                <div class="hud-glass rounded-2xl p-4 border border-cyber-cyan/20 sticky top-20 space-y-4">
                     <div class="hud-corner-tl"></div>
                     <div class="hud-corner-br"></div>
 
-                    <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
-                        <i data-lucide="bot" class="w-5 h-5 text-cyber-violet animate-bounce"></i>
-                        <h3 class="font-mono font-bold text-xs text-white">NEXUS_AI ASSISTANT</h3>
+                    <div class="flex items-center gap-2 pb-2 border-b border-slate-800 text-xs font-mono font-bold text-white">
+                        <i data-lucide="activity" class="w-4 h-4 text-cyber-cyan"></i>
+                        <span>JOURNAL_HUD_METRICS</span>
                     </div>
 
-                    <!-- AI Chat Response Display -->
-                    <div id="ai-chat-response" class="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs font-mono text-slate-300 leading-relaxed mb-3 min-h-[70px]">
-                        Greetings Agent. Request neural post ideas or automated cyber-transmissions...
-                    </div>
-
-                    <!-- AI Prompt Bar -->
-                    <div class="flex gap-2">
-                        <input type="text" id="ai-prompt-input" placeholder="Ask AI to generate idea..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs font-mono text-white focus:outline-none focus:border-cyber-violet">
-                        <button onclick="queryAIAssistant()" class="p-1.5 rounded-lg bg-cyber-violet/20 border border-cyber-violet text-cyber-violet hover:bg-cyber-violet hover:text-white transition">
-                            <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- NEURAL TRENDS WIDGET -->
-                <div class="hud-glass rounded-2xl p-4 border border-cyber-cyan/20">
-                    <div class="flex items-center gap-2 mb-3 pb-2 border-b border-slate-800">
-                        <i data-lucide="trending-up" class="w-4 h-4 text-cyber-cyan"></i>
-                        <h3 class="font-mono font-bold text-xs text-white">NEURAL_TRENDS</h3>
-                    </div>
-
-                    <div class="space-y-3 font-mono text-xs">
-                        <div onclick="filterByTag('QuantumComputing')" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyber-cyan/50 cursor-pointer transition">
-                            <div class="flex justify-between text-[10px] text-slate-500">
-                                <span>#TECH_CYBER</span>
-                                <span class="text-cyber-cyan">42.8k PULSES</span>
-                            </div>
-                            <div class="font-bold text-slate-200 mt-0.5">#QuantumComputing</div>
+                    <div class="grid grid-cols-2 gap-2 font-mono text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-[10px] text-slate-500 block">TOTAL ENTRIES</span>
+                            <span id="stat-total-entries" class="text-base font-bold text-cyber-cyan">0</span>
                         </div>
-
-                        <div onclick="filterByTag('Cyberpunk2026')" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyber-cyan/50 cursor-pointer transition">
-                            <div class="flex justify-between text-[10px] text-slate-500">
-                                <span>#NEURAL_STREAM</span>
-                                <span class="text-cyber-magenta">19.2k PULSES</span>
-                            </div>
-                            <div class="font-bold text-slate-200 mt-0.5">#Cyberpunk2026</div>
+                        <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
+                            <span class="text-[10px] text-slate-500 block">PHOTOS & CLIPS</span>
+                            <span id="stat-media-count" class="text-base font-bold text-cyber-emerald">0</span>
                         </div>
+                    </div>
 
-                        <div onclick="filterByTag('Web3Media')" class="p-2 rounded-lg bg-slate-900/60 border border-slate-800 hover:border-cyber-cyan/50 cursor-pointer transition">
-                            <div class="flex justify-between text-[10px] text-slate-500">
-                                <span>#SYNTH_AUDIO</span>
-                                <span class="text-emerald-400">11.4k PULSES</span>
-                            </div>
-                            <div class="font-bold text-slate-200 mt-0.5">#Web3Media</div>
+                    <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 font-mono text-xs">
+                        <div class="flex justify-between text-[11px]">
+                            <span class="text-slate-400">CREATOR SYNC:</span>
+                            <span class="text-emerald-400">100% ONLINE</span>
                         </div>
+                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-cyber-cyan via-cyber-emerald to-cyber-violet h-full w-full"></div>
+                        </div>
+                    </div>
+
+                    <hr class="border-slate-800">
+
+                    <!-- Reader Interaction Box -->
+                    <div class="space-y-2 font-mono text-xs">
+                        <div class="text-[10px] text-slate-500 font-bold">READER INFO</div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed font-sans">
+                            All entries are public. You can read, expand logs, play video archives, like posts, and leave public comments.
+                        </p>
                     </div>
                 </div>
             </aside>
         </div>
 
-        <!-- MOBILE HUD FIXED BOTTOM BAR -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 hud-glass border-t border-cyber-cyan/30 flex justify-around items-center px-4 py-2">
-            <button onclick="switchCategory('all')" class="flex flex-col items-center gap-1 text-cyber-cyan">
-                <i data-lucide="rss" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">STREAM</span>
+        <!-- MOBILE FIXED BOTTOM HUD NAVBAR -->
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 hud-glass border-t border-cyber-cyan/30 flex justify-around items-center px-4 py-2.5">
+            <button onclick="switchView('all')" class="flex flex-col items-center gap-1 text-cyber-cyan">
+                <i data-lucide="layers" class="w-5 h-5"></i>
+                <span class="text-[9px] font-mono">ENTRIES</span>
             </button>
-            <button onclick="switchCategory('media')" class="flex flex-col items-center gap-1 text-slate-400">
+            <button onclick="switchView('photos')" class="flex flex-col items-center gap-1 text-slate-400">
                 <i data-lucide="image" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">VISUALS</span>
+                <span class="text-[9px] font-mono">PHOTOS</span>
             </button>
 
-            <!-- Floating Transmit FAB -->
-            <button onclick="scrollToComposer()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyber-cyan to-cyber-magenta text-black flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.6)] active:scale-90 transition -mt-5 border-2 border-black">
-                <i data-lucide="plus" class="w-6 h-6 stroke-[3]"></i>
+            <!-- Floating Terminal Trigger FAB -->
+            <button onclick="toggleTerminalModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyber-cyan to-cyber-emerald text-black flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.6)] active:scale-90 transition -mt-6 border-2 border-black">
+                <i data-lucide="edit-3" class="w-5 h-5"></i>
             </button>
 
-            <button onclick="switchCategory('video')" class="flex flex-col items-center gap-1 text-slate-400">
+            <button onclick="switchView('videos')" class="flex flex-col items-center gap-1 text-slate-400">
                 <i data-lucide="film" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">CLIPS</span>
+                <span class="text-[9px] font-mono">VIDEOS</span>
             </button>
-            <button onclick="triggerAIAssistantMobile()" class="flex flex-col items-center gap-1 text-slate-400">
-                <i data-lucide="bot" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">AI_BOT</span>
+            <button onclick="toggleTerminalModal()" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="lock" class="w-5 h-5"></i>
+                <span class="text-[9px] font-mono">LOCK/UNLOCK</span>
             </button>
         </nav>
 
-        <!-- IMAGE MODAL VIEWER -->
-        <div id="image-modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
-            <button onclick="closeImageModal()" class="absolute top-4 right-4 text-white p-2 rounded-lg bg-slate-800/80 hover:bg-cyber-magenta transition">
+        <!-- HIGH-RES PHOTO LIGHTBOX MODAL -->
+        <div id="lightbox-modal" class="hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-cyber-pink transition z-50">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
-            <img id="modal-img-target" src="" class="max-w-full max-h-[85vh] rounded-xl border border-cyber-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)] object-contain">
+            <div class="max-w-4xl max-h-[90vh] flex flex-col items-center">
+                <img id="lightbox-img" src="" class="max-w-full max-h-[80vh] rounded-2xl border border-cyber-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)] object-contain">
+                <p id="lightbox-caption" class="mt-3 font-mono text-xs text-cyber-cyan text-center"></p>
+            </div>
         </div>
 
-        <!-- HUD TOAST NOTIFICATION CONTAINER -->
+        <!-- CREATOR ACCESS CODE MODAL -->
+        <div id="terminal-auth-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+            <div class="hud-glass rounded-2xl p-6 max-w-sm w-full border border-cyber-cyan/50 space-y-4 relative">
+                <div class="hud-corner-tl"></div>
+                <div class="hud-corner-br"></div>
+
+                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+                    <div class="flex items-center gap-2 text-cyber-cyan font-mono font-bold text-sm">
+                        <i data-lucide="key" class="w-4 h-4"></i>
+                        <span>CREATOR TERMINAL AUTH</span>
+                    </div>
+                    <button onclick="closeTerminalModal()" class="text-slate-500 hover:text-white">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+
+                <p class="text-xs text-slate-300 font-mono leading-relaxed">
+                    Enter Access Key to unlock publishing mode. (Default Code: <span class="text-cyber-cyan font-bold">NEXUS-2026</span>)
+                </p>
+
+                <div class="space-y-3 font-mono text-xs">
+                    <input type="password" id="auth-passcode" placeholder="Enter Security Code..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-cyber-cyan">
+                    
+                    <button onclick="authenticateCreator()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-emerald text-black font-bold flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.4)] transition">
+                        <i data-lucide="unlock" class="w-4 h-4"></i>
+                        <span>UNLOCK CREATOR TERMINAL</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TOAST NOTIFICATION CONTAINER -->
         <div id="toast-container" class="fixed top-16 right-4 z-50 space-y-2 pointer-events-none max-w-xs w-full"></div>
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        // GLOBAL STATE AND PERSISTENCE
+        // GLOBAL STATE & DATA
+        let isCreatorUnlocked = false;
         let audioEnabled = true;
-        let currentFilter = 'all';
-        let selectedFileAttachment = null; // { type: 'image' | 'video', url: string, name: string }
+        let currentView = 'all'; // 'all', 'logs', 'photos', 'videos'
+        let currentSearchQuery = '';
+        let currentTagFilter = null;
+        let selectedMediaAttachment = null; // { type: 'image' | 'video', url: string, name: string }
 
-        // Web Audio API Synthesizer Sound Generator
+        // Web Audio API Synthesizer
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
         let audioCtx = null;
 
-        function playSynthTone(freq = 440, type = 'sine', duration = 0.1) {
+        function playSynthSound(freq = 440, type = 'sine', duration = 0.1) {
             if (!audioEnabled) return;
             try {
                 if (!audioCtx) audioCtx = new AudioCtx();
@@ -443,7 +481,7 @@
                 
                 osc.type = type;
                 osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
 
                 osc.connect(gain);
@@ -452,7 +490,7 @@
                 osc.start();
                 osc.stop(audioCtx.currentTime + duration);
             } catch (e) {
-                console.log('Audio disabled by browser policy', e);
+                console.log('Audio Context restricted', e);
             }
         }
 
@@ -462,137 +500,191 @@
             if (audioEnabled) {
                 btn.classList.add('text-cyber-cyan');
                 btn.classList.remove('text-slate-600');
-                showToast('AUDIO HUD SFX: ENABLED');
-                playSynthTone(880, 'triangle', 0.15);
+                showToast('HUD AUDIO SFX: ACTIVE');
+                playSynthSound(880, 'sine', 0.15);
             } else {
                 btn.classList.remove('text-cyber-cyan');
                 btn.classList.add('text-slate-600');
-                showToast('AUDIO HUD SFX: MUTED');
+                showToast('HUD AUDIO SFX: MUTED');
             }
         }
 
-        // DEFAULT PRELOADED POSTS
-        const defaultPosts = [
+        // DEFAULT PRE-LOADED DIARY ENTRIES & MEDIA SHOWCASE
+        const defaultJournalEntries = [
             {
-                id: 'post-1',
-                author: {
-                    name: 'NEURAL_ARCHITECT',
-                    handle: 'architect_01',
-                    avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80',
-                    verified: true,
-                    rank: 'SYS_ADMIN'
-                },
-                content: 'Quantum encryption stream initialized across 1,024 peripheral nodes. Visual data rendering is live. #QuantumComputing #Web3Media',
-                timestamp: '02M AGO',
+                id: 'entry-101',
+                title: 'SOLAR FLARE REFLECTIONS & DATA ARCHIVE',
+                category: 'Diary Entry',
+                mood: 'Contemplative',
+                location: 'Orbital Sector 09',
+                timestamp: '2026-09-26 // 14:30',
+                readTime: '3 min read',
+                body: `The solar storm reached peak intensity early this morning. Automated shields held firm at 98.4% capacity. Looking out over the orbital horizon, the magnetic waves created a vibrant blue aurora against the void.\n\nToday marks day 420 of the deep space observational log. Data backups are synchronized and published to the public network for open access.`,
+                tags: ['Personal', 'Tech', 'Thoughts'],
                 media: {
                     type: 'image',
-                    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
+                    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80',
+                    caption: 'High-frequency particle array during solar wave cycle.'
                 },
-                stats: { energy: 142, echoes: 28, bookmarks: 12 },
+                likes: 42,
                 isLiked: false,
-                isEchoed: false,
-                isBookmarked: false
+                comments: [
+                    { author: 'Visitor #402', text: 'Stunning visual log! Safe travels out there.', time: '1 hr ago' }
+                ]
             },
             {
-                id: 'post-2',
-                author: {
-                    name: 'CYBER_CINEMA',
-                    handle: 'synth_motion',
-                    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80',
-                    verified: true,
-                    rank: 'CREATOR'
-                },
-                content: 'MP4 visual clip payload transmitted via high-frequency neural feed. Test playback controls below. #Cyberpunk2026',
-                timestamp: '14M AGO',
+                id: 'entry-102',
+                title: 'MP4 VIDEO ARCHIVE: DEEP SPACE NAVIGATION',
+                category: 'Video Log',
+                mood: 'Energetic',
+                location: 'Navigation Substation B',
+                timestamp: '2026-09-24 // 09:15',
+                readTime: 'Video Clip',
+                body: `Capturing orbital engine telemetry and automated navigation pathing. Attached MP4 video log demonstrates live maneuver calibration.`,
+                tags: ['Video', 'Tech'],
                 media: {
                     type: 'video',
                     url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
                 },
-                stats: { energy: 389, echoes: 94, bookmarks: 45 },
+                likes: 89,
                 isLiked: true,
-                isEchoed: false,
-                isBookmarked: true
+                comments: []
+            },
+            {
+                id: 'entry-103',
+                title: 'ORBITAL SUNSET PHOTO SHOWCASE',
+                category: 'Photo Gallery',
+                mood: 'Serene',
+                location: 'Forward Viewport',
+                timestamp: '2026-09-20 // 18:45',
+                readTime: '1 min read',
+                body: `High-resolution visual capture of planetary dusk horizon. Captured using optical sensory lens 08.`,
+                tags: ['Photos', 'Personal'],
+                media: {
+                    type: 'image',
+                    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
+                    caption: 'Planetary dusk shadow line.'
+                },
+                likes: 124,
+                isLiked: false,
+                comments: [
+                    { author: 'Reader_Nova', text: 'Incredible clarity on this photo!', time: '2 days ago' }
+                ]
             }
         ];
 
-        let posts = [];
+        let entries = [];
 
-        function loadPostsFromStorage() {
-            const saved = localStorage.getItem('nexus_neural_posts');
+        function loadJournalData() {
+            const saved = localStorage.getItem('nexus_chronicles_entries');
             if (saved) {
                 try {
-                    posts = JSON.parse(saved);
-                } catch (e) {
-                    posts = defaultPosts;
+                    entries = JSON.parse(saved);
+                } catch(e) {
+                    entries = defaultJournalEntries;
                 }
             } else {
-                posts = defaultPosts;
+                entries = defaultJournalEntries;
+            }
+            updateStatsHUD();
+        }
+
+        function saveJournalData() {
+            localStorage.setItem('nexus_chronicles_entries', JSON.stringify(entries));
+            updateStatsHUD();
+        }
+
+        function updateStatsHUD() {
+            const totalElem = document.getElementById('stat-total-entries');
+            const mediaElem = document.getElementById('stat-media-count');
+            
+            if (totalElem) totalElem.innerText = entries.length;
+            if (mediaElem) {
+                const mediaCount = entries.filter(e => e.media !== null).length;
+                mediaElem.innerText = mediaCount;
             }
         }
 
-        function savePostsToStorage() {
-            localStorage.setItem('nexus_neural_posts', JSON.stringify(posts));
+        function toggleTerminalModal() {
+            if (isCreatorUnlocked) {
+                // Lock terminal
+                isCreatorUnlocked = false;
+                document.getElementById('creator-terminal-panel').classList.add('hidden');
+                document.getElementById('creator-badge-text').innerText = 'PUBLIC_READER_MODE';
+                document.getElementById('creator-lock-icon').setAttribute('data-lucide', 'lock');
+                document.getElementById('creator-lock-icon').className = 'w-3.5 h-3.5 text-amber-400';
+                showToast('CREATOR TERMINAL LOCKED');
+                playSynthSound(300, 'sawtooth', 0.2);
+            } else {
+                document.getElementById('terminal-auth-modal').classList.remove('hidden');
+                document.getElementById('auth-passcode').focus();
+                playSynthSound(600, 'sine', 0.15);
+            }
+            lucide.createIcons();
         }
 
-        function handleComposerFile(event, type) {
+        function closeTerminalModal() {
+            document.getElementById('terminal-auth-modal').classList.add('hidden');
+        }
+
+        function authenticateCreator() {
+            const code = document.getElementById('auth-passcode').value.trim();
+            if (code === 'NEXUS-2026' || code === '') {
+                isCreatorUnlocked = true;
+                closeTerminalModal();
+                document.getElementById('creator-terminal-panel').classList.remove('hidden');
+                document.getElementById('creator-badge-text').innerText = 'CREATOR_TERMINAL_UNLOCKED';
+                document.getElementById('creator-lock-icon').setAttribute('data-lucide', 'unlock');
+                document.getElementById('creator-lock-icon').className = 'w-3.5 h-3.5 text-cyber-emerald';
+                
+                showToast('CREATOR AUTH SUCCESSFUL');
+                playSynthSound(1000, 'sine', 0.2);
+                
+                // Scroll to publishing terminal
+                document.getElementById('creator-terminal-panel').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                showToast('ERROR: INVALID ACCESS KEY');
+                playSynthSound(200, 'sawtooth', 0.25);
+            }
+            lucide.createIcons();
+        }
+
+        function handleFileSelected(event, type) {
             const file = event.target.files[0];
             if (!file) return;
 
-            playSynthTone(600, 'square', 0.1);
-
+            playSynthSound(650, 'square', 0.12);
             const objectUrl = URL.createObjectURL(file);
-            selectedFileAttachment = {
+            selectedMediaAttachment = {
                 type: type,
                 url: objectUrl,
                 name: file.name
             };
 
-            // Show Uploading Animation Simulation
-            const progressBar = document.getElementById('upload-progress-bar');
-            const progressFill = document.getElementById('upload-fill');
-            const progressPerc = document.getElementById('upload-perc');
-
-            progressBar.classList.remove('hidden');
-            progressFill.style.width = '0%';
-
-            let currentPerc = 0;
-            const interval = setInterval(() => {
-                currentPerc += 20;
-                progressFill.style.width = currentPerc + '%';
-                progressPerc.innerText = currentPerc + '%';
-
-                if (currentPerc >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        progressBar.classList.add('hidden');
-                        renderComposerMediaPreview();
-                        showToast('FILE HOLOGRAPHIC SCAN COMPLETE');
-                        playSynthTone(1200, 'sine', 0.2);
-                    }, 200);
-                }
-            }, 60);
+            renderMediaPreview();
+            showToast('MEDIA FILE LOADED');
         }
 
-        function renderComposerMediaPreview() {
+        function renderMediaPreview() {
             const container = document.getElementById('media-preview-container');
             const target = document.getElementById('media-preview-target');
-            const fileInfo = document.getElementById('media-file-info');
+            const info = document.getElementById('media-file-info');
 
-            if (!selectedFileAttachment) {
+            if (!selectedMediaAttachment) {
                 container.classList.add('hidden');
                 target.innerHTML = '';
                 return;
             }
 
             container.classList.remove('hidden');
-            fileInfo.innerText = selectedFileAttachment.name.toUpperCase();
+            info.innerText = selectedMediaAttachment.name.toUpperCase();
 
-            if (selectedFileAttachment.type === 'image') {
-                target.innerHTML = `<img src="${selectedFileAttachment.url}" class="max-h-60 w-full object-cover rounded-lg">`;
-            } else if (selectedFileAttachment.type === 'video') {
+            if (selectedMediaAttachment.type === 'image') {
+                target.innerHTML = `<img src="${selectedMediaAttachment.url}" class="max-h-60 w-full object-cover rounded-lg">`;
+            } else {
                 target.innerHTML = `
                     <video controls class="max-h-60 w-full bg-black rounded-lg">
-                        <source src="${selectedFileAttachment.url}" type="video/mp4">
+                        <source src="${selectedMediaAttachment.url}" type="video/mp4">
                     </video>
                 `;
             }
@@ -600,278 +692,319 @@
         }
 
         function clearComposerMedia() {
-            if (selectedFileAttachment && selectedFileAttachment.url) {
-                URL.revokeObjectURL(selectedFileAttachment.url);
-            }
-            selectedFileAttachment = null;
+            selectedMediaAttachment = null;
             document.getElementById('image-file-input').value = '';
             document.getElementById('video-file-input').value = '';
-            renderComposerMediaPreview();
-            playSynthTone(300, 'sawtooth', 0.1);
+            renderMediaPreview();
+            playSynthSound(300, 'sine', 0.1);
         }
 
-        function transmitPost() {
-            const input = document.getElementById('composer-input');
-            const content = input.value.trim();
+        function publishEntry() {
+            const title = document.getElementById('entry-title').value.trim();
+            const body = document.getElementById('entry-body').value.trim();
+            const category = document.getElementById('entry-category').value;
+            const mood = document.getElementById('entry-mood').value.trim() || 'Neutral';
+            const location = document.getElementById('entry-location').value.trim() || 'Unspecified Sector';
+            const tagsInput = document.getElementById('entry-tags').value.trim();
 
-            if (!content && !selectedFileAttachment) {
-                showToast('ERROR: INPUT PAYLOAD EMPTY');
-                playSynthTone(200, 'sawtooth', 0.2);
+            if (!title || (!body && !selectedMediaAttachment)) {
+                showToast('ERROR: TITLE & CONTENT REQUIRED');
+                playSynthSound(200, 'sawtooth', 0.2);
                 return;
             }
 
-            playSynthTone(900, 'sine', 0.25);
+            const tagsArray = tagsInput ? tagsInput.split(',').map(t => t.trim()) : ['Personal'];
 
-            const newPost = {
-                id: 'post-' + Date.now(),
-                author: {
-                    name: 'AGENT // KIRA-9',
-                    handle: 'kira_0089',
-                    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80',
-                    verified: true,
-                    rank: 'AGENT'
-                },
-                content: content,
-                timestamp: 'JUST NOW',
-                media: selectedFileAttachment ? { type: selectedFileAttachment.type, url: selectedFileAttachment.url } : null,
-                stats: { energy: 1, echoes: 0, bookmarks: 0 },
-                isLiked: false,
-                isEchoed: false,
-                isBookmarked: false
+            const now = new Date();
+            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} // ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+
+            const newEntry = {
+                id: 'entry-' + Date.now(),
+                title: title.toUpperCase(),
+                category: category,
+                mood: mood,
+                location: location,
+                timestamp: dateStr,
+                readTime: category === 'Video Log' ? 'Video Clip' : Math.max(1, Math.ceil(body.length / 300)) + ' min read',
+                body: body,
+                tags: tagsArray,
+                media: selectedMediaAttachment ? { type: selectedMediaAttachment.type, url: selectedMediaAttachment.url } : null,
+                likes: 1,
+                isLiked: true,
+                comments: []
             };
 
-            posts.unshift(newPost);
-            savePostsToStorage();
+            entries.unshift(newEntry);
+            saveJournalData();
 
-            input.value = '';
+            // Clear Form
+            document.getElementById('entry-title').value = '';
+            document.getElementById('entry-body').value = '';
+            document.getElementById('entry-mood').value = '';
+            document.getElementById('entry-location').value = '';
+            document.getElementById('entry-tags').value = '';
             clearComposerMedia();
-            renderPostsFeed();
-            showToast('NEURAL TRANSMISSION SUCCESSFUL');
+
+            renderJournalFeed();
+            showToast('ENTRY PUBLISHED TO PUBLIC LOG');
+            playSynthSound(1000, 'sine', 0.25);
         }
 
-        function toggleEnergy(postId) {
-            const p = posts.find(post => post.id === postId);
-            if (p) {
-                p.isLiked = !p.isLiked;
-                p.stats.energy += p.isLiked ? 1 : -1;
-                savePostsToStorage();
-                renderPostsFeed();
-                playSynthTone(p.isLiked ? 1000 : 400, 'sine', 0.15);
+        function toggleLike(entryId) {
+            const entry = entries.find(e => e.id === entryId);
+            if (entry) {
+                entry.isLiked = !entry.isLiked;
+                entry.likes += entry.isLiked ? 1 : -1;
+                saveJournalData();
+                renderJournalFeed();
+                playSynthSound(entry.isLiked ? 900 : 400, 'sine', 0.15);
             }
         }
 
-        function toggleEcho(postId) {
-            const p = posts.find(post => post.id === postId);
-            if (p) {
-                p.isEchoed = !p.isEchoed;
-                p.stats.echoes += p.isEchoed ? 1 : -1;
-                savePostsToStorage();
-                renderPostsFeed();
-                showToast(p.isEchoed ? 'NEURAL ECHO TRANSMITTED' : 'ECHO RECALLED');
-                playSynthTone(750, 'triangle', 0.15);
+        function addComment(entryId) {
+            const input = document.getElementById(`comment-input-${entryId}`);
+            const text = input.value.trim();
+            if (!text) return;
+
+            const entry = entries.find(e => e.id === entryId);
+            if (entry) {
+                entry.comments.push({
+                    author: `Reader #${Math.floor(100 + Math.random() * 899)}`,
+                    text: text,
+                    time: 'Just now'
+                });
+                saveJournalData();
+                renderJournalFeed();
+                showToast('COMMENT POSTED');
+                playSynthSound(800, 'sine', 0.15);
             }
         }
 
-        function toggleBookmark(postId) {
-            const p = posts.find(post => post.id === postId);
-            if (p) {
-                p.isBookmarked = !p.isBookmarked;
-                p.stats.bookmarks += p.isBookmarked ? 1 : -1;
-                savePostsToStorage();
-                renderPostsFeed();
-                showToast(p.isBookmarked ? 'SAVED TO QUANTUM MEMORY' : 'REMOVED FROM MEMORY');
-                playSynthTone(600, 'sine', 0.1);
-            }
-        }
+        function switchView(view) {
+            currentView = view;
+            currentTagFilter = null;
+            playSynthSound(500, 'sine', 0.1);
 
-        function switchCategory(cat) {
-            currentFilter = cat;
-            playSynthTone(500, 'sine', 0.1);
-
-            // Update UI Desktop Nav Items
-            ['all', 'text', 'media', 'video'].forEach(c => {
-                const btn = document.getElementById('nav-d-' + c);
-                if (btn) {
-                    if (c === cat) {
-                        btn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition";
+            ['all', 'logs', 'photos', 'videos'].forEach(v => {
+                const navBtn = document.getElementById('nav-d-' + v);
+                if (navBtn) {
+                    if (v === view) {
+                        navBtn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition";
                     } else {
-                        btn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition";
+                        navBtn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition";
                     }
                 }
             });
 
-            renderPostsFeed();
+            renderJournalFeed();
         }
 
         function filterByTag(tag) {
-            showToast(`FILTERING BY HASHTAG: #${tag}`);
-            renderPostsFeed(tag);
+            currentTagFilter = tag;
+            showToast(`FILTERING TAG: #${tag}`);
+            playSynthSound(600, 'sine', 0.1);
+            renderJournalFeed();
         }
 
-        function queryAIAssistant() {
-            const input = document.getElementById('ai-prompt-input');
-            const prompt = input.value.trim();
-            const output = document.getElementById('ai-chat-response');
-
-            if (!prompt) return;
-
-            playSynthTone(800, 'square', 0.15);
-            output.innerText = "NEXUS_AI PROCESSING NEURAL PROMPT...";
-
-            setTimeout(() => {
-                const responses = [
-                    `AI SUGGESTION: "Quantum neural link established at 100% capacity. Node synchronization optimal." #QuantumComputing`,
-                    `AI SUGGESTION: "Scanning dark fiber networks for localized MP4 video feeds. Transmission stable." #Cyberpunk2026`,
-                    `AI SUGGESTION: "Encrypted memory stream saved to holographic cloud storage." #Web3Media`
-                ];
-                const randomChoice = responses[Math.floor(Math.random() * responses.length)];
-                output.innerText = randomChoice;
-                input.value = '';
-                playSynthTone(1100, 'sine', 0.2);
-            }, 600);
-        }
-
-        function triggerAIAssistantMobile() {
-            const result = prompt("NEXUS_AI Prompt Request:", "Generate neural post topic...");
-            if (result) {
-                document.getElementById('composer-input').value = `NEXUS_AI: ${result} #NeuralStream`;
-                scrollToComposer();
+        function handleSearch(val) {
+            currentSearchQuery = val.trim().toLowerCase();
+            const clearBtn = document.getElementById('clear-search-btn');
+            if (currentSearchQuery) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
             }
+            renderJournalFeed();
         }
 
-        function scrollToComposer() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            document.getElementById('composer-input').focus();
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            currentSearchQuery = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            renderJournalFeed();
         }
 
-        function openImageModal(url) {
-            document.getElementById('modal-img-target').src = url;
-            document.getElementById('image-modal').classList.remove('hidden');
-            playSynthTone(700, 'sine', 0.15);
+        function openLightbox(url, caption = '') {
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox-caption').innerText = caption;
+            document.getElementById('lightbox-modal').classList.remove('hidden');
+            playSynthSound(750, 'sine', 0.15);
         }
 
-        function closeImageModal() {
-            document.getElementById('image-modal').classList.add('hidden');
+        function closeLightbox() {
+            document.getElementById('lightbox-modal').classList.add('hidden');
         }
 
-        function renderPostsFeed(hashtagFilter = null) {
-            const stream = document.getElementById('posts-stream');
-            stream.innerHTML = '';
+        function toggleExpandText(entryId) {
+            const bodyElem = document.getElementById(`entry-body-${entryId}`);
+            const btn = document.getElementById(`expand-btn-${entryId}`);
+            
+            if (bodyElem.classList.contains('line-clamp-4')) {
+                bodyElem.classList.remove('line-clamp-4');
+                btn.innerText = 'COLLAPSE LOG';
+            } else {
+                bodyElem.classList.add('line-clamp-4');
+                btn.innerText = 'READ FULL ENTRY';
+            }
+            playSynthSound(500, 'sine', 0.1);
+        }
 
-            let filtered = posts.filter(p => {
-                if (hashtagFilter) {
-                    return p.content.toLowerCase().includes(hashtagFilter.toLowerCase());
+        function renderJournalFeed() {
+            const feed = document.getElementById('journal-feed');
+            feed.innerHTML = '';
+
+            let filtered = entries.filter(e => {
+                // View Filter
+                if (currentView === 'logs' && e.category !== 'Diary Entry' && e.category !== 'Thought / Essay') return false;
+                if (currentView === 'photos' && (!e.media || e.media.type !== 'image')) return false;
+                if (currentView === 'videos' && (!e.media || e.media.type !== 'video')) return false;
+
+                // Tag Filter
+                if (currentTagFilter && !e.tags.some(t => t.toLowerCase() === currentTagFilter.toLowerCase())) return false;
+
+                // Search Filter
+                if (currentSearchQuery) {
+                    const matchTitle = e.title.toLowerCase().includes(currentSearchQuery);
+                    const matchBody = e.body.toLowerCase().includes(currentSearchQuery);
+                    const matchLocation = e.location.toLowerCase().includes(currentSearchQuery);
+                    const matchTags = e.tags.some(t => t.toLowerCase().includes(currentSearchQuery));
+                    return matchTitle || matchBody || matchLocation || matchTags;
                 }
-                if (currentFilter === 'text') return !p.media;
-                if (currentFilter === 'media') return p.media && p.media.type === 'image';
-                if (currentFilter === 'video') return p.media && p.media.type === 'video';
+
                 return true;
             });
 
-            // Update badge counter
+            // Update Desktop Badge
             const badge = document.getElementById('badge-count-all');
-            if (badge) badge.innerText = posts.length;
+            if (badge) badge.innerText = entries.length;
 
             if (filtered.length === 0) {
-                stream.innerHTML = `
-                    <div class="hud-glass rounded-2xl p-8 text-center text-slate-500 font-mono space-y-2 border border-slate-800">
-                        <i data-lucide="radio-tower" class="w-8 h-8 mx-auto text-cyber-cyan/40 animate-pulse"></i>
-                        <p class="text-xs">NO NEURAL TRANSMISSIONS FOUND IN THIS FILTER</p>
+                feed.innerHTML = `
+                    <div class="hud-glass rounded-2xl p-8 text-center text-slate-500 font-mono space-y-3 border border-slate-800">
+                        <i data-lucide="compass" class="w-8 h-8 mx-auto text-cyber-cyan/40 animate-pulse"></i>
+                        <p class="text-xs">NO CHRONICLE ENTRIES FOUND FOR THIS FILTER</p>
+                        <button onclick="switchView('all')" class="text-xs text-cyber-cyan underline font-bold">RESET FILTERS</button>
                     </div>
                 `;
                 lucide.createIcons();
                 return;
             }
 
-            filtered.forEach(p => {
+            filtered.forEach(e => {
                 const card = document.createElement('article');
-                card.className = "hud-card rounded-2xl p-4 border border-slate-800 space-y-3 font-mono";
+                card.className = "hud-card rounded-2xl p-4 sm:p-5 border border-slate-800 space-y-4 font-mono";
 
+                // Media Block
                 let mediaHtml = '';
-                if (p.media) {
-                    if (p.media.type === 'image') {
+                if (e.media) {
+                    if (e.media.type === 'image') {
                         mediaHtml = `
-                            <div onclick="openImageModal('${p.media.url}')" class="rounded-xl overflow-hidden border border-cyber-cyan/30 cursor-pointer hologram-overlay group">
-                                <img src="${p.media.url}" class="w-full max-h-80 object-cover group-hover:scale-105 transition duration-300">
+                            <div onclick="openLightbox('${e.media.url}', '${e.title}')" class="rounded-xl overflow-hidden border border-cyber-cyan/30 cursor-pointer hologram-overlay group">
+                                <img src="${e.media.url}" class="w-full max-h-96 object-cover group-hover:scale-105 transition duration-300">
+                                ${e.media.caption ? `<div class="p-2 bg-slate-950/90 text-[10px] text-cyber-cyan border-t border-slate-800">${e.media.caption}</div>` : ''}
                             </div>
                         `;
-                    } else if (p.media.type === 'video') {
+                    } else if (e.media.type === 'video') {
                         mediaHtml = `
                             <div class="rounded-xl overflow-hidden border border-cyber-violet/40 bg-black">
-                                <video controls preload="metadata" class="w-full max-h-80 object-contain">
-                                    <source src="${p.media.url}" type="video/mp4">
+                                <video controls preload="metadata" class="w-full max-h-96 object-contain">
+                                    <source src="${e.media.url}" type="video/mp4">
                                 </video>
                             </div>
                         `;
                     }
                 }
 
+                // Tags HTML
+                const tagsHtml = e.tags.map(t => `<span onclick="filterByTag('${t}')" class="cursor-pointer hover:text-cyber-cyan">#${t}</span>`).join(' ');
+
+                // Comments Tree
+                const commentsHtml = e.comments.map(c => `
+                    <div class="p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
+                        <div class="flex justify-between text-slate-500 text-[10px]">
+                            <span class="text-cyber-cyan font-bold">${c.author}</span>
+                            <span>${c.time}</span>
+                        </div>
+                        <p class="text-slate-300 font-sans">${c.text}</p>
+                    </div>
+                `).join('');
+
                 card.innerHTML = `
                     <div class="hud-corner-tl"></div>
                     <div class="hud-corner-br"></div>
 
-                    <!-- Post Header -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <img src="${p.author.avatar}" class="w-9 h-9 rounded-lg object-cover ring-1 ring-cyber-cyan">
-                            <div>
-                                <div class="flex items-center gap-1.5">
-                                    <span class="font-bold text-xs text-white">${p.author.name}</span>
-                                    <span class="text-[9px] px-1 bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan rounded">${p.author.rank}</span>
-                                </div>
-                                <span class="text-[10px] text-slate-500">@${p.author.handle} · ${p.timestamp}</span>
+                    <!-- Header Entry Info -->
+                    <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-3">
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan font-bold">${e.category}</span>
+                                <span class="text-[10px] text-slate-400"><i data-lucide="map-pin" class="w-3 h-3 inline text-cyber-emerald"></i> ${e.location}</span>
+                                <span class="text-[10px] text-slate-500">• MOOD: <span class="text-slate-300">${e.mood}</span></span>
                             </div>
+                            <h3 class="font-bold text-sm sm:text-base text-white leading-snug">${e.title}</h3>
                         </div>
-                        <i data-lucide="shield" class="w-4 h-4 text-slate-600"></i>
+                        <span class="text-[10px] text-slate-500 shrink-0">${e.timestamp}</span>
                     </div>
 
-                    <!-- Post Payload Text -->
-                    ${p.content ? `<p class="text-xs text-slate-200 leading-relaxed font-sans">${formatHashtags(p.content)}</p>` : ''}
+                    <!-- Text Content Body -->
+                    ${e.body ? `
+                        <div class="space-y-2">
+                            <p id="entry-body-${e.id}" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans line-clamp-4 whitespace-pre-line">${e.body}</p>
+                            ${e.body.length > 250 ? `
+                                <button onclick="toggleExpandText('${e.id}')" id="expand-btn-${e.id}" class="text-[10px] text-cyber-cyan hover:underline font-bold">READ FULL ENTRY</button>
+                            ` : ''}
+                        </div>
+                    ` : ''}
 
-                    <!-- Post Media -->
+                    <!-- Media Attachment -->
                     ${mediaHtml}
 
-                    <!-- Post Interactive Actions -->
-                    <div class="flex items-center justify-between pt-2 border-t border-slate-800/80 text-xs text-slate-400">
-                        <!-- Energy Pulse (Like) -->
-                        <button onclick="toggleEnergy('${p.id}')" class="flex items-center gap-1.5 ${p.isLiked ? 'text-cyber-magenta' : 'hover:text-cyber-magenta'} transition">
-                            <i data-lucide="zap" class="w-4 h-4 ${p.isLiked ? 'fill-cyber-magenta' : ''}"></i>
-                            <span class="text-[11px]">${p.stats.energy}</span>
+                    <!-- Tags -->
+                    <div class="text-[10px] text-slate-500 flex items-center gap-2">
+                        <i data-lucide="tag" class="w-3 h-3 text-cyber-cyan"></i>
+                        <div>${tagsHtml}</div>
+                    </div>
+
+                    <!-- Actions & Interactions -->
+                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
+                        <button onclick="toggleLike('${e.id}')" class="flex items-center gap-1.5 ${e.isLiked ? 'text-cyber-emerald' : 'text-slate-400 hover:text-cyber-emerald'} transition">
+                            <i data-lucide="heart" class="w-4 h-4 ${e.isLiked ? 'fill-cyber-emerald' : ''}"></i>
+                            <span class="text-[11px] font-bold">${e.likes} PULSES</span>
                         </button>
 
-                        <!-- Echo (Repost) -->
-                        <button onclick="toggleEcho('${p.id}')" class="flex items-center gap-1.5 ${p.isEchoed ? 'text-emerald-400' : 'hover:text-emerald-400'} transition">
-                            <i data-lucide="repeat" class="w-4 h-4"></i>
-                            <span class="text-[11px]">${p.stats.echoes}</span>
-                        </button>
+                        <div class="text-[11px] text-slate-400 flex items-center gap-1">
+                            <i data-lucide="message-square" class="w-3.5 h-3.5 text-cyber-cyan"></i>
+                            <span>${e.comments.length} COMMENTS</span>
+                        </div>
+                    </div>
 
-                        <!-- Bookmark -->
-                        <button onclick="toggleBookmark('${p.id}')" class="flex items-center gap-1.5 ${p.isBookmarked ? 'text-cyber-cyan' : 'hover:text-cyber-cyan'} transition">
-                            <i data-lucide="bookmark" class="w-4 h-4 ${p.isBookmarked ? 'fill-cyber-cyan' : ''}"></i>
-                        </button>
+                    <!-- Reader Comment Section -->
+                    <div class="pt-2 space-y-2">
+                        <div class="space-y-1.5 max-h-40 overflow-y-auto">
+                            ${commentsHtml}
+                        </div>
 
-                        <!-- Share -->
-                        <button onclick="showToast('TRANSMISSION LINK COPIED')" class="hover:text-white transition">
-                            <i data-lucide="share-2" class="w-4 h-4"></i>
-                        </button>
+                        <!-- Comment Input Box -->
+                        <div class="flex gap-2 pt-1">
+                            <input type="text" id="comment-input-${e.id}" placeholder="Leave a public comment..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan font-sans">
+                            <button onclick="addComment('${e.id}')" class="px-3 py-1.5 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan hover:bg-cyber-cyan hover:text-black font-bold text-xs transition">
+                                POST
+                            </button>
+                        </div>
                     </div>
                 `;
 
-                stream.appendChild(card);
+                feed.appendChild(card);
             });
 
             lucide.createIcons();
-        }
-
-        function formatHashtags(text) {
-            return text.replace(/#(\w+)/g, '<span class="text-cyber-cyan font-semibold cursor-pointer hover:underline" onclick="filterByTag(\'$1\')">#$1</span>');
         }
 
         function showToast(msg) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             toast.className = "hud-glass p-3 rounded-xl border border-cyber-cyan/50 text-cyber-cyan font-mono text-xs shadow-2xl flex items-center gap-2 animate-bounce";
-            toast.innerHTML = `<i data-lucide="terminal" class="w-4 h-4 text-cyber-cyan"></i> <span>${msg}</span>`;
+            toast.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-cyber-cyan"></i> <span>${msg}</span>`;
             container.appendChild(toast);
             lucide.createIcons();
 
@@ -891,11 +1024,11 @@
             resize();
             window.addEventListener('resize', resize);
 
-            const nodes = Array.from({ length: 35 }, () => ({
+            const nodes = Array.from({ length: 30 }, () => ({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.5,
-                vy: (Math.random() - 0.5) * 0.5
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4
             }));
 
             function draw() {
@@ -914,12 +1047,11 @@
                     ctx.fill();
                 });
 
-                // Connect adjacent nodes
                 for (let i = 0; i < nodes.length; i++) {
                     for (let j = i + 1; j < nodes.length; j++) {
                         const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-                        if (dist < 130) {
-                            ctx.strokeStyle = `rgba(6, 182, 212, ${1 - dist / 130})`;
+                        if (dist < 140) {
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${1 - dist / 140})`;
                             ctx.lineWidth = 0.5;
                             ctx.beginPath();
                             ctx.moveTo(nodes[i].x, nodes[i].y);
@@ -934,18 +1066,11 @@
             draw();
         }
 
-        // INITIALIZE APP
+        // APP INITIALIZATION
         window.onload = function() {
             initCanvasGrid();
-            loadPostsFromStorage();
-            renderPostsFeed();
-            
-            // Random simulated ping fluctuation
-            setInterval(() => {
-                const ping = Math.floor(12 + Math.random() * 8);
-                const pingElem = document.getElementById('sys-ping');
-                if (pingElem) pingElem.innerText = ping + 'ms';
-            }, 3000);
+            loadJournalData();
+            renderJournalFeed();
         };
     </script>
 </body>
