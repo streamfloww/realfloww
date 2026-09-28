@@ -1,1076 +1,1035 @@
 <!DOCTYPE html>
-<html lang="en" class="dark h-full">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NEXUS // CHRONICLES - Digital Journal & Visual Archive</title>
-    
+    <title>OmniMedia - Unified Social Platform</title>
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
-                        cyber: {
-                            bg: '#030509',
-                            surface: '#090d16',
-                            card: 'rgba(15, 23, 42, 0.65)',
-                            border: 'rgba(6, 182, 212, 0.25)',
-                            cyan: '#06b6d4',
-                            emerald: '#10b981',
-                            violet: '#8b5cf6',
-                            pink: '#ec4899',
-                            amber: '#f59e0b',
-                            glow: 'rgba(6, 182, 212, 0.25)'
+                        brand: {
+                            tiktok: '#FE2C55',
+                            instagram: '#E1306C',
+                            twitter: '#1DA1F2',
+                            accent: '#8b5cf6',
+                            darkBg: '#07080c',
+                            darkCard: 'rgba(15, 18, 28, 0.82)',
+                            darkBorder: 'rgba(255, 255, 255, 0.08)'
                         }
                     },
-                    fontFamily: {
-                        mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
-                        sans: ['Inter', '-apple-system', 'sans-serif']
-                    },
                     keyframes: {
-                        pulseGlow: {
-                            '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 8px rgba(6, 182, 212, 0.5))' },
-                            '50%': { opacity: '0.9', filter: 'drop-shadow(0 0 16px rgba(16, 185, 129, 0.8))' }
+                        heartPop: {
+                            '0%': { transform: 'scale(0) rotate(-12deg)', opacity: '0' },
+                            '40%': { transform: 'scale(1.3) rotate(0deg)', opacity: '1' },
+                            '70%': { transform: 'scale(1) rotate(0deg)', opacity: '0.9' },
+                            '100%': { transform: 'scale(1.2) translateY(-20px)', opacity: '0' }
                         },
-                        scanline: {
-                            '0%': { transform: 'translateY(-100%)' },
-                            '100%': { transform: 'translateY(1000%)' }
+                        equalizer: {
+                            '0%, 100%': { height: '4px' },
+                            '50%': { height: '14px' }
+                        },
+                        spinSlow: {
+                            '0%': { transform: 'rotate(0deg)' },
+                            '100%': { transform: 'rotate(360deg)' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)' },
+                            '100%': { transform: 'translateX(0)' }
                         }
                     },
                     animation: {
-                        'pulse-glow': 'pulseGlow 4s infinite ease-in-out',
-                        'scanline': 'scanline 6s linear infinite'
+                        'heart-burst': 'heartPop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+                        'spin-vinyl': 'spinSlow 7s linear infinite',
+                        'eq-1': 'equalizer 0.6s ease-in-out infinite 0.1s',
+                        'eq-2': 'equalizer 0.8s ease-in-out infinite 0.3s',
+                        'eq-3': 'equalizer 0.5s ease-in-out infinite 0.2s',
+                        'slide-in': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
                     }
                 }
             }
-        };
+        }
     </script>
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
         body {
-            background-color: #030509;
-            color: #f1f5f9;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #07080c;
+            color: #f3f4f6;
             overflow-x: hidden;
+            touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .hud-glass {
-            background: rgba(9, 13, 22, 0.8);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(6, 182, 212, 0.25);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+        /* 120FPS GPU Layer Isolation */
+        .gpu-layer {
+            transform: translate3d(0, 0, 0);
+            will-change: transform, opacity;
+            backface-visibility: hidden;
         }
 
-        .hud-card {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(30, 41, 59, 0.8);
-            position: relative;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        .glass-panel {
+            background: rgba(15, 18, 28, 0.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
-        .hud-card:hover {
-            border-color: rgba(6, 182, 212, 0.5);
-            box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+        .glass-nav {
+            background: rgba(7, 8, 12, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        /* Decorative HUD Corner Tech Accents */
-        .hud-corner-tl {
-            position: absolute;
-            top: -1px;
-            left: -1px;
-            width: 8px;
-            height: 8px;
-            border-top: 2px solid #06b6d4;
-            border-left: 2px solid #06b6d4;
+        .tiktok-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: calc(100vh - 70px);
         }
 
-        .hud-corner-br {
-            position: absolute;
-            bottom: -1px;
-            right: -1px;
-            width: 8px;
-            height: 8px;
-            border-bottom: 2px solid #10b981;
-            border-right: 2px solid #10b981;
+        @media (min-width: 768px) {
+            .tiktok-container {
+                height: calc(100vh - 40px);
+                max-height: 840px;
+            }
         }
 
-        /* Custom Holographic Scan Effect */
-        .hologram-overlay {
-            position: relative;
-            overflow: hidden;
-        }
-        .hologram-overlay::after {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(6, 182, 212, 0.12) 50%, transparent 100%);
-            height: 35%;
-            animation: scanline 5s linear infinite;
-            pointer-events: none;
+        .tiktok-card {
+            scroll-snap-align: start;
+            scroll-snap-stop: always;
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #030509;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #06b6d4;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: #07080c; }
+        ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+        /* Carousel Smooth Track */
+        .carousel-track {
+            display: flex;
+            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
         }
     </style>
 </head>
-<body class="h-full flex flex-col antialiased selection:bg-cyber-cyan selection:text-black">
+<body class="h-screen w-screen flex flex-col md:flex-row overflow-hidden select-none bg-[#07080c]">
 
-    <!-- CANVAS BACKGROUND PARTICLE NETWORK -->
-    <canvas id="cyber-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
-
-    <!-- MAIN APP WRAPPER -->
-    <div class="relative z-10 min-h-screen flex flex-col max-w-7xl mx-auto w-full">
-
-        <!-- HEADER HUD NAVBAR -->
-        <header class="sticky top-0 z-40 hud-glass border-b border-cyber-cyan/30 px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="relative flex items-center justify-center w-10 h-10 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan text-cyber-cyan shadow-[0_0_15px_rgba(6,182,212,0.3)]">
-                    <i data-lucide="book-open-check" class="w-5 h-5 animate-pulse"></i>
-                    <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyber-emerald rounded-full animate-ping"></span>
+    <!-- DESKTOP SIDEBAR NAVIGATION -->
+    <aside class="hidden md:flex flex-col justify-between w-64 lg:w-72 glass-panel border-r border-gray-800/60 p-5 z-40 shrink-0">
+        <div class="space-y-6">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-3 px-2 py-1">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-tiktok via-brand-instagram to-brand-twitter flex items-center justify-center text-white shadow-xl shadow-purple-500/20">
+                    <i class="fa-solid fa-shapes text-xl"></i>
                 </div>
                 <div>
-                    <div class="flex items-center gap-2">
-                        <span class="font-mono font-black tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-white to-cyber-emerald text-base sm:text-lg">NEXUS</span>
-                        <span class="text-xs font-mono font-bold text-slate-400">// CHRONICLES</span>
-                    </div>
-                    <p class="text-[10px] font-mono text-slate-400 hidden sm:block">PUBLIC DIARY LOGS & VISUAL ARCHIVE</p>
+                    <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent">OmniMedia</span>
+                    <span class="block text-[10px] font-bold text-purple-400 tracking-widest uppercase">Ultra Luxe</span>
                 </div>
             </div>
 
-            <!-- Creator Mode Status Badge & Sound Toggle -->
-            <div class="flex items-center gap-3 font-mono text-xs">
-                
-                <!-- Terminal Access / Lock Toggle Button -->
-                <button onclick="toggleTerminalModal()" id="creator-mode-badge" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:border-cyber-cyan hover:text-cyber-cyan transition flex items-center gap-2">
-                    <i data-lucide="lock" id="creator-lock-icon" class="w-3.5 h-3.5 text-amber-400"></i>
-                    <span id="creator-badge-text" class="hidden sm:inline">PUBLIC_READER_MODE</span>
+            <!-- Navigation Modes -->
+            <div class="space-y-1.5">
+                <p class="px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-500 mb-2">Feeds & Streams</p>
+
+                <button onclick="switchFeed('tiktok')" id="btn-mode-tiktok" class="nav-mode-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 text-gray-400 hover:bg-gray-800/50 hover:text-white">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-play text-lg"></i>
+                        <span class="font-semibold text-sm">Watch (TikTok)</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-brand-tiktok opacity-0 badge-dot"></span>
                 </button>
 
-                <!-- Audio SFX Toggle -->
-                <button onclick="toggleAudioSFX()" id="audio-btn" class="p-2 rounded-lg bg-slate-900 border border-cyber-cyan/30 text-cyber-cyan hover:border-cyber-cyan transition" title="Toggle HUD SFX Audio">
-                    <i data-lucide="volume-2" class="w-4 h-4"></i>
+                <button onclick="switchFeed('instagram')" id="btn-mode-instagram" class="nav-mode-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 text-gray-400 hover:bg-gray-800/50 hover:text-white">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-camera-retro text-lg"></i>
+                        <span class="font-semibold text-sm">Feed (Instagram)</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-brand-instagram opacity-0 badge-dot"></span>
                 </button>
+
+                <button onclick="switchFeed('twitter')" id="btn-mode-twitter" class="nav-mode-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 text-gray-400 hover:bg-gray-800/50 hover:text-white">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-brands fa-x-twitter text-lg"></i>
+                        <span class="font-semibold text-sm">Timeline (X)</span>
+                    </div>
+                    <span class="w-2 h-2 rounded-full bg-brand-twitter opacity-0 badge-dot"></span>
+                </button>
+            </div>
+
+            <div class="space-y-1 pt-4 border-t border-gray-800/60">
+                <p class="px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-500 mb-2">Social Hub</p>
+                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-2xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+                    <i class="fa-solid fa-compass text-lg"></i>
+                    <span class="font-medium text-sm">Explore Trends</span>
+                </a>
+                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-2xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-bell text-lg"></i>
+                        <span class="font-medium text-sm">Notifications</span>
+                    </div>
+                    <span class="bg-brand-tiktok text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full">4</span>
+                </a>
+            </div>
+        </div>
+
+        <div>
+            <button onclick="openCreateModal()" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold py-3.5 px-4 rounded-2xl shadow-xl shadow-purple-500/25 hover:brightness-110 active:scale-95 transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-plus text-base"></i>
+                <span class="text-sm">Create New Post</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- MAIN VIEWPORT CONTAINER -->
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-[#07080c]">
+
+        <!-- MOBILE HEADER GLASS NAV -->
+        <header class="md:hidden glass-nav h-14 px-4 flex items-center justify-between z-30 shrink-0">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-tiktok via-brand-instagram to-brand-twitter flex items-center justify-center text-white text-xs">
+                    <i class="fa-solid fa-shapes"></i>
+                </div>
+                <span class="text-lg font-black text-white tracking-tight">OmniMedia</span>
+            </div>
+
+            <!-- Mobile View Selector Pills -->
+            <div class="flex items-center bg-gray-900/90 border border-gray-800 p-1 rounded-xl">
+                <button onclick="switchFeed('tiktok')" id="m-btn-tiktok" class="m-feed-btn px-2.5 py-1 text-xs font-bold rounded-lg text-gray-400 transition">Watch</button>
+                <button onclick="switchFeed('instagram')" id="m-btn-instagram" class="m-feed-btn px-2.5 py-1 text-xs font-bold rounded-lg text-gray-400 transition">Feed</button>
+                <button onclick="switchFeed('twitter')" id="m-btn-twitter" class="m-feed-btn px-2.5 py-1 text-xs font-bold rounded-lg text-gray-400 transition">Tweets</button>
             </div>
         </header>
 
-        <!-- MAIN GRID LAYOUT -->
-        <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 p-3 sm:p-4 md:p-6">
+        <!-- ========================================== -->
+        <!-- VIEW 1: TIKTOK / WATCH FEED (VERTICAL SNAP) -->
+        <!-- ========================================== -->
+        <section id="feed-tiktok" class="feed-section w-full h-full flex justify-center items-center py-0 md:py-4">
+            <div id="tiktok-scroll-container" class="tiktok-container w-full max-w-sm md:max-w-md bg-black rounded-none md:rounded-3xl shadow-2xl relative border-0 md:border border-gray-800/80 no-scrollbar">
 
-            <!-- LEFT SIDEBAR: INDEX & AUTHOR PROFILE (DESKTOP) -->
-            <aside class="hidden md:block md:col-span-3 space-y-4">
-                <div class="hud-glass rounded-2xl p-4 sticky top-20 border border-cyber-cyan/20 space-y-5">
-                    <div class="hud-corner-tl"></div>
-                    <div class="hud-corner-br"></div>
+                <!-- TikTok Card 1 -->
+                <div class="tiktok-card relative w-full h-full flex items-center justify-center overflow-hidden group">
+                    <video loop muted playsinline class="tiktok-video w-full h-full object-cover" poster="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-neon-lights-in-a-futuristic-city-42861-large.mp4" type="video/mp4">
+                    </video>
 
-                    <!-- Author Card Profile -->
-                    <div class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 space-y-3">
-                        <div class="flex items-center gap-3">
-                            <div class="relative">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" class="w-12 h-12 rounded-xl object-cover ring-2 ring-cyber-cyan">
-                                <span class="absolute -bottom-1 -right-1 bg-cyber-bg p-0.5 rounded text-cyber-emerald">
-                                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                    <!-- Overlay Action Buttons -->
+                    <div class="absolute right-3 bottom-24 flex flex-col items-center space-y-5 z-20">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-11 h-11 rounded-full border-2 border-white object-cover">
+                            <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-brand-tiktok text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">+</span>
+                        </div>
+                        <button onclick="toggleTiktokLike(this)" class="flex flex-col items-center text-white space-y-1">
+                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
+                                <i class="fa-solid fa-heart text-2xl color-heart text-white transition"></i>
+                            </div>
+                            <span class="text-xs font-semibold count-likes">184.2K</span>
+                        </button>
+                        <button onclick="openCommentDrawer('Cyberpunk City 4K')" class="flex flex-col items-center text-white space-y-1">
+                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
+                                <i class="fa-solid fa-comment-dots text-2xl"></i>
+                            </div>
+                            <span class="text-xs font-semibold">3,420</span>
+                        </button>
+                        <button onclick="toggleBookmark(this)" class="flex flex-col items-center text-white space-y-1">
+                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
+                                <i class="fa-solid fa-bookmark text-2xl bm-icon"></i>
+                            </div>
+                            <span class="text-xs font-semibold">24.1K</span>
+                        </button>
+                        <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-700 flex items-center justify-center animate-spin-vinyl shadow-lg">
+                            <i class="fa-solid fa-music text-xs text-white"></i>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Details Overlay -->
+                    <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/95 via-black/50 to-transparent z-10 space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <h3 class="font-bold text-white text-base">@cyber_vibe</h3>
+                            <span class="bg-brand-tiktok/80 text-white text-[10px] font-black px-1.5 py-0.5 rounded">PRO</span>
+                        </div>
+                        <p class="text-xs text-gray-200">Midnight neon aesthetics in Shibuya 🌃 #shibuya #tokyo #neon</p>
+                        <!-- Song Pill Badge -->
+                        <div class="inline-flex items-center space-x-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs text-white border border-white/10">
+                            <div class="flex items-end space-x-0.5 h-3">
+                                <span class="w-0.5 bg-brand-tiktok animate-eq-1"></span>
+                                <span class="w-0.5 bg-brand-tiktok animate-eq-2"></span>
+                                <span class="w-0.5 bg-brand-tiktok animate-eq-3"></span>
+                            </div>
+                            <span class="font-medium text-[11px] truncate max-w-[180px]">🎵 Kavinsky • Nightcall (Remix)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TikTok Card 2 -->
+                <div class="tiktok-card relative w-full h-full flex items-center justify-center overflow-hidden group">
+                    <video loop muted playsinline class="tiktok-video w-full h-full object-cover" poster="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-green-screen-41544-large.mp4" type="video/mp4">
+                    </video>
+                    <div class="absolute right-3 bottom-24 flex flex-col items-center space-y-5 z-20">
+                        <button onclick="toggleTiktokLike(this)" class="flex flex-col items-center text-white space-y-1">
+                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
+                                <i class="fa-solid fa-heart text-2xl color-heart text-white transition"></i>
+                            </div>
+                            <span class="text-xs font-semibold count-likes">98.1K</span>
+                        </button>
+                        <button onclick="openCommentDrawer('Future Web UX')" class="flex flex-col items-center text-white space-y-1">
+                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
+                                <i class="fa-solid fa-comment-dots text-2xl"></i>
+                            </div>
+                            <span class="text-xs font-semibold">1,102</span>
+                        </button>
+                    </div>
+                    <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/95 via-black/50 to-transparent z-10 space-y-2">
+                        <h3 class="font-bold text-white text-base">@design_hub</h3>
+                        <p class="text-xs text-gray-200">Building next-gen social platforms with dynamic slide carousels! 🚀</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VIEW 2: INSTAGRAM FEED (RICH CAROUSELS) -->
+        <!-- ========================================== -->
+        <section id="feed-instagram" class="feed-section hidden w-full h-full overflow-y-auto px-2 md:px-6 py-4">
+            <div class="max-w-xl mx-auto space-y-6 pb-24" id="instagram-feed-container">
+
+                <!-- Stories Tray -->
+                <div class="glass-panel p-3.5 rounded-3xl flex items-center space-x-4 overflow-x-auto no-scrollbar border border-gray-800">
+                    <div onclick="openStoryViewer('Your Story', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
+                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
+                        </div>
+                        <span class="text-[11px] font-medium text-gray-300">Your Story</span>
+                    </div>
+
+                    <div onclick="openStoryViewer('alexa_design', 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
+                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
+                        </div>
+                        <span class="text-[11px] font-medium text-gray-300">alexa_design</span>
+                    </div>
+
+                    <div onclick="openStoryViewer('travis_vibes', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
+                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
+                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
+                        </div>
+                        <span class="text-[11px] font-medium text-gray-300">travis_vibes</span>
+                    </div>
+
+                    <div onclick="openStoryViewer('tokyo_nights', 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
+                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
+                            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
+                        </div>
+                        <span class="text-[11px] font-medium text-gray-300">tokyo_nights</span>
+                    </div>
+                </div>
+
+                <!-- INSTAGRAM MULTI-MEDIA CAROUSEL POST 1 -->
+                <article class="glass-panel rounded-3xl overflow-hidden border border-gray-800/80 shadow-2xl">
+                    <!-- Post Header with Location & Music Badges -->
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full object-cover border border-purple-500/50">
+                            <div>
+                                <div class="flex items-center space-x-1.5">
+                                    <h4 class="text-sm font-extrabold text-white">alexa_design</h4>
+                                    <i class="fa-solid fa-circle-check text-brand-twitter text-[11px]"></i>
+                                </div>
+                                <!-- Interactive Location Tag Badge -->
+                                <button onclick="highlightLocation('Tokyo, Japan')" class="flex items-center space-x-1 text-[11px] text-purple-400 font-semibold hover:underline">
+                                    <i class="fa-solid fa-location-dot text-[10px]"></i>
+                                    <span>Tokyo, Japan</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Attached Song Tag Pill -->
+                        <div class="hidden sm:flex items-center space-x-2 bg-gray-900/90 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-gray-200">
+                            <div class="flex items-end space-x-0.5 h-3">
+                                <span class="w-0.5 bg-purple-400 animate-eq-1"></span>
+                                <span class="w-0.5 bg-purple-400 animate-eq-2"></span>
+                                <span class="w-0.5 bg-purple-400 animate-eq-3"></span>
+                            </div>
+                            <span class="text-[11px] font-semibold text-gray-300">🎵 Travis Scott • FE!N</span>
+                        </div>
+                    </div>
+
+                    <!-- Slide Carousel Viewport (Photos + Videos Mixed) -->
+                    <div class="relative group overflow-hidden bg-black aspect-square" id="carousel-post-1">
+                        <!-- Carousel Inner Track -->
+                        <div class="carousel-track h-full w-full" id="track-post-1" style="transform: translateX(0%);">
+                            
+                            <!-- Slide 1: Image -->
+                            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
+                                <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover">
+                            </div>
+
+                            <!-- Slide 2: Video Clip -->
+                            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
+                                <video loop muted playsinline autoplay class="w-full h-full object-cover">
+                                    <source src="https://assets.mixkit.co/videos/preview/mixkit-city-traffic-at-night-42838-large.mp4" type="video/mp4">
+                                </video>
+                                <span class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center space-x-1">
+                                    <i class="fa-solid fa-video text-brand-tiktok"></i>
+                                    <span>VIDEO</span>
                                 </span>
                             </div>
-                            <div class="overflow-hidden">
-                                <h4 class="font-bold text-sm truncate text-white">AGENT // KIRA-9</h4>
-                                <span class="text-[10px] font-mono text-cyber-cyan block truncate">CREATOR & ARCHIVIST</span>
+
+                            <!-- Slide 3: Image -->
+                            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
+                                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover">
                             </div>
+
                         </div>
-                        <p class="text-xs text-slate-400 leading-relaxed font-sans">
-                            Personal journal, field logs, photo galleries, and video archives from deep-space sector 09.
+
+                        <!-- Slide Navigation Arrows -->
+                        <button onclick="prevSlide('post-1')" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
+                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                        </button>
+                        <button onclick="nextSlide('post-1', 3)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
+                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                        </button>
+
+                        <!-- Top Right Item Counter Badge -->
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white border border-white/10 shadow-lg">
+                            <span id="counter-post-1">1/3</span>
+                        </div>
+                    </div>
+
+                    <!-- Post Action Bar & Indicators -->
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-5 text-xl text-white">
+                                <i onclick="toggleInstaLike(this)" class="fa-regular fa-heart cursor-pointer hover:text-brand-instagram transition active:scale-125"></i>
+                                <i onclick="openCommentDrawer('Tokyo Urban Scenes')" class="fa-regular fa-comment cursor-pointer hover:text-gray-400 transition"></i>
+                                <i class="fa-regular fa-paper-plane cursor-pointer hover:text-gray-400 transition"></i>
+                            </div>
+
+                            <!-- Carousel Dots Pagination -->
+                            <div class="flex items-center space-x-1.5" id="dots-post-1">
+                                <span class="w-2 h-2 rounded-full bg-purple-500 transition-all"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-600 transition-all"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-600 transition-all"></span>
+                            </div>
+
+                            <i onclick="toggleBookmark(this)" class="fa-regular fa-bookmark text-xl text-white cursor-pointer hover:text-amber-400 transition"></i>
+                        </div>
+
+                        <!-- Mobile Song Pill Display -->
+                        <div class="sm:hidden flex items-center space-x-2 bg-gray-900/90 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-gray-200">
+                            <i class="fa-solid fa-music text-purple-400 text-xs"></i>
+                            <span class="text-[11px] font-semibold text-gray-300">Travis Scott • FE!N</span>
+                        </div>
+
+                        <p class="text-xs font-extrabold text-white">4,289 likes</p>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            <span class="font-extrabold text-white">alexa_design</span> Exploring Tokyo's cyberpunk vibes at night! Swipe through for photos and video clips 📸🎥✨
                         </p>
+                        <p onclick="openCommentDrawer('Tokyo Urban Scenes')" class="text-[11px] text-gray-500 font-semibold cursor-pointer hover:underline">View all 194 comments</p>
                     </div>
+                </article>
 
-                    <!-- View Filter Navigation -->
-                    <nav class="space-y-1.5 font-mono text-xs">
-                        <div class="text-[10px] text-slate-500 font-bold px-2 py-1">CHRONICLE INDEX</div>
-                        
-                        <button onclick="switchView('all')" id="nav-d-all" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="layers" class="w-4 h-4"></i> ALL_ENTRIES</span>
-                            <span id="badge-count-all" class="text-[10px] bg-cyber-cyan/20 px-1.5 py-0.5 rounded text-cyber-cyan">0</span>
-                        </button>
+            </div>
+        </section>
 
-                        <button onclick="switchView('logs')" id="nav-d-logs" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="file-text" class="w-4 h-4"></i> DIARY_LOGS</span>
-                        </button>
+        <!-- ========================================== -->
+        <!-- VIEW 3: TWITTER / X TIMELINE -->
+        <!-- ========================================== -->
+        <section id="feed-twitter" class="feed-section hidden w-full h-full overflow-y-auto">
+            <div class="max-w-3xl mx-auto px-2 md:px-6 py-4 pb-24 flex space-x-6">
 
-                        <button onclick="switchView('photos')" id="nav-d-photos" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="image" class="w-4 h-4"></i> PHOTO_GALLERY</span>
-                        </button>
-
-                        <button onclick="switchView('videos')" id="nav-d-videos" class="w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition">
-                            <span class="flex items-center gap-2.5"><i data-lucide="film" class="w-4 h-4"></i> VIDEO_LOGS</span>
-                        </button>
-                    </nav>
-
-                    <hr class="border-slate-800">
-
-                    <!-- Tags Navigation -->
-                    <div class="space-y-2 font-mono text-xs">
-                        <div class="text-[10px] text-slate-500 font-bold px-1">TAG DIRECTORY</div>
-                        <div class="flex flex-wrap gap-1.5">
-                            <button onclick="filterByTag('Personal')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Personal</button>
-                            <button onclick="filterByTag('Photos')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Photos</button>
-                            <button onclick="filterByTag('Tech')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Tech</button>
-                            <button onclick="filterByTag('Video')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Video</button>
-                            <button onclick="filterByTag('Thoughts')" class="px-2 py-1 rounded bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-[11px] text-slate-300 transition">#Thoughts</button>
+                <div class="flex-1 space-y-4" id="tweet-stream">
+                    <!-- Quick Tweet Box -->
+                    <div class="glass-panel p-4 rounded-3xl border border-gray-800 space-y-3">
+                        <div class="flex space-x-3">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full border border-gray-700">
+                            <textarea id="quick-tweet-input" placeholder="What is happening?!" class="w-full bg-transparent text-white placeholder-gray-500 text-sm focus:outline-none resize-none h-16"></textarea>
+                        </div>
+                        <div class="flex items-center justify-between border-t border-gray-800/80 pt-3">
+                            <div class="flex items-center space-x-4 text-brand-twitter text-sm">
+                                <i onclick="openCreateModal()" class="fa-regular fa-image cursor-pointer hover:text-white transition"></i>
+                                <i onclick="openCreateModal()" class="fa-solid fa-music cursor-pointer hover:text-white transition"></i>
+                                <i onclick="openCreateModal()" class="fa-solid fa-location-dot cursor-pointer hover:text-white transition"></i>
+                            </div>
+                            <button onclick="postQuickTweet()" class="bg-brand-twitter text-white px-5 py-1.5 rounded-full text-xs font-extrabold shadow-lg hover:brightness-110 active:scale-95 transition">Post</button>
                         </div>
                     </div>
-                </div>
-            </aside>
 
-            <!-- CENTER MAIN CONTENT STREAM -->
-            <main class="col-span-1 md:col-span-6 space-y-4">
+                    <!-- Tweet Post Item -->
+                    <article class="glass-panel p-4 rounded-3xl border border-gray-800/80 space-y-3">
+                        <div class="flex space-x-3">
+                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full border border-gray-700">
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-2">
+                                        <h4 class="font-bold text-white text-sm">DevSam</h4>
+                                        <span class="text-xs text-gray-500">@sam_dev · 1h</span>
+                                    </div>
+                                    <i class="fa-solid fa-ellipsis text-gray-500"></i>
+                                </div>
+                                <p class="text-xs text-gray-200 mt-1 leading-relaxed">
+                                    Just released the brand new Instagram multi-slide carousel feature inside OmniMedia! Now supporting mixed photo & video posts with attached music tracks and geo-locations! 🎵📍🔥 #webdev #uiux #javascript
+                                </p>
 
-                <!-- SEARCH & FILTER BAR -->
-                <div class="hud-glass rounded-2xl p-3 border border-cyber-cyan/30 flex items-center gap-2">
-                    <i data-lucide="search" class="w-4 h-4 text-cyber-cyan shrink-0 ml-1"></i>
-                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Search journal text, titles, location, or tags..." class="w-full bg-transparent text-xs sm:text-sm font-mono text-slate-100 placeholder-slate-500 focus:outline-none">
-                    <button onclick="clearSearch()" id="clear-search-btn" class="hidden text-slate-500 hover:text-cyber-pink transition">
-                        <i data-lucide="x-circle" class="w-4 h-4"></i>
-                    </button>
-                </div>
-
-                <!-- MOBILE TOP FILTER TABS -->
-                <div class="md:hidden flex rounded-xl hud-glass p-1 font-mono text-xs border border-cyber-cyan/30">
-                    <button onclick="switchView('all')" id="tab-m-all" class="flex-1 py-2 text-center rounded-lg bg-cyber-cyan/20 text-cyber-cyan border border-cyber-cyan/40 font-bold">ALL</button>
-                    <button onclick="switchView('logs')" id="tab-m-logs" class="flex-1 py-2 text-center rounded-lg text-slate-400">DIARY</button>
-                    <button onclick="switchView('photos')" id="tab-m-photos" class="flex-1 py-2 text-center rounded-lg text-slate-400">PHOTOS</button>
-                    <button onclick="switchView('videos')" id="tab-m-videos" class="flex-1 py-2 text-center rounded-lg text-slate-400">VIDEOS</button>
-                </div>
-
-                <!-- CREATOR PUBLISHING PANEL (VISIBLE WHEN CREATOR MODE IS ACTIVE) -->
-                <div id="creator-terminal-panel" class="hidden hud-glass rounded-2xl p-4 border border-cyber-emerald/50 space-y-4 relative overflow-hidden">
-                    <div class="hud-corner-tl" style="border-color: #10b981;"></div>
-                    <div class="hud-corner-br" style="border-color: #06b6d4;"></div>
-
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                        <div class="flex items-center gap-2 text-cyber-emerald font-mono font-bold text-xs">
-                            <i data-lucide="terminal" class="w-4 h-4 animate-pulse"></i>
-                            <span>CREATOR_TERMINAL // NEW_ENTRY_PUBLISHER</span>
-                        </div>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-cyber-emerald/20 border border-cyber-emerald/40 text-cyber-emerald">AUTHORIZED</span>
-                    </div>
-
-                    <!-- Input Fields -->
-                    <div class="space-y-3 font-mono text-xs">
-                        <input type="text" id="entry-title" placeholder="ENTRY TITLE (e.g., Reflections on Sector 7 Solar Flare)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyber-emerald">
-                        
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            <select id="entry-category" class="bg-slate-900 border border-slate-800 text-slate-300 rounded-xl p-2 focus:outline-none focus:border-cyber-emerald">
-                                <option value="Diary Entry">Diary Entry</option>
-                                <option value="Photo Gallery">Photo Gallery</option>
-                                <option value="Video Log">Video Log</option>
-                                <option value="Thought">Thought / Essay</option>
-                            </select>
-                            <input type="text" id="entry-mood" placeholder="MOOD (e.g., Contemplative)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-300 focus:outline-none focus:border-cyber-emerald">
-                            <input type="text" id="entry-location" placeholder="LOCATION (e.g., Orbit Station B)" class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-300 focus:outline-none focus:border-cyber-emerald col-span-2 sm:col-span-1">
-                        </div>
-
-                        <textarea id="entry-body" rows="4" placeholder="Write public entry log, reflection, or story content..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyber-emerald resize-none leading-relaxed"></textarea>
-
-                        <input type="text" id="entry-tags" placeholder="TAGS separated by comma (e.g., Personal, Photos, Tech)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-300 focus:outline-none focus:border-cyber-emerald">
-
-                        <!-- File Upload Previews Container -->
-                        <div id="media-preview-container" class="hidden relative rounded-xl overflow-hidden border border-cyber-emerald/50 bg-black hologram-overlay p-2">
-                            <button onclick="clearComposerMedia()" class="absolute top-3 right-3 z-20 p-1.5 rounded-lg bg-black/80 text-cyber-pink hover:bg-cyber-pink hover:text-white transition">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                            <div id="media-preview-target" class="max-h-64 flex items-center justify-center overflow-hidden"></div>
-                            <div class="mt-2 px-2 py-1 bg-slate-900 text-[10px] font-mono text-cyber-emerald flex items-center justify-between border-t border-slate-800">
-                                <span id="media-file-info">FILE_ATTACHED.DAT</span>
-                                <span class="text-emerald-400">READY TO PUBLISH</span>
+                                <div class="flex items-center justify-between text-gray-400 text-xs mt-3 max-w-md">
+                                    <button onclick="openCommentDrawer('OmniMedia Release')" class="flex items-center space-x-2 hover:text-brand-twitter transition">
+                                        <i class="fa-regular fa-comment"></i>
+                                        <span>42</span>
+                                    </button>
+                                    <button onclick="toggleRetweet(this)" class="flex items-center space-x-2 hover:text-emerald-400 transition">
+                                        <i class="fa-solid fa-retweet"></i>
+                                        <span class="rt-count">89</span>
+                                    </button>
+                                    <button onclick="toggleTweetLike(this)" class="flex items-center space-x-2 hover:text-brand-tiktok transition">
+                                        <i class="fa-regular fa-heart"></i>
+                                        <span class="like-count">512</span>
+                                    </button>
+                                    <button class="flex items-center space-x-2 hover:text-brand-twitter transition">
+                                        <i class="fa-solid fa-chart-simple"></i>
+                                        <span>8.2K</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
+                    </article>
+                </div>
 
-                        <!-- Hidden Native File Pickers -->
-                        <input type="file" id="image-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleFileSelected(event, 'image')">
-                        <input type="file" id="video-file-input" accept="video/mp4,video/webm" class="hidden" onchange="handleFileSelected(event, 'video')">
-
-                        <!-- Action Toolbar -->
-                        <div class="flex items-center justify-between pt-2 border-t border-slate-800">
-                            <div class="flex items-center gap-2">
-                                <button onclick="document.getElementById('image-file-input').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-cyan text-cyber-cyan flex items-center gap-1.5 transition">
-                                    <i data-lucide="image" class="w-4 h-4"></i>
-                                    <span>ATTACH JPG PHOTO</span>
-                                </button>
-                                <button onclick="document.getElementById('video-file-input').click()" class="px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyber-violet text-cyber-violet flex items-center gap-1.5 transition">
-                                    <i data-lucide="film" class="w-4 h-4"></i>
-                                    <span>ATTACH MP4 VIDEO</span>
-                                </button>
+                <!-- Right Trending Sidebar -->
+                <div class="hidden lg:block w-72 space-y-4 shrink-0">
+                    <div class="glass-panel p-4 rounded-3xl border border-gray-800 space-y-3">
+                        <h3 class="font-extrabold text-white text-base">Trends For You</h3>
+                        <div class="space-y-3">
+                            <div class="cursor-pointer hover:bg-gray-800/40 p-2 rounded-2xl transition">
+                                <p class="text-[10px] text-gray-400 font-bold">Technology · Trending</p>
+                                <p class="text-xs font-bold text-white">#OmniMediaPlatform</p>
+                                <p class="text-[11px] text-gray-500">32.4K posts</p>
                             </div>
-
-                            <button onclick="publishEntry()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-cyber-emerald to-cyber-cyan text-black font-bold flex items-center gap-2 shadow-[0_0_15px_rgba(16,185,129,0.4)] hover:shadow-[0_0_25px_rgba(16,185,129,0.7)] active:scale-95 transition">
-                                <i data-lucide="send" class="w-4 h-4"></i>
-                                <span>PUBLISH TO LOG</span>
-                            </button>
+                            <div class="cursor-pointer hover:bg-gray-800/40 p-2 rounded-2xl transition">
+                                <p class="text-[10px] text-gray-400 font-bold">Music · Trending</p>
+                                <p class="text-xs font-bold text-white">#FEIN_TravisScott</p>
+                                <p class="text-[11px] text-gray-500">118.9K posts</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- MAIN JOURNAL FEED FEED CONTAINER -->
-                <div id="journal-feed" class="space-y-4">
-                    <!-- Dynamic Journal Cards Injected Here -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <nav class="md:hidden glass-nav fixed bottom-0 inset-x-0 h-16 border-t border-gray-800/80 px-6 flex items-center justify-between z-40">
+        <button onclick="switchFeed('tiktok')" id="mb-nav-tiktok" class="flex flex-col items-center text-gray-400 hover:text-white transition">
+            <i class="fa-solid fa-play text-base"></i>
+            <span class="text-[10px] mt-0.5 font-bold">Watch</span>
+        </button>
+        <button onclick="switchFeed('instagram')" id="mb-nav-instagram" class="flex flex-col items-center text-gray-400 hover:text-white transition">
+            <i class="fa-solid fa-camera-retro text-base"></i>
+            <span class="text-[10px] mt-0.5 font-bold">Feed</span>
+        </button>
+        <button onclick="openCreateModal()" class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white shadow-lg active:scale-95 transition">
+            <i class="fa-solid fa-plus text-base"></i>
+        </button>
+        <button onclick="switchFeed('twitter')" id="mb-nav-twitter" class="flex flex-col items-center text-gray-400 hover:text-white transition">
+            <i class="fa-brands fa-x-twitter text-base"></i>
+            <span class="text-[10px] mt-0.5 font-bold">Timeline</span>
+        </button>
+    </nav>
+
+    <!-- STORY VIEWER FULLSCREEN OVERLAY MODAL -->
+    <div id="story-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center">
+        <div class="relative w-full max-w-md h-full md:h-[800px] bg-black md:rounded-3xl overflow-hidden flex flex-col justify-between p-4">
+            <!-- Progress Timers -->
+            <div class="w-full bg-gray-800 h-1 rounded-full overflow-hidden mb-3">
+                <div id="story-progress" class="bg-white h-full w-0 transition-all duration-100 ease-linear"></div>
+            </div>
+
+            <!-- Story Header -->
+            <div class="flex items-center justify-between z-10">
+                <div class="flex items-center space-x-2">
+                    <img id="story-avatar" src="" class="w-8 h-8 rounded-full border border-white">
+                    <span id="story-username" class="text-xs font-bold text-white"></span>
                 </div>
-            </main>
+                <button onclick="closeStoryViewer()" class="text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
-            <!-- RIGHT SIDEBAR: HUD STATS & RECENT COMMENTS (DESKTOP) -->
-            <aside class="hidden md:block md:col-span-3 space-y-4">
-                
-                <!-- JOURNAL STATS HUD -->
-                <div class="hud-glass rounded-2xl p-4 border border-cyber-cyan/20 sticky top-20 space-y-4">
-                    <div class="hud-corner-tl"></div>
-                    <div class="hud-corner-br"></div>
+            <!-- Story Media Content -->
+            <img id="story-image" src="" class="absolute inset-0 w-full h-full object-cover">
 
-                    <div class="flex items-center gap-2 pb-2 border-b border-slate-800 text-xs font-mono font-bold text-white">
-                        <i data-lucide="activity" class="w-4 h-4 text-cyber-cyan"></i>
-                        <span>JOURNAL_HUD_METRICS</span>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-2 font-mono text-xs">
-                        <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                            <span class="text-[10px] text-slate-500 block">TOTAL ENTRIES</span>
-                            <span id="stat-total-entries" class="text-base font-bold text-cyber-cyan">0</span>
-                        </div>
-                        <div class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-800">
-                            <span class="text-[10px] text-slate-500 block">PHOTOS & CLIPS</span>
-                            <span id="stat-media-count" class="text-base font-bold text-cyber-emerald">0</span>
-                        </div>
-                    </div>
-
-                    <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-2 font-mono text-xs">
-                        <div class="flex justify-between text-[11px]">
-                            <span class="text-slate-400">CREATOR SYNC:</span>
-                            <span class="text-emerald-400">100% ONLINE</span>
-                        </div>
-                        <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                            <div class="bg-gradient-to-r from-cyber-cyan via-cyber-emerald to-cyber-violet h-full w-full"></div>
-                        </div>
-                    </div>
-
-                    <hr class="border-slate-800">
-
-                    <!-- Reader Interaction Box -->
-                    <div class="space-y-2 font-mono text-xs">
-                        <div class="text-[10px] text-slate-500 font-bold">READER INFO</div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed font-sans">
-                            All entries are public. You can read, expand logs, play video archives, like posts, and leave public comments.
-                        </p>
-                    </div>
-                </div>
-            </aside>
-        </div>
-
-        <!-- MOBILE FIXED BOTTOM HUD NAVBAR -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 hud-glass border-t border-cyber-cyan/30 flex justify-around items-center px-4 py-2.5">
-            <button onclick="switchView('all')" class="flex flex-col items-center gap-1 text-cyber-cyan">
-                <i data-lucide="layers" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">ENTRIES</span>
-            </button>
-            <button onclick="switchView('photos')" class="flex flex-col items-center gap-1 text-slate-400">
-                <i data-lucide="image" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">PHOTOS</span>
-            </button>
-
-            <!-- Floating Terminal Trigger FAB -->
-            <button onclick="toggleTerminalModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-cyber-cyan to-cyber-emerald text-black flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.6)] active:scale-90 transition -mt-6 border-2 border-black">
-                <i data-lucide="edit-3" class="w-5 h-5"></i>
-            </button>
-
-            <button onclick="switchView('videos')" class="flex flex-col items-center gap-1 text-slate-400">
-                <i data-lucide="film" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">VIDEOS</span>
-            </button>
-            <button onclick="toggleTerminalModal()" class="flex flex-col items-center gap-1 text-slate-400">
-                <i data-lucide="lock" class="w-5 h-5"></i>
-                <span class="text-[9px] font-mono">LOCK/UNLOCK</span>
-            </button>
-        </nav>
-
-        <!-- HIGH-RES PHOTO LIGHTBOX MODAL -->
-        <div id="lightbox-modal" class="hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
-            <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white p-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:bg-cyber-pink transition z-50">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
-            <div class="max-w-4xl max-h-[90vh] flex flex-col items-center">
-                <img id="lightbox-img" src="" class="max-w-full max-h-[80vh] rounded-2xl border border-cyber-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)] object-contain">
-                <p id="lightbox-caption" class="mt-3 font-mono text-xs text-cyber-cyan text-center"></p>
+            <div class="relative z-10 w-full pt-4">
+                <input type="text" placeholder="Send message..." class="w-full bg-black/50 border border-white/20 rounded-full px-4 py-2 text-xs text-white placeholder-gray-300 focus:outline-none backdrop-blur-md">
             </div>
         </div>
-
-        <!-- CREATOR ACCESS CODE MODAL -->
-        <div id="terminal-auth-modal" class="hidden fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-            <div class="hud-glass rounded-2xl p-6 max-w-sm w-full border border-cyber-cyan/50 space-y-4 relative">
-                <div class="hud-corner-tl"></div>
-                <div class="hud-corner-br"></div>
-
-                <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-                    <div class="flex items-center gap-2 text-cyber-cyan font-mono font-bold text-sm">
-                        <i data-lucide="key" class="w-4 h-4"></i>
-                        <span>CREATOR TERMINAL AUTH</span>
-                    </div>
-                    <button onclick="closeTerminalModal()" class="text-slate-500 hover:text-white">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-
-                <p class="text-xs text-slate-300 font-mono leading-relaxed">
-                    Enter Access Key to unlock publishing mode. (Default Code: <span class="text-cyber-cyan font-bold">NEXUS-2026</span>)
-                </p>
-
-                <div class="space-y-3 font-mono text-xs">
-                    <input type="password" id="auth-passcode" placeholder="Enter Security Code..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-white focus:outline-none focus:border-cyber-cyan">
-                    
-                    <button onclick="authenticateCreator()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-cyber-emerald text-black font-bold flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(6,182,212,0.4)] transition">
-                        <i data-lucide="unlock" class="w-4 h-4"></i>
-                        <span>UNLOCK CREATOR TERMINAL</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TOAST NOTIFICATION CONTAINER -->
-        <div id="toast-container" class="fixed top-16 right-4 z-50 space-y-2 pointer-events-none max-w-xs w-full"></div>
-
     </div>
 
-    <!-- JAVASCRIPT APP LOGIC -->
+    <!-- COMMENTS SLIDE-OVER DRAWER -->
+    <div id="comment-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex justify-end">
+        <div class="w-full max-w-md h-full glass-panel border-l border-gray-800 flex flex-col p-5 animate-slide-in">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <h3 id="drawer-title" class="font-extrabold text-white text-base">Comments</h3>
+                <button onclick="closeCommentDrawer()" class="text-gray-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="drawer-comments-list" class="flex-1 overflow-y-auto my-4 space-y-4 no-scrollbar">
+                <div class="flex space-x-3">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full">
+                    <div>
+                        <p class="text-xs font-bold text-white">alex_dev</p>
+                        <p class="text-xs text-gray-300 mt-0.5">The multi-slide carousel with mixed video & photos is clean! 🔥</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-2 border-t border-gray-800 pt-3">
+                <input id="drawer-input" type="text" placeholder="Add a comment..." class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
+                <button onclick="sendDrawerComment()" class="bg-brand-tiktok text-white px-4 py-2 rounded-xl text-xs font-bold">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MULTI-SLIDE CREATOR STUDIO MODAL -->
+    <div id="create-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="w-full max-w-lg glass-panel p-6 rounded-3xl border border-gray-800 space-y-4 max-h-[90vh] overflow-y-auto no-scrollbar">
+            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
+                <h3 class="font-extrabold text-white text-lg">Multi-Slide Composer</h3>
+                <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white text-xl">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Post Caption Input -->
+            <div class="space-y-3">
+                <textarea id="modal-post-caption" placeholder="Write caption or post description..." class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-3 text-xs text-white focus:outline-none h-20 resize-none"></textarea>
+
+                <!-- Location Selector -->
+                <div class="space-y-1">
+                    <label class="text-[11px] font-extrabold uppercase text-gray-400">Add Location</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-location-dot absolute left-3 top-2.5 text-purple-400 text-xs"></i>
+                        <input id="modal-location-input" type="text" placeholder="e.g. Tokyo, Japan or Fort Worth, TX" class="w-full bg-gray-900 border border-gray-800 rounded-xl pl-8 pr-3 py-2 text-xs text-white focus:outline-none">
+                    </div>
+                    <!-- Quick Location Pills -->
+                    <div class="flex space-x-1.5 pt-1">
+                        <span onclick="setQuickLocation('Tokyo, Japan')" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full cursor-pointer hover:bg-purple-600 hover:text-white">📍 Tokyo</span>
+                        <span onclick="setQuickLocation('Fort Worth, Texas')" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full cursor-pointer hover:bg-purple-600 hover:text-white">📍 Fort Worth, TX</span>
+                        <span onclick="setQuickLocation('New York, NY')" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full cursor-pointer hover:bg-purple-600 hover:text-white">📍 New York</span>
+                    </div>
+                </div>
+
+                <!-- Music Track Picker -->
+                <div class="space-y-1">
+                    <label class="text-[11px] font-extrabold uppercase text-gray-400">Attach Music Track</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-music absolute left-3 top-2.5 text-brand-tiktok text-xs"></i>
+                        <select id="modal-music-select" class="w-full bg-gray-900 border border-gray-800 rounded-xl pl-8 pr-3 py-2 text-xs text-white focus:outline-none">
+                            <option value="🎵 Travis Scott • FE!N">🎵 Travis Scott • FE!N</option>
+                            <option value="🎵 Drake • Rich Baby Daddy">🎵 Drake • Rich Baby Daddy</option>
+                            <option value="🎵 Metro Boomin • Superhero">🎵 Metro Boomin • Superhero</option>
+                            <option value="🎵 Billie Eilish • L'AMOUR DE MA VIE">🎵 Billie Eilish • L'AMOUR DE MA VIE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Carousel Media Slide Items Builder -->
+                <div class="space-y-2 pt-2">
+                    <div class="flex items-center justify-between">
+                        <label class="text-[11px] font-extrabold uppercase text-gray-400">Carousel Media Slides (Photos/Videos)</label>
+                        <button onclick="addCreatorSlideItem()" class="text-xs text-purple-400 font-bold hover:underline">+ Add Slide</button>
+                    </div>
+                    
+                    <div id="creator-slides-list" class="space-y-2">
+                        <!-- Default Slide Item 1 -->
+                        <div class="flex items-center space-x-2 bg-gray-900/80 p-2 rounded-xl border border-gray-800 slide-item-input">
+                            <select class="bg-gray-800 text-xs text-white rounded-lg p-1.5 focus:outline-none slide-type">
+                                <option value="image">Photo</option>
+                                <option value="video">Video</option>
+                            </select>
+                            <input type="text" placeholder="Image or Video URL..." value="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80" class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none slide-url">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="publishMultiSlidePost()" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-extrabold py-3 rounded-2xl shadow-xl hover:brightness-110 active:scale-95 transition text-xs uppercase tracking-wider">Publish Carousel Post</button>
+        </div>
+    </div>
+
     <script>
-        // GLOBAL STATE & DATA
-        let isCreatorUnlocked = false;
-        let audioEnabled = true;
-        let currentView = 'all'; // 'all', 'logs', 'photos', 'videos'
-        let currentSearchQuery = '';
-        let currentTagFilter = null;
-        let selectedMediaAttachment = null; // { type: 'image' | 'video', url: string, name: string }
+        // Track slide indices for carousels
+        const slideState = {
+            'post-1': { current: 0, total: 3 }
+        };
 
-        // Web Audio API Synthesizer
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        let audioCtx = null;
+        // Switch Feed Views
+        function switchFeed(feed) {
+            document.querySelectorAll('.feed-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`feed-${feed}`).classList.remove('hidden');
 
-        function playSynthSound(freq = 440, type = 'sine', duration = 0.1) {
-            if (!audioEnabled) return;
-            try {
-                if (!audioCtx) audioCtx = new AudioCtx();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+            document.querySelectorAll('.nav-mode-btn').forEach(btn => {
+                btn.classList.remove('bg-gray-800', 'text-white');
+            });
+            const activeDesktop = document.getElementById(`btn-mode-${feed}`);
+            if (activeDesktop) activeDesktop.classList.add('bg-gray-800', 'text-white');
 
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {
-                console.log('Audio Context restricted', e);
-            }
-        }
+            document.querySelectorAll('.m-feed-btn').forEach(btn => {
+                btn.classList.remove('bg-purple-600', 'text-white');
+            });
+            const activeMobile = document.getElementById(`m-btn-${feed}`);
+            if (activeMobile) activeMobile.classList.add('bg-purple-600', 'text-white');
 
-        function toggleAudioSFX() {
-            audioEnabled = !audioEnabled;
-            const btn = document.getElementById('audio-btn');
-            if (audioEnabled) {
-                btn.classList.add('text-cyber-cyan');
-                btn.classList.remove('text-slate-600');
-                showToast('HUD AUDIO SFX: ACTIVE');
-                playSynthSound(880, 'sine', 0.15);
+            const tiktokVideos = document.querySelectorAll('.tiktok-video');
+            if (feed === 'tiktok') {
+                tiktokVideos.forEach(v => v.play().catch(() => {}));
             } else {
-                btn.classList.remove('text-cyber-cyan');
-                btn.classList.add('text-slate-600');
-                showToast('HUD AUDIO SFX: MUTED');
+                tiktokVideos.forEach(v => v.pause());
             }
         }
 
-        // DEFAULT PRE-LOADED DIARY ENTRIES & MEDIA SHOWCASE
-        const defaultJournalEntries = [
-            {
-                id: 'entry-101',
-                title: 'SOLAR FLARE REFLECTIONS & DATA ARCHIVE',
-                category: 'Diary Entry',
-                mood: 'Contemplative',
-                location: 'Orbital Sector 09',
-                timestamp: '2026-09-26 // 14:30',
-                readTime: '3 min read',
-                body: `The solar storm reached peak intensity early this morning. Automated shields held firm at 98.4% capacity. Looking out over the orbital horizon, the magnetic waves created a vibrant blue aurora against the void.\n\nToday marks day 420 of the deep space observational log. Data backups are synchronized and published to the public network for open access.`,
-                tags: ['Personal', 'Tech', 'Thoughts'],
-                media: {
-                    type: 'image',
-                    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80',
-                    caption: 'High-frequency particle array during solar wave cycle.'
-                },
-                likes: 42,
-                isLiked: false,
-                comments: [
-                    { author: 'Visitor #402', text: 'Stunning visual log! Safe travels out there.', time: '1 hr ago' }
-                ]
-            },
-            {
-                id: 'entry-102',
-                title: 'MP4 VIDEO ARCHIVE: DEEP SPACE NAVIGATION',
-                category: 'Video Log',
-                mood: 'Energetic',
-                location: 'Navigation Substation B',
-                timestamp: '2026-09-24 // 09:15',
-                readTime: 'Video Clip',
-                body: `Capturing orbital engine telemetry and automated navigation pathing. Attached MP4 video log demonstrates live maneuver calibration.`,
-                tags: ['Video', 'Tech'],
-                media: {
-                    type: 'video',
-                    url: '5e3e17f1a69a4077b7b529bedc383eeb.mov'
-                },
-                likes: 89,
-                isLiked: true,
-                comments: []
-            },
-            {
-                id: 'entry-103',
-                title: 'ORBITAL SUNSET PHOTO SHOWCASE',
-                category: 'Photo Gallery',
-                mood: 'Serene',
-                location: 'Forward Viewport',
-                timestamp: '2026-09-20 // 18:45',
-                readTime: '1 min read',
-                body: `High-resolution visual capture of planetary dusk horizon. Captured using optical sensory lens 08.`,
-                tags: ['Photos', 'Personal'],
-                media: {
-                    type: 'image',
-                    url: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80',
-                    caption: 'Planetary dusk shadow line.'
-                },
-                likes: 124,
-                isLiked: false,
-                comments: [
-                    { author: 'Reader_Nova', text: 'Incredible clarity on this photo!', time: '2 days ago' }
-                ]
-            }
-        ];
-
-        let entries = [];
-
-        function loadJournalData() {
-            const saved = localStorage.getItem('nexus_chronicles_entries');
-            if (saved) {
-                try {
-                    entries = JSON.parse(saved);
-                } catch(e) {
-                    entries = defaultJournalEntries;
-                }
-            } else {
-                entries = defaultJournalEntries;
-            }
-            updateStatsHUD();
-        }
-
-        function saveJournalData() {
-            localStorage.setItem('nexus_chronicles_entries', JSON.stringify(entries));
-            updateStatsHUD();
-        }
-
-        function updateStatsHUD() {
-            const totalElem = document.getElementById('stat-total-entries');
-            const mediaElem = document.getElementById('stat-media-count');
-            
-            if (totalElem) totalElem.innerText = entries.length;
-            if (mediaElem) {
-                const mediaCount = entries.filter(e => e.media !== null).length;
-                mediaElem.innerText = mediaCount;
+        // Slide Navigation Logic
+        function nextSlide(postId, totalSlides) {
+            if (!slideState[postId]) slideState[postId] = { current: 0, total: totalSlides };
+            let state = slideState[postId];
+            if (state.current < state.total - 1) {
+                state.current++;
+                updateCarouselUI(postId);
             }
         }
 
-        function toggleTerminalModal() {
-            if (isCreatorUnlocked) {
-                // Lock terminal
-                isCreatorUnlocked = false;
-                document.getElementById('creator-terminal-panel').classList.add('hidden');
-                document.getElementById('creator-badge-text').innerText = 'PUBLIC_READER_MODE';
-                document.getElementById('creator-lock-icon').setAttribute('data-lucide', 'lock');
-                document.getElementById('creator-lock-icon').className = 'w-3.5 h-3.5 text-amber-400';
-                showToast('CREATOR TERMINAL LOCKED');
-                playSynthSound(300, 'sawtooth', 0.2);
-            } else {
-                document.getElementById('terminal-auth-modal').classList.remove('hidden');
-                document.getElementById('auth-passcode').focus();
-                playSynthSound(600, 'sine', 0.15);
-            }
-            lucide.createIcons();
-        }
-
-        function closeTerminalModal() {
-            document.getElementById('terminal-auth-modal').classList.add('hidden');
-        }
-
-        function authenticateCreator() {
-            const code = document.getElementById('auth-passcode').value.trim();
-            if (code === 'NEXUS-2026' || code === '') {
-                isCreatorUnlocked = true;
-                closeTerminalModal();
-                document.getElementById('creator-terminal-panel').classList.remove('hidden');
-                document.getElementById('creator-badge-text').innerText = 'CREATOR_TERMINAL_UNLOCKED';
-                document.getElementById('creator-lock-icon').setAttribute('data-lucide', 'unlock');
-                document.getElementById('creator-lock-icon').className = 'w-3.5 h-3.5 text-cyber-emerald';
-                
-                showToast('CREATOR AUTH SUCCESSFUL');
-                playSynthSound(1000, 'sine', 0.2);
-                
-                // Scroll to publishing terminal
-                document.getElementById('creator-terminal-panel').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                showToast('ERROR: INVALID ACCESS KEY');
-                playSynthSound(200, 'sawtooth', 0.25);
-            }
-            lucide.createIcons();
-        }
-
-        function handleFileSelected(event, type) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            playSynthSound(650, 'square', 0.12);
-            const objectUrl = URL.createObjectURL(file);
-            selectedMediaAttachment = {
-                type: type,
-                url: objectUrl,
-                name: file.name
-            };
-
-            renderMediaPreview();
-            showToast('MEDIA FILE LOADED');
-        }
-
-        function renderMediaPreview() {
-            const container = document.getElementById('media-preview-container');
-            const target = document.getElementById('media-preview-target');
-            const info = document.getElementById('media-file-info');
-
-            if (!selectedMediaAttachment) {
-                container.classList.add('hidden');
-                target.innerHTML = '';
-                return;
-            }
-
-            container.classList.remove('hidden');
-            info.innerText = selectedMediaAttachment.name.toUpperCase();
-
-            if (selectedMediaAttachment.type === 'image') {
-                target.innerHTML = `<img src="${selectedMediaAttachment.url}" class="max-h-60 w-full object-cover rounded-lg">`;
-            } else {
-                target.innerHTML = `
-                    <video controls class="max-h-60 w-full bg-black rounded-lg">
-                        <source src="${selectedMediaAttachment.url}" type="video/mp4">
-                    </video>
-                `;
-            }
-            lucide.createIcons();
-        }
-
-        function clearComposerMedia() {
-            selectedMediaAttachment = null;
-            document.getElementById('image-file-input').value = '';
-            document.getElementById('video-file-input').value = '';
-            renderMediaPreview();
-            playSynthSound(300, 'sine', 0.1);
-        }
-
-        function publishEntry() {
-            const title = document.getElementById('entry-title').value.trim();
-            const body = document.getElementById('entry-body').value.trim();
-            const category = document.getElementById('entry-category').value;
-            const mood = document.getElementById('entry-mood').value.trim() || 'Neutral';
-            const location = document.getElementById('entry-location').value.trim() || 'Unspecified Sector';
-            const tagsInput = document.getElementById('entry-tags').value.trim();
-
-            if (!title || (!body && !selectedMediaAttachment)) {
-                showToast('ERROR: TITLE & CONTENT REQUIRED');
-                playSynthSound(200, 'sawtooth', 0.2);
-                return;
-            }
-
-            const tagsArray = tagsInput ? tagsInput.split(',').map(t => t.trim()) : ['Personal'];
-
-            const now = new Date();
-            const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} // ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-
-            const newEntry = {
-                id: 'entry-' + Date.now(),
-                title: title.toUpperCase(),
-                category: category,
-                mood: mood,
-                location: location,
-                timestamp: dateStr,
-                readTime: category === 'Video Log' ? 'Video Clip' : Math.max(1, Math.ceil(body.length / 300)) + ' min read',
-                body: body,
-                tags: tagsArray,
-                media: selectedMediaAttachment ? { type: selectedMediaAttachment.type, url: selectedMediaAttachment.url } : null,
-                likes: 1,
-                isLiked: true,
-                comments: []
-            };
-
-            entries.unshift(newEntry);
-            saveJournalData();
-
-            // Clear Form
-            document.getElementById('entry-title').value = '';
-            document.getElementById('entry-body').value = '';
-            document.getElementById('entry-mood').value = '';
-            document.getElementById('entry-location').value = '';
-            document.getElementById('entry-tags').value = '';
-            clearComposerMedia();
-
-            renderJournalFeed();
-            showToast('ENTRY PUBLISHED TO PUBLIC LOG');
-            playSynthSound(1000, 'sine', 0.25);
-        }
-
-        function toggleLike(entryId) {
-            const entry = entries.find(e => e.id === entryId);
-            if (entry) {
-                entry.isLiked = !entry.isLiked;
-                entry.likes += entry.isLiked ? 1 : -1;
-                saveJournalData();
-                renderJournalFeed();
-                playSynthSound(entry.isLiked ? 900 : 400, 'sine', 0.15);
+        function prevSlide(postId) {
+            if (!slideState[postId]) return;
+            let state = slideState[postId];
+            if (state.current > 0) {
+                state.current--;
+                updateCarouselUI(postId);
             }
         }
 
-        function addComment(entryId) {
-            const input = document.getElementById(`comment-input-${entryId}`);
-            const text = input.value.trim();
-            if (!text) return;
+        function updateCarouselUI(postId) {
+            const state = slideState[postId];
+            const track = document.getElementById(`track-${postId}`);
+            const counter = document.getElementById(`counter-${postId}`);
+            const dotsContainer = document.getElementById(`dots-${postId}`);
 
-            const entry = entries.find(e => e.id === entryId);
-            if (entry) {
-                entry.comments.push({
-                    author: `Reader #${Math.floor(100 + Math.random() * 899)}`,
-                    text: text,
-                    time: 'Just now'
-                });
-                saveJournalData();
-                renderJournalFeed();
-                showToast('COMMENT POSTED');
-                playSynthSound(800, 'sine', 0.15);
+            if (track) {
+                track.style.transform = `translateX(-${state.current * 100}%)`;
             }
-        }
-
-        function switchView(view) {
-            currentView = view;
-            currentTagFilter = null;
-            playSynthSound(500, 'sine', 0.1);
-
-            ['all', 'logs', 'photos', 'videos'].forEach(v => {
-                const navBtn = document.getElementById('nav-d-' + v);
-                if (navBtn) {
-                    if (v === view) {
-                        navBtn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-cyber-cyan bg-cyber-cyan/10 border border-cyber-cyan/30 transition";
+            if (counter) {
+                counter.innerText = `${state.current + 1}/${state.total}`;
+            }
+            if (dotsContainer) {
+                const dots = dotsContainer.children;
+                for (let i = 0; i < dots.length; i++) {
+                    if (i === state.current) {
+                        dots[i].className = 'w-2 h-2 rounded-full bg-purple-500 transition-all';
                     } else {
-                        navBtn.className = "w-full px-3 py-2.5 rounded-xl flex items-center justify-between text-slate-400 hover:text-white hover:bg-slate-900/60 transition";
+                        dots[i].className = 'w-1.5 h-1.5 rounded-full bg-gray-600 transition-all';
                     }
                 }
-            });
-
-            renderJournalFeed();
-        }
-
-        function filterByTag(tag) {
-            currentTagFilter = tag;
-            showToast(`FILTERING TAG: #${tag}`);
-            playSynthSound(600, 'sine', 0.1);
-            renderJournalFeed();
-        }
-
-        function handleSearch(val) {
-            currentSearchQuery = val.trim().toLowerCase();
-            const clearBtn = document.getElementById('clear-search-btn');
-            if (currentSearchQuery) {
-                clearBtn.classList.remove('hidden');
-            } else {
-                clearBtn.classList.add('hidden');
             }
-            renderJournalFeed();
         }
 
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            currentSearchQuery = '';
-            document.getElementById('clear-search-btn').classList.add('hidden');
-            renderJournalFeed();
+        // Particle Heart Burst
+        function triggerParticleHeart(container, e) {
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const heart = document.createElement('i');
+            heart.className = 'fa-solid fa-heart text-red-500 text-6xl absolute pointer-events-none z-30 drop-shadow-2xl animate-heart-burst';
+            heart.style.left = `${x - 30}px`;
+            heart.style.top = `${y - 30}px`;
+
+            container.appendChild(heart);
+            setTimeout(() => heart.remove(), 850);
         }
 
-        function openLightbox(url, caption = '') {
-            document.getElementById('lightbox-img').src = url;
-            document.getElementById('lightbox-caption').innerText = caption;
-            document.getElementById('lightbox-modal').classList.remove('hidden');
-            playSynthSound(750, 'sine', 0.15);
+        // Creator Studio Helper
+        function addCreatorSlideItem() {
+            const container = document.getElementById('creator-slides-list');
+            const itemHTML = `
+                <div class="flex items-center space-x-2 bg-gray-900/80 p-2 rounded-xl border border-gray-800 slide-item-input">
+                    <select class="bg-gray-800 text-xs text-white rounded-lg p-1.5 focus:outline-none slide-type">
+                        <option value="image">Photo</option>
+                        <option value="video">Video</option>
+                    </select>
+                    <input type="text" placeholder="Image or Video URL..." class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none slide-url">
+                    <button onclick="this.parentElement.remove()" class="text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', itemHTML);
         }
 
-        function closeLightbox() {
-            document.getElementById('lightbox-modal').classList.add('hidden');
+        function setQuickLocation(loc) {
+            document.getElementById('modal-location-input').value = loc;
         }
 
-        function toggleExpandText(entryId) {
-            const bodyElem = document.getElementById(`entry-body-${entryId}`);
-            const btn = document.getElementById(`expand-btn-${entryId}`);
-            
-            if (bodyElem.classList.contains('line-clamp-4')) {
-                bodyElem.classList.remove('line-clamp-4');
-                btn.innerText = 'COLLAPSE LOG';
-            } else {
-                bodyElem.classList.add('line-clamp-4');
-                btn.innerText = 'READ FULL ENTRY';
-            }
-            playSynthSound(500, 'sine', 0.1);
+        function highlightLocation(loc) {
+            alert(`📍 Filtering posts near ${loc}`);
         }
 
-        function renderJournalFeed() {
-            const feed = document.getElementById('journal-feed');
-            feed.innerHTML = '';
+        // Story Viewer Logic
+        let storyInterval;
+        function openStoryViewer(username, imgUrl) {
+            document.getElementById('story-username').innerText = username;
+            document.getElementById('story-avatar').src = `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80`;
+            document.getElementById('story-image').src = imgUrl;
+            document.getElementById('story-modal').classList.remove('hidden');
 
-            let filtered = entries.filter(e => {
-                // View Filter
-                if (currentView === 'logs' && e.category !== 'Diary Entry' && e.category !== 'Thought / Essay') return false;
-                if (currentView === 'photos' && (!e.media || e.media.type !== 'image')) return false;
-                if (currentView === 'videos' && (!e.media || e.media.type !== 'video')) return false;
-
-                // Tag Filter
-                if (currentTagFilter && !e.tags.some(t => t.toLowerCase() === currentTagFilter.toLowerCase())) return false;
-
-                // Search Filter
-                if (currentSearchQuery) {
-                    const matchTitle = e.title.toLowerCase().includes(currentSearchQuery);
-                    const matchBody = e.body.toLowerCase().includes(currentSearchQuery);
-                    const matchLocation = e.location.toLowerCase().includes(currentSearchQuery);
-                    const matchTags = e.tags.some(t => t.toLowerCase().includes(currentSearchQuery));
-                    return matchTitle || matchBody || matchLocation || matchTags;
+            const bar = document.getElementById('story-progress');
+            bar.style.width = '0%';
+            let p = 0;
+            clearInterval(storyInterval);
+            storyInterval = setInterval(() => {
+                p += 2;
+                bar.style.width = `${p}%`;
+                if (p >= 100) {
+                    clearInterval(storyInterval);
+                    closeStoryViewer();
                 }
+            }, 80);
+        }
 
-                return true;
+        function closeStoryViewer() {
+            clearInterval(storyInterval);
+            document.getElementById('story-modal').classList.add('hidden');
+        }
+
+        // Publish Carousel Post to Feed
+        function publishMultiSlidePost() {
+            const caption = document.getElementById('modal-post-caption').value;
+            const location = document.getElementById('modal-location-input').value || 'Global';
+            const music = document.getElementById('modal-music-select').value;
+            
+            const slideInputs = document.querySelectorAll('.slide-item-input');
+            const slides = [];
+            slideInputs.forEach(item => {
+                const type = item.querySelector('.slide-type').value;
+                const url = item.querySelector('.slide-url').value;
+                if (url.trim()) slides.push({ type, url });
             });
 
-            // Update Desktop Badge
-            const badge = document.getElementById('badge-count-all');
-            if (badge) badge.innerText = entries.length;
-
-            if (filtered.length === 0) {
-                feed.innerHTML = `
-                    <div class="hud-glass rounded-2xl p-8 text-center text-slate-500 font-mono space-y-3 border border-slate-800">
-                        <i data-lucide="compass" class="w-8 h-8 mx-auto text-cyber-cyan/40 animate-pulse"></i>
-                        <p class="text-xs">NO CHRONICLE ENTRIES FOUND FOR THIS FILTER</p>
-                        <button onclick="switchView('all')" class="text-xs text-cyber-cyan underline font-bold">RESET FILTERS</button>
-                    </div>
-                `;
-                lucide.createIcons();
+            if (slides.length === 0) {
+                alert('Please provide at least one valid photo or video slide URL!');
                 return;
             }
 
-            filtered.forEach(e => {
-                const card = document.createElement('article');
-                card.className = "hud-card rounded-2xl p-4 sm:p-5 border border-slate-800 space-y-4 font-mono";
+            const newPostId = `post-${Date.now()}`;
+            slideState[newPostId] = { current: 0, total: slides.length };
 
-                // Media Block
-                let mediaHtml = '';
-                if (e.media) {
-                    if (e.media.type === 'image') {
-                        mediaHtml = `
-                            <div onclick="openLightbox('${e.media.url}', '${e.title}')" class="rounded-xl overflow-hidden border border-cyber-cyan/30 cursor-pointer hologram-overlay group">
-                                <img src="${e.media.url}" class="w-full max-h-96 object-cover group-hover:scale-105 transition duration-300">
-                                ${e.media.caption ? `<div class="p-2 bg-slate-950/90 text-[10px] text-cyber-cyan border-t border-slate-800">${e.media.caption}</div>` : ''}
-                            </div>
-                        `;
-                    } else if (e.media.type === 'video') {
-                        mediaHtml = `
-                            <div class="rounded-xl overflow-hidden border border-cyber-violet/40 bg-black">
-                                <video controls preload="metadata" class="w-full max-h-96 object-contain">
-                                    <source src="${e.media.url}" type="video/mp4">
-                                </video>
-                            </div>
-                        `;
-                    }
+            // Render Multi-Slide Post Item
+            let slidesHTML = '';
+            let dotsHTML = '';
+            slides.forEach((s, idx) => {
+                dotsHTML += `<span class="${idx === 0 ? 'w-2 h-2 rounded-full bg-purple-500' : 'w-1.5 h-1.5 rounded-full bg-gray-600'} transition-all"></span>`;
+                if (s.type === 'video') {
+                    slidesHTML += `
+                        <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
+                            <video loop muted playsinline autoplay class="w-full h-full object-cover">
+                                <source src="${s.url}" type="video/mp4">
+                            </video>
+                            <span class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center space-x-1">
+                                <i class="fa-solid fa-video text-brand-tiktok"></i>
+                                <span>VIDEO</span>
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    slidesHTML += `
+                        <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
+                            <img src="${s.url}" class="w-full h-full object-cover">
+                        </div>
+                    `;
                 }
-
-                // Tags HTML
-                const tagsHtml = e.tags.map(t => `<span onclick="filterByTag('${t}')" class="cursor-pointer hover:text-cyber-cyan">#${t}</span>`).join(' ');
-
-                // Comments Tree
-                const commentsHtml = e.comments.map(c => `
-                    <div class="p-2 rounded-lg bg-slate-950/60 border border-slate-800 text-[11px] space-y-1">
-                        <div class="flex justify-between text-slate-500 text-[10px]">
-                            <span class="text-cyber-cyan font-bold">${c.author}</span>
-                            <span>${c.time}</span>
-                        </div>
-                        <p class="text-slate-300 font-sans">${c.text}</p>
-                    </div>
-                `).join('');
-
-                card.innerHTML = `
-                    <div class="hud-corner-tl"></div>
-                    <div class="hud-corner-br"></div>
-
-                    <!-- Header Entry Info -->
-                    <div class="flex items-start justify-between gap-2 border-b border-slate-800 pb-3">
-                        <div class="space-y-1">
-                            <div class="flex flex-wrap items-center gap-2">
-                                <span class="text-[10px] px-2 py-0.5 rounded bg-cyber-cyan/10 border border-cyber-cyan/40 text-cyber-cyan font-bold">${e.category}</span>
-                                <span class="text-[10px] text-slate-400"><i data-lucide="map-pin" class="w-3 h-3 inline text-cyber-emerald"></i> ${e.location}</span>
-                                <span class="text-[10px] text-slate-500">• MOOD: <span class="text-slate-300">${e.mood}</span></span>
-                            </div>
-                            <h3 class="font-bold text-sm sm:text-base text-white leading-snug">${e.title}</h3>
-                        </div>
-                        <span class="text-[10px] text-slate-500 shrink-0">${e.timestamp}</span>
-                    </div>
-
-                    <!-- Text Content Body -->
-                    ${e.body ? `
-                        <div class="space-y-2">
-                            <p id="entry-body-${e.id}" class="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans line-clamp-4 whitespace-pre-line">${e.body}</p>
-                            ${e.body.length > 250 ? `
-                                <button onclick="toggleExpandText('${e.id}')" id="expand-btn-${e.id}" class="text-[10px] text-cyber-cyan hover:underline font-bold">READ FULL ENTRY</button>
-                            ` : ''}
-                        </div>
-                    ` : ''}
-
-                    <!-- Media Attachment -->
-                    ${mediaHtml}
-
-                    <!-- Tags -->
-                    <div class="text-[10px] text-slate-500 flex items-center gap-2">
-                        <i data-lucide="tag" class="w-3 h-3 text-cyber-cyan"></i>
-                        <div>${tagsHtml}</div>
-                    </div>
-
-                    <!-- Actions & Interactions -->
-                    <div class="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                        <button onclick="toggleLike('${e.id}')" class="flex items-center gap-1.5 ${e.isLiked ? 'text-cyber-emerald' : 'text-slate-400 hover:text-cyber-emerald'} transition">
-                            <i data-lucide="heart" class="w-4 h-4 ${e.isLiked ? 'fill-cyber-emerald' : ''}"></i>
-                            <span class="text-[11px] font-bold">${e.likes} PULSES</span>
-                        </button>
-
-                        <div class="text-[11px] text-slate-400 flex items-center gap-1">
-                            <i data-lucide="message-square" class="w-3.5 h-3.5 text-cyber-cyan"></i>
-                            <span>${e.comments.length} COMMENTS</span>
-                        </div>
-                    </div>
-
-                    <!-- Reader Comment Section -->
-                    <div class="pt-2 space-y-2">
-                        <div class="space-y-1.5 max-h-40 overflow-y-auto">
-                            ${commentsHtml}
-                        </div>
-
-                        <!-- Comment Input Box -->
-                        <div class="flex gap-2 pt-1">
-                            <input type="text" id="comment-input-${e.id}" placeholder="Leave a public comment..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan font-sans">
-                            <button onclick="addComment('${e.id}')" class="px-3 py-1.5 rounded-lg bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan hover:bg-cyber-cyan hover:text-black font-bold text-xs transition">
-                                POST
-                            </button>
-                        </div>
-                    </div>
-                `;
-
-                feed.appendChild(card);
             });
 
-            lucide.createIcons();
+            const newPostHTML = `
+                <article class="glass-panel rounded-3xl overflow-hidden border border-gray-800/80 shadow-2xl">
+                    <div class="p-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full object-cover border border-purple-500/50">
+                            <div>
+                                <div class="flex items-center space-x-1.5">
+                                    <h4 class="text-sm font-extrabold text-white">You</h4>
+                                    <i class="fa-solid fa-circle-check text-brand-twitter text-[11px]"></i>
+                                </div>
+                                <button onclick="highlightLocation('${location}')" class="flex items-center space-x-1 text-[11px] text-purple-400 font-semibold hover:underline">
+                                    <i class="fa-solid fa-location-dot text-[10px]"></i>
+                                    <span>${location}</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="hidden sm:flex items-center space-x-2 bg-gray-900/90 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-gray-200">
+                            <i class="fa-solid fa-music text-purple-400 text-xs"></i>
+                            <span class="text-[11px] font-semibold text-gray-300">${music}</span>
+                        </div>
+                    </div>
+
+                    <div class="relative group overflow-hidden bg-black aspect-square" id="carousel-${newPostId}">
+                        <div class="carousel-track h-full w-full" id="track-${newPostId}" style="transform: translateX(0%);">
+                            ${slidesHTML}
+                        </div>
+                        ${slides.length > 1 ? `
+                            <button onclick="prevSlide('${newPostId}')" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                            <button onclick="nextSlide('${newPostId}', ${slides.length})" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
+                                <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </button>
+                        ` : ''}
+                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white border border-white/10 shadow-lg">
+                            <span id="counter-${newPostId}">1/${slides.length}</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-5 text-xl text-white">
+                                <i onclick="toggleInstaLike(this)" class="fa-regular fa-heart cursor-pointer hover:text-brand-instagram transition active:scale-125"></i>
+                                <i onclick="openCommentDrawer('Your Post')" class="fa-regular fa-comment cursor-pointer hover:text-gray-400 transition"></i>
+                            </div>
+                            <div class="flex items-center space-x-1.5" id="dots-${newPostId}">
+                                ${dotsHTML}
+                            </div>
+                            <i onclick="toggleBookmark(this)" class="fa-regular fa-bookmark text-xl text-white cursor-pointer hover:text-amber-400 transition"></i>
+                        </div>
+                        <p class="text-xs font-extrabold text-white">1 like</p>
+                        <p class="text-xs text-gray-300"><span class="font-extrabold text-white">You</span> ${caption}</p>
+                    </div>
+                </article>
+            `;
+
+            document.getElementById('instagram-feed-container').insertAdjacentHTML('afterbegin', newPostHTML);
+            closeCreateModal();
+            switchFeed('instagram');
         }
 
-        function showToast(msg) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = "hud-glass p-3 rounded-xl border border-cyber-cyan/50 text-cyber-cyan font-mono text-xs shadow-2xl flex items-center gap-2 animate-bounce";
-            toast.innerHTML = `<i data-lucide="info" class="w-4 h-4 text-cyber-cyan"></i> <span>${msg}</span>`;
-            container.appendChild(toast);
-            lucide.createIcons();
-
-            setTimeout(() => {
-                toast.remove();
-            }, 3000);
+        // Likes & Toggles
+        function toggleTiktokLike(btn) {
+            const icon = btn.querySelector('.color-heart');
+            icon.classList.toggle('text-red-500');
+            icon.classList.toggle('text-white');
         }
 
-        function initCanvasGrid() {
-            const canvas = document.getElementById('cyber-canvas');
-            const ctx = canvas.getContext('2d');
-
-            function resize() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
+        function toggleInstaLike(icon) {
+            if (icon.classList.contains('fa-solid')) {
+                icon.classList.remove('fa-solid', 'text-brand-instagram');
+                icon.classList.add('fa-regular');
+            } else {
+                icon.classList.add('fa-solid', 'text-brand-instagram');
+                icon.classList.remove('fa-regular');
             }
-            resize();
-            window.addEventListener('resize', resize);
-
-            const nodes = Array.from({ length: 30 }, () => ({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                vx: (Math.random() - 0.5) * 0.4,
-                vy: (Math.random() - 0.5) * 0.4
-            }));
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                nodes.forEach(node => {
-                    node.x += node.vx;
-                    node.y += node.vy;
-
-                    if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
-                    if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
-
-                    ctx.fillStyle = '#06b6d4';
-                    ctx.beginPath();
-                    ctx.arc(node.x, node.y, 1.5, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                for (let i = 0; i < nodes.length; i++) {
-                    for (let j = i + 1; j < nodes.length; j++) {
-                        const dist = Math.hypot(nodes[i].x - nodes[j].x, nodes[i].y - nodes[j].y);
-                        if (dist < 140) {
-                            ctx.strokeStyle = `rgba(6, 182, 212, ${1 - dist / 140})`;
-                            ctx.lineWidth = 0.5;
-                            ctx.beginPath();
-                            ctx.moveTo(nodes[i].x, nodes[i].y);
-                            ctx.lineTo(nodes[j].x, nodes[j].y);
-                            ctx.stroke();
-                        }
-                    }
-                }
-
-                requestAnimationFrame(draw);
-            }
-            draw();
         }
 
-        // APP INITIALIZATION
+        function toggleTweetLike(btn) {
+            const icon = btn.querySelector('i');
+            const count = btn.querySelector('.like-count');
+            let num = parseInt(count.innerText);
+            if (icon.classList.contains('fa-solid')) {
+                icon.classList.remove('fa-solid', 'text-brand-tiktok');
+                icon.classList.add('fa-regular');
+                count.innerText = num - 1;
+            } else {
+                icon.classList.add('fa-solid', 'text-brand-tiktok');
+                icon.classList.remove('fa-regular');
+                count.innerText = num + 1;
+            }
+        }
+
+        function toggleRetweet(btn) {
+            const count = btn.querySelector('.rt-count');
+            let num = parseInt(count.innerText);
+            if (btn.classList.contains('text-emerald-400')) {
+                btn.classList.remove('text-emerald-400');
+                count.innerText = num - 1;
+            } else {
+                btn.classList.add('text-emerald-400');
+                count.innerText = num + 1;
+            }
+        }
+
+        function toggleBookmark(btn) {
+            const icon = btn.querySelector('i') || btn;
+            icon.classList.toggle('text-amber-400');
+        }
+
+        // Drawers & Modals
+        function openCommentDrawer(title) {
+            document.getElementById('drawer-title').innerText = `Comments - ${title}`;
+            document.getElementById('comment-drawer').classList.remove('hidden');
+        }
+
+        function closeCommentDrawer() {
+            document.getElementById('comment-drawer').classList.add('hidden');
+        }
+
+        function sendDrawerComment() {
+            const input = document.getElementById('drawer-input');
+            if (!input.value.trim()) return;
+            const container = document.getElementById('drawer-comments-list');
+            const commentHTML = `
+                <div class="flex space-x-3">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full">
+                    <div>
+                        <p class="text-xs font-bold text-white">You</p>
+                        <p class="text-xs text-gray-300 mt-0.5">${input.value}</p>
+                    </div>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', commentHTML);
+            input.value = '';
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function openCreateModal() {
+            document.getElementById('create-modal').classList.remove('hidden');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-modal').classList.add('hidden');
+        }
+
+        function postQuickTweet() {
+            const input = document.getElementById('quick-tweet-input');
+            if (!input.value.trim()) return;
+            const stream = document.getElementById('tweet-stream');
+            const tweetHTML = `
+                <article class="glass-panel p-4 rounded-3xl border border-gray-800/80 space-y-3">
+                    <div class="flex space-x-3">
+                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full border border-gray-700">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2">
+                                <h4 class="font-bold text-white text-sm">You</h4>
+                                <span class="text-xs text-gray-500">@user · Just now</span>
+                            </div>
+                            <p class="text-xs text-gray-200 mt-1 leading-relaxed">${input.value}</p>
+                        </div>
+                    </div>
+                </article>
+            `;
+            stream.insertAdjacentHTML('afterbegin', tweetHTML);
+            input.value = '';
+        }
+
         window.onload = function() {
-            initCanvasGrid();
-            loadJournalData();
-            renderJournalFeed();
+            switchFeed('tiktok');
         };
     </script>
 </body>
