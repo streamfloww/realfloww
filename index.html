@@ -12,7 +12,7 @@
     :root {
       --bg: #000000;
       --card-bg: #0e0f14;
-      --surface-glass: rgba(18, 20, 29, 0.75);
+      --surface-glass: rgba(18, 20, 29, 0.85);
       --border-glass: rgba(255, 255, 255, 0.08);
       --border-accent: rgba(255, 255, 255, 0.15);
       --accent-gradient: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
@@ -81,7 +81,7 @@
       width: 100%;
       max-width: 480px;
       height: var(--header-height);
-      background: rgba(0, 0, 0, 0.82);
+      background: rgba(0, 0, 0, 0.85);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border-glass);
@@ -111,20 +111,20 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .icon-btn {
       background: rgba(255,255,255,0.05);
       border: 1px solid var(--border-glass);
       color: var(--text-main);
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       border-radius: var(--radius-full);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 1.05rem;
       cursor: pointer;
       position: relative;
       transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -137,8 +137,8 @@
 
     .badge-dot {
       position: absolute;
-      top: 8px;
-      right: 8px;
+      top: 9px;
+      right: 9px;
       width: 8px;
       height: 8px;
       background: var(--accent-pink);
@@ -246,7 +246,6 @@
       flex-direction: column;
     }
 
-    /* Post Header */
     .post-header {
       display: flex;
       align-items: center;
@@ -374,8 +373,7 @@
       background: #050508;
     }
 
-    .media-slide img, 
-    .media-slide video {
+    .media-slide img {
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -410,7 +408,6 @@
       100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
     }
 
-    /* Carousel Badges */
     .carousel-count-badge {
       position: absolute;
       top: 12px;
@@ -426,29 +423,38 @@
       z-index: 5;
     }
 
-    /* POST ACTIONS BAR */
-    .post-actions {
+    /* POST ACTIONS BAR (CENTERED DOTS FIX) */
+    .post-actions-wrapper {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 12px 16px 8px 16px;
+      padding: 10px 16px 8px 16px;
+      width: 100%;
     }
 
     .left-actions {
       display: flex;
       align-items: center;
       gap: 16px;
+      z-index: 2;
+    }
+
+    .right-actions {
+      z-index: 2;
     }
 
     .action-icon-btn {
       background: none;
       border: none;
       color: var(--text-main);
-      font-size: 1.4rem;
+      font-size: 1.45rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 32px;
+      height: 32px;
       transition: transform 0.15s ease, color 0.15s ease;
     }
 
@@ -467,10 +473,18 @@
       100% { transform: scale(1); }
     }
 
-    .carousel-dots-indicator {
+    /* CENTERED DOTS INDICATOR CONTAINER */
+    .carousel-dots-center-container {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
+      pointer-events: none;
+      z-index: 1;
     }
 
     .dot-node {
@@ -478,13 +492,14 @@
       height: 6px;
       border-radius: 50%;
       background: rgba(255,255,255,0.25);
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
     .dot-node.active {
       background: var(--accent-blue);
       width: 8px;
       height: 8px;
+      box-shadow: 0 0 8px rgba(0, 149, 246, 0.6);
     }
 
     /* LIKES & CAPTION */
@@ -530,11 +545,6 @@
       margin-right: 6px;
     }
 
-    .caption-tag {
-      color: #4da6ff;
-      cursor: pointer;
-    }
-
     .comments-view-link {
       font-size: 0.8rem;
       color: var(--text-muted);
@@ -548,6 +558,150 @@
       text-transform: uppercase;
       letter-spacing: 0.4px;
       margin-top: 2px;
+    }
+
+    /* SIDE SLIDE-OVER DRAWERS (MESSAGES & NOTIFICATIONS) */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      z-index: 250;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-panel {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      max-width: 480px;
+      height: 100vh;
+      background: #0a0b10;
+      z-index: 260;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+      border-left: 1px solid var(--border-glass);
+    }
+
+    @media (min-width: 1024px) {
+      .drawer-panel { max-width: 520px; }
+    }
+
+    .drawer-panel.active {
+      right: 0;
+    }
+
+    .drawer-header {
+      height: var(--header-height);
+      padding: 0 16px;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .drawer-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: flex-start;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* MESSAGES & NOTIFICATIONS LIST ITEM */
+    .list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border-glass);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .list-item:active {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .list-left-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .list-avatar-box {
+      position: relative;
+      width: 44px;
+      height: 44px;
+    }
+
+    .list-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .online-indicator {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 10px;
+      height: 10px;
+      background: #10b981;
+      border-radius: 50%;
+      border: 2px solid #0a0b10;
+    }
+
+    .list-text-details {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .list-primary-text {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .list-secondary-text {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .follow-btn {
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     /* BOTTOM NAV BAR */
@@ -609,12 +763,12 @@
       border-color: var(--text-main);
     }
 
-    /* FULLSCREEN STORY PLAYER MODAL */
+    /* STORY PLAYER MODAL */
     .story-viewer-modal {
       position: fixed;
       inset: 0;
       background: #000;
-      z-index: 200;
+      z-index: 300;
       display: none;
       flex-direction: column;
       justify-content: space-between;
@@ -680,11 +834,6 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
     }
 
-    .story-time-badge {
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.7);
-    }
-
     .story-close-btn {
       background: none;
       border: none;
@@ -703,14 +852,12 @@
       justify-content: center;
     }
 
-    .story-media-content img,
-    .story-media-content video {
+    .story-media-content img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
 
-    /* Touch Zones for Rewind / Advance */
     .story-touch-zone {
       position: absolute;
       top: 60px;
@@ -721,32 +868,6 @@
 
     .story-touch-left { left: 0; }
     .story-touch-right { right: 0; width: 65%; }
-
-    .story-footer-input-row {
-      position: absolute;
-      bottom: 16px;
-      left: 12px;
-      right: 12px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      z-index: 10;
-    }
-
-    .story-reply-input {
-      flex: 1;
-      height: 44px;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: var(--radius-full);
-      padding: 0 16px;
-      color: #fff;
-      font-size: 0.88rem;
-      outline: none;
-    }
-
-    .story-reply-input::placeholder { color: rgba(255,255,255,0.7); }
 
     /* CREATE POST MODAL */
     .modal-overlay {
@@ -814,10 +935,6 @@
       outline: none;
     }
 
-    .form-input:focus {
-      border-color: var(--accent-blue);
-    }
-
     .primary-btn {
       background: var(--accent-gradient);
       color: #fff;
@@ -830,8 +947,6 @@
       text-align: center;
       margin-top: 8px;
     }
-
-    .primary-btn:active { transform: scale(0.98); }
   </style>
 </head>
 <body>
@@ -848,11 +963,11 @@
         <button class="icon-btn" onclick="openComposerModal()" title="Create Post">
           <i class="fa-regular fa-square-plus"></i>
         </button>
-        <button class="icon-btn" title="Notifications">
+        <button class="icon-btn" onclick="openNotificationsDrawer()" title="Notifications">
           <i class="fa-regular fa-heart"></i>
           <span class="badge-dot"></span>
         </button>
-        <button class="icon-btn" title="Messages">
+        <button class="icon-btn" onclick="openMessagesDrawer()" title="Messages">
           <i class="fa-regular fa-paper-plane"></i>
         </button>
       </div>
@@ -860,15 +975,11 @@
 
     <!-- STORIES HORIZONTAL TRAY -->
     <section class="stories-container">
-      <div class="stories-wrapper" id="storiesWrapper">
-        <!-- Story Items injected dynamically -->
-      </div>
+      <div class="stories-wrapper" id="storiesWrapper"></div>
     </section>
 
     <!-- FEED CONTAINER -->
-    <main class="feed-container" id="feedContainer">
-      <!-- Posts injected dynamically -->
-    </main>
+    <main class="feed-container" id="feedContainer"></main>
 
     <!-- BOTTOM NAVIGATION BAR -->
     <nav class="bottom-nav-bar">
@@ -891,6 +1002,100 @@
 
   </div>
 
+  <!-- DRAWER BACKDROP -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeAllDrawers()"></div>
+
+  <!-- DIRECT MESSAGES DRAWER -->
+  <aside class="drawer-panel" id="messagesDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <i class="fa-regular fa-paper-plane" style="color: var(--accent-blue);"></i>
+        <span>Messages</span>
+      </div>
+      <button class="icon-btn" style="width:34px; height:34px;" onclick="closeAllDrawers()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="list-item">
+        <div class="list-left-info">
+          <div class="list-avatar-box">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" class="list-avatar">
+            <div class="online-indicator"></div>
+          </div>
+          <div class="list-text-details">
+            <span class="list-primary-text">sara.tokyo</span>
+            <span class="list-secondary-text">Are you coming to Shibuya tonight? • 12m</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div class="list-left-info">
+          <div class="list-avatar-box">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150" class="list-avatar">
+            <div class="online-indicator"></div>
+          </div>
+          <div class="list-text-details">
+            <span class="list-primary-text">alex_cyber</span>
+            <span class="list-secondary-text">Sent a reel link • 1h</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div class="list-left-info">
+          <div class="list-avatar-box">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150" class="list-avatar">
+          </div>
+          <div class="list-text-details">
+            <span class="list-primary-text">drift_king</span>
+            <span class="list-secondary-text">Check out the new exhaust setup! 🔥 • 3h</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- NOTIFICATIONS DRAWER -->
+  <aside class="drawer-panel" id="notificationsDrawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <i class="fa-solid fa-heart" style="color: var(--accent-pink);"></i>
+        <span>Notifications</span>
+      </div>
+      <button class="icon-btn" style="width:34px; height:34px;" onclick="closeAllDrawers()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="list-item">
+        <div class="list-left-info">
+          <div class="list-avatar-box">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" class="list-avatar">
+          </div>
+          <div class="list-text-details">
+            <span class="list-primary-text">sara.tokyo</span>
+            <span class="list-secondary-text">liked your post. 5m ago</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-item">
+        <div class="list-left-info">
+          <div class="list-avatar-box">
+            <img src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150" class="list-avatar">
+          </div>
+          <div class="list-text-details">
+            <span class="list-primary-text">future_beats</span>
+            <span class="list-secondary-text">started following you. 2h ago</span>
+          </div>
+        </div>
+        <button class="follow-btn">Follow</button>
+      </div>
+    </div>
+  </aside>
+
   <!-- FULLSCREEN STORY PLAYER MODAL -->
   <div class="story-viewer-modal" id="storyModal">
     <div class="story-progress-bar-container" id="storyProgressContainer"></div>
@@ -898,26 +1103,16 @@
       <div class="story-user-meta">
         <img src="" id="storyUserAvatar" class="story-user-avatar" alt="">
         <span id="storyUsername" class="story-user-name">username</span>
-        <span id="storyTime" class="story-time-badge">2h</span>
       </div>
       <button class="story-close-btn" onclick="closeStoryModal()">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
 
-    <div class="story-media-content" id="storyMediaBox">
-      <!-- Media inserted dynamically -->
-    </div>
+    <div class="story-media-content" id="storyMediaBox"></div>
 
-    <!-- Touch Navigation Areas -->
     <div class="story-touch-zone story-touch-left" onclick="prevStory()"></div>
     <div class="story-touch-zone story-touch-right" onclick="nextStory()"></div>
-
-    <div class="story-footer-input-row">
-      <input type="text" class="story-reply-input" placeholder="Send message...">
-      <button class="action-icon-btn" style="color:#fff;"><i class="fa-regular fa-heart"></i></button>
-      <button class="action-icon-btn" style="color:#fff;"><i class="fa-regular fa-paper-plane"></i></button>
-    </div>
   </div>
 
   <!-- CREATE MULTI-SLIDE POST MODAL -->
@@ -1049,7 +1244,7 @@
             </header>
 
             <!-- Media Carousel with Touch/Swipe -->
-            <div class="media-viewport" onwheel="handleCarouselWheel(event, ${post.id})">
+            <div class="media-viewport">
               <div class="heart-burst" id="burst-${post.id}">
                 <i class="fa-solid fa-heart"></i>
               </div>
@@ -1065,23 +1260,25 @@
               </div>
             </div>
 
-            <!-- Post Actions -->
-            <div class="post-actions">
+            <!-- Post Actions & Centered Dots Container -->
+            <div class="post-actions-wrapper">
               <div class="left-actions">
                 <button class="action-icon-btn ${post.liked ? 'liked' : ''}" id="like-btn-${post.id}" onclick="toggleLike(${post.id})">
                   <i class="${post.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>
                 </button>
                 <button class="action-icon-btn"><i class="fa-regular fa-comment"></i></button>
-                <button class="action-icon-btn"><i class="fa-regular fa-paper-plane"></i></button>
+                <button class="action-icon-btn" onclick="openMessagesDrawer()"><i class="fa-regular fa-paper-plane"></i></button>
               </div>
 
               ${isMulti ? `
-                <div class="carousel-dots-indicator" id="dots-${post.id}">
+                <div class="carousel-dots-center-container" id="dots-${post.id}">
                   ${post.media.map((_, i) => `<div class="dot-node ${i === 0 ? 'active' : ''}"></div>`).join('')}
                 </div>
               ` : ''}
 
-              <button class="action-icon-btn"><i class="fa-regular fa-bookmark"></i></button>
+              <div class="right-actions">
+                <button class="action-icon-btn"><i class="fa-regular fa-bookmark"></i></button>
+              </div>
             </div>
 
             <!-- Likes & Caption -->
@@ -1119,11 +1316,9 @@
       const slideWidth = slider.clientWidth;
       const currentIndex = Math.round(scrollLeft / slideWidth);
 
-      // Update counter badge
       const badge = document.getElementById(`badge-${postId}`);
       if (badge) badge.innerText = `${currentIndex + 1}/${totalSlides}`;
 
-      // Update dot nodes
       const dotsContainer = document.getElementById(`dots-${postId}`);
       if (dotsContainer) {
         const dots = dotsContainer.querySelectorAll('.dot-node');
@@ -1139,11 +1334,10 @@
       const post = mockPosts.find(p => p.id === postId);
       if (!post) return;
 
-      // Animate heart
       const burst = document.getElementById(`burst-${postId}`);
       if (burst) {
         burst.classList.remove('animate');
-        void burst.offsetWidth; // Trigger reflow
+        void burst.offsetWidth;
         burst.classList.add('animate');
       }
 
@@ -1173,6 +1367,25 @@
       }
     }
 
+    // DRAWERS CONTROL LOGIC
+    function openMessagesDrawer() {
+      closeAllDrawers();
+      document.getElementById('drawerOverlay').classList.add('active');
+      document.getElementById('messagesDrawer').classList.add('active');
+    }
+
+    function openNotificationsDrawer() {
+      closeAllDrawers();
+      document.getElementById('drawerOverlay').classList.add('active');
+      document.getElementById('notificationsDrawer').classList.add('active');
+    }
+
+    function closeAllDrawers() {
+      document.getElementById('drawerOverlay').classList.remove('active');
+      document.getElementById('messagesDrawer').classList.remove('active');
+      document.getElementById('notificationsDrawer').classList.remove('active');
+    }
+
     // STORY PLAYER MODAL LOGIC
     let activeStoryIndex = 0;
     let storyTimer = null;
@@ -1190,7 +1403,6 @@
       document.getElementById('storyUsername').innerText = story.name;
       document.getElementById('storyMediaBox').innerHTML = `<img src="${story.media}" alt="Story">`;
 
-      // Setup Progress Tracks
       const progressContainer = document.getElementById('storyProgressContainer');
       progressContainer.innerHTML = mockStories.map((_, i) => `
         <div class="progress-track">
@@ -1204,7 +1416,6 @@
     function startStoryProgress() {
       clearInterval(storyTimer);
       
-      // Reset all tracks
       mockStories.forEach((_, i) => {
         const fill = document.getElementById(`pfill-${i}`);
         if (fill) {
@@ -1291,7 +1502,6 @@
       renderPosts();
       closeComposerModal();
 
-      // Clear form
       document.getElementById('inputMediaUrls').value = '';
       document.getElementById('inputCaption').value = '';
       document.getElementById('inputLocation').value = '';
