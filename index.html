@@ -1,1036 +1,1308 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OmniMedia - Unified Social Platform</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Instagram • OmniMedia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #000000;
+      --card-bg: #0e0f14;
+      --surface-glass: rgba(18, 20, 29, 0.75);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(255, 255, 255, 0.15);
+      --accent-gradient: linear-gradient(135deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      --accent-pink: #e1306c;
+      --accent-blue: #0095f6;
+      --text-main: #ffffff;
+      --text-muted: #8e8e93;
+      --text-subtle: #636366;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --header-height: 60px;
+      --nav-height: 65px;
+    }
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
 
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            tiktok: '#FE2C55',
-                            instagram: '#E1306C',
-                            twitter: '#1DA1F2',
-                            accent: '#8b5cf6',
-                            darkBg: '#07080c',
-                            darkCard: 'rgba(15, 18, 28, 0.82)',
-                            darkBorder: 'rgba(255, 255, 255, 0.08)'
-                        }
-                    },
-                    keyframes: {
-                        heartPop: {
-                            '0%': { transform: 'scale(0) rotate(-12deg)', opacity: '0' },
-                            '40%': { transform: 'scale(1.3) rotate(0deg)', opacity: '1' },
-                            '70%': { transform: 'scale(1) rotate(0deg)', opacity: '0.9' },
-                            '100%': { transform: 'scale(1.2) translateY(-20px)', opacity: '0' }
-                        },
-                        equalizer: {
-                            '0%, 100%': { height: '4px' },
-                            '50%': { height: '14px' }
-                        },
-                        spinSlow: {
-                            '0%': { transform: 'rotate(0deg)' },
-                            '100%': { transform: 'rotate(360deg)' }
-                        },
-                        slideInRight: {
-                            '0%': { transform: 'translateX(100%)' },
-                            '100%': { transform: 'translateX(0)' }
-                        }
-                    },
-                    animation: {
-                        'heart-burst': 'heartPop 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
-                        'spin-vinyl': 'spinSlow 7s linear infinite',
-                        'eq-1': 'equalizer 0.6s ease-in-out infinite 0.1s',
-                        'eq-2': 'equalizer 0.8s ease-in-out infinite 0.3s',
-                        'eq-3': 'equalizer 0.5s ease-in-out infinite 0.2s',
-                        'slide-in': 'slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-                    }
-                }
-            }
-        }
-    </script>
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(225, 48, 108, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(0, 149, 246, 0.05) 0%, transparent 40%);
+    }
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    .app-viewport {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      background: var(--bg);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--header-height);
+      padding-bottom: calc(var(--nav-height) + 10px);
+      box-shadow: 0 0 50px rgba(0,0,0,0.8);
+      border-left: 1px solid var(--border-glass);
+      border-right: 1px solid var(--border-glass);
+    }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #07080c;
-            color: #f3f4f6;
-            overflow-x: hidden;
-            touch-action: manipulation;
-            -webkit-tap-highlight-color: transparent;
-        }
+    @media (min-width: 1024px) {
+      .app-viewport {
+        max-width: 620px;
+      }
+    }
 
-        /* 120FPS GPU Layer Isolation */
-        .gpu-layer {
-            transform: translate3d(0, 0, 0);
-            will-change: transform, opacity;
-            backface-visibility: hidden;
-        }
+    /* TOP HEADER */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: var(--header-height);
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      z-index: 100;
+    }
 
-        .glass-panel {
-            background: rgba(15, 18, 28, 0.82);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
+    @media (min-width: 1024px) {
+      .top-bar { max-width: 620px; }
+    }
 
-        .glass-nav {
-            background: rgba(7, 8, 12, 0.92);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
+    .brand-logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
 
-        .tiktok-container {
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
-            height: calc(100vh - 70px);
-        }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
 
-        @media (min-width: 768px) {
-            .tiktok-container {
-                height: calc(100vh - 40px);
-                max-height: 840px;
-            }
-        }
+    .icon-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-main);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
 
-        .tiktok-card {
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-        }
+    .icon-btn:active {
+      transform: scale(0.92);
+      background: rgba(255,255,255,0.12);
+    }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .badge-dot {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 8px;
+      height: 8px;
+      background: var(--accent-pink);
+      border-radius: 50%;
+      border: 2px solid #000;
+    }
 
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
-        ::-webkit-scrollbar-track { background: #07080c; }
-        ::-webkit-scrollbar-thumb { background: #1f293d; border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    /* STORIES TRAY */
+    .stories-container {
+      width: 100%;
+      padding: 14px 0 10px 0;
+      border-bottom: 1px solid var(--border-glass);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .stories-container::-webkit-scrollbar { display: none; }
 
-        /* Carousel Smooth Track */
-        .carousel-track {
-            display: flex;
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-    </style>
+    .stories-wrapper {
+      display: flex;
+      gap: 16px;
+      padding: 0 16px;
+      width: max-content;
+    }
+
+    .story-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      width: 68px;
+    }
+
+    .story-ring {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      padding: 2.5px;
+      background: var(--accent-gradient);
+      position: relative;
+      transition: transform 0.2s ease;
+    }
+
+    .story-item:active .story-ring {
+      transform: scale(0.94);
+    }
+
+    .story-ring.seen {
+      background: var(--border-accent);
+    }
+
+    .story-ring.my-story {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .story-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--bg);
+      background: #111;
+    }
+
+    .add-story-plus {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 20px;
+      height: 20px;
+      background: var(--accent-blue);
+      border: 2px solid var(--bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: #fff;
+    }
+
+    .story-username {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      width: 100%;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 500;
+    }
+
+    /* FEED POSTS */
+    .feed-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 8px;
+    }
+
+    .post-card {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Post Header */
+    .post-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+    }
+
+    .post-author-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .author-avatar-ring {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      padding: 1.5px;
+      background: var(--accent-gradient);
+    }
+
+    .author-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--bg);
+    }
+
+    .author-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .author-name-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .author-username {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .verified-badge {
+      color: var(--accent-blue);
+      font-size: 0.75rem;
+    }
+
+    .post-sub-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.06);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      font-size: 0.68rem;
+      color: var(--text-main);
+      border: 1px solid var(--border-glass);
+    }
+
+    .soundwave-icon {
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5px;
+      height: 10px;
+    }
+    .soundwave-icon span {
+      width: 2px;
+      background: var(--accent-pink);
+      border-radius: 1px;
+      animation: soundwave 1s ease-in-out infinite alternate;
+    }
+    .soundwave-icon span:nth-child(1) { height: 40%; animation-delay: 0.1s; }
+    .soundwave-icon span:nth-child(2) { height: 100%; animation-delay: 0.3s; }
+    .soundwave-icon span:nth-child(3) { height: 60%; animation-delay: 0.2s; }
+
+    @keyframes soundwave {
+      0% { height: 30%; }
+      100% { height: 100%; }
+    }
+
+    /* MEDIA CAROUSEL WITH TOUCH/SWIPE SNAP */
+    .media-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: #000;
+      overflow: hidden;
+      touch-action: pan-y;
+    }
+
+    .media-slider {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      scroll-behavior: smooth;
+    }
+    .media-slider::-webkit-scrollbar { display: none; }
+
+    .media-slide {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #050508;
+    }
+
+    .media-slide img, 
+    .media-slide video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* DOUBLE TAP HEART ANIMATION */
+    .heart-burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 5.5rem;
+      color: #ffffff;
+      text-shadow: 0 0 30px rgba(225, 48, 108, 0.8);
+      pointer-events: none;
+      z-index: 10;
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+    }
+
+    .heart-burst.animate {
+      transform: translate(-50%, -50%) scale(1.1);
+      opacity: 1;
+      animation: burstFade 0.8s forwards;
+    }
+
+    @keyframes burstFade {
+      0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+      50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+      80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+    }
+
+    /* Carousel Badges */
+    .carousel-count-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-glass);
+      z-index: 5;
+    }
+
+    /* POST ACTIONS BAR */
+    .post-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px 8px 16px;
+    }
+
+    .left-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .action-icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    .action-icon-btn:active {
+      transform: scale(0.85);
+    }
+
+    .action-icon-btn.liked {
+      color: var(--accent-pink);
+      animation: heartPop 0.3s ease;
+    }
+
+    @keyframes heartPop {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.3); }
+      100% { transform: scale(1); }
+    }
+
+    .carousel-dots-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .dot-node {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      transition: all 0.2s ease;
+    }
+
+    .dot-node.active {
+      background: var(--accent-blue);
+      width: 8px;
+      height: 8px;
+    }
+
+    /* LIKES & CAPTION */
+    .post-details {
+      padding: 0 16px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .likes-count-row {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .likes-avatars {
+      display: flex;
+      align-items: center;
+      margin-right: 4px;
+    }
+    .likes-avatars img {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--card-bg);
+      margin-left: -6px;
+    }
+    .likes-avatars img:first-child { margin-left: 0; }
+
+    .caption-box {
+      font-size: 0.86rem;
+      color: var(--text-main);
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .caption-author {
+      font-weight: 700;
+      margin-right: 6px;
+    }
+
+    .caption-tag {
+      color: #4da6ff;
+      cursor: pointer;
+    }
+
+    .comments-view-link {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-top: 2px;
+    }
+
+    .post-time-ago {
+      font-size: 0.68rem;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 2px;
+    }
+
+    /* BOTTOM NAV BAR */
+    .bottom-nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: var(--nav-height);
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 10px;
+      z-index: 100;
+    }
+
+    @media (min-width: 1024px) {
+      .bottom-nav-bar { max-width: 620px; }
+    }
+
+    .nav-tab-item {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.35rem;
+      width: 50px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+
+    .nav-tab-item.active {
+      color: var(--text-main);
+    }
+
+    .nav-tab-item:active {
+      transform: scale(0.88);
+    }
+
+    .profile-nav-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid transparent;
+    }
+
+    .nav-tab-item.active .profile-nav-avatar {
+      border-color: var(--text-main);
+    }
+
+    /* FULLSCREEN STORY PLAYER MODAL */
+    .story-viewer-modal {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .story-viewer-modal.active {
+      display: flex;
+    }
+
+    .story-progress-bar-container {
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      gap: 4px;
+      z-index: 10;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 2.5px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #fff;
+    }
+
+    .story-viewer-header {
+      position: absolute;
+      top: 24px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .story-user-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .story-user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .story-user-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .story-time-badge {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .story-close-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.2rem;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    .story-media-content {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .story-media-content img,
+    .story-media-content video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Touch Zones for Rewind / Advance */
+    .story-touch-zone {
+      position: absolute;
+      top: 60px;
+      bottom: 80px;
+      width: 35%;
+      z-index: 5;
+    }
+
+    .story-touch-left { left: 0; }
+    .story-touch-right { right: 0; width: 65%; }
+
+    .story-footer-input-row {
+      position: absolute;
+      bottom: 16px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .story-reply-input {
+      flex: 1;
+      height: 44px;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: var(--radius-full);
+      padding: 0 16px;
+      color: #fff;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .story-reply-input::placeholder { color: rgba(255,255,255,0.7); }
+
+    /* CREATE POST MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 440px;
+      background: #12141d;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .form-input {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .primary-btn {
+      background: var(--accent-gradient);
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .primary-btn:active { transform: scale(0.98); }
+  </style>
 </head>
-<body class="h-screen w-screen flex flex-col md:flex-row overflow-hidden select-none bg-[#07080c]">
+<body>
 
-    <!-- DESKTOP SIDEBAR NAVIGATION -->
-    <aside class="hidden md:flex flex-col justify-between w-64 lg:w-72 glass-panel border-r border-gray-800/60 p-5 z-40 shrink-0">
-        <div class="space-y-6">
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-3 px-2 py-1">
-                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-brand-tiktok via-brand-instagram to-brand-twitter flex items-center justify-center text-white shadow-xl shadow-purple-500/20">
-                    <i class="fa-solid fa-shapes text-xl"></i>
-                </div>
-                <div>
-                    <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-white via-gray-100 to-gray-400 bg-clip-text text-transparent">OmniMedia</span>
-                    <span class="block text-[10px] font-bold text-purple-400 tracking-widest uppercase">Ultra Luxe</span>
-                </div>
-            </div>
+  <div class="app-viewport">
+    
+    <!-- TOP HEADER BAR -->
+    <header class="top-bar">
+      <div class="brand-logo">
+        <i class="fa-brands fa-instagram"></i>
+        <span>OmniMedia</span>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openComposerModal()" title="Create Post">
+          <i class="fa-regular fa-square-plus"></i>
+        </button>
+        <button class="icon-btn" title="Notifications">
+          <i class="fa-regular fa-heart"></i>
+          <span class="badge-dot"></span>
+        </button>
+        <button class="icon-btn" title="Messages">
+          <i class="fa-regular fa-paper-plane"></i>
+        </button>
+      </div>
+    </header>
 
-            <!-- Navigation Modes -->
-            <div class="space-y-1.5">
-                <p class="px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-500 mb-2">Feeds & Streams</p>
+    <!-- STORIES HORIZONTAL TRAY -->
+    <section class="stories-container">
+      <div class="stories-wrapper" id="storiesWrapper">
+        <!-- Story Items injected dynamically -->
+      </div>
+    </section>
 
-                <button onclick="switchFeed('tiktok')" id="btn-mode-tiktok" class="nav-mode-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 text-gray-400 hover:bg-gray-800/50 hover:text-white">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-play text-lg"></i>
-                        <span class="font-semibold text-sm">Watch (TikTok)</span>
-                    </div>
-                    <span class="w-2 h-2 rounded-full bg-brand-tiktok opacity-0 badge-dot"></span>
-                </button>
-
-                <button onclick="switchFeed('instagram')" id="btn-mode-instagram" class="nav-mode-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 text-gray-400 hover:bg-gray-800/50 hover:text-white">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-camera-retro text-lg"></i>
-                        <span class="font-semibold text-sm">Feed (Instagram)</span>
-                    </div>
-                    <span class="w-2 h-2 rounded-full bg-brand-instagram opacity-0 badge-dot"></span>
-                </button>
-
-                <button onclick="switchFeed('twitter')" id="btn-mode-twitter" class="nav-mode-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl transition-all duration-200 text-gray-400 hover:bg-gray-800/50 hover:text-white">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-brands fa-x-twitter text-lg"></i>
-                        <span class="font-semibold text-sm">Timeline (X)</span>
-                    </div>
-                    <span class="w-2 h-2 rounded-full bg-brand-twitter opacity-0 badge-dot"></span>
-                </button>
-            </div>
-
-            <div class="space-y-1 pt-4 border-t border-gray-800/60">
-                <p class="px-3 text-[11px] font-extrabold uppercase tracking-widest text-gray-500 mb-2">Social Hub</p>
-                <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-2xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
-                    <i class="fa-solid fa-compass text-lg"></i>
-                    <span class="font-medium text-sm">Explore Trends</span>
-                </a>
-                <a href="#" class="flex items-center justify-between px-4 py-3 rounded-2xl text-gray-300 hover:bg-gray-800/50 hover:text-white transition">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-bell text-lg"></i>
-                        <span class="font-medium text-sm">Notifications</span>
-                    </div>
-                    <span class="bg-brand-tiktok text-white text-[11px] font-extrabold px-2 py-0.5 rounded-full">4</span>
-                </a>
-            </div>
-        </div>
-
-        <div>
-            <button onclick="openCreateModal()" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold py-3.5 px-4 rounded-2xl shadow-xl shadow-purple-500/25 hover:brightness-110 active:scale-95 transition flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-plus text-base"></i>
-                <span class="text-sm">Create New Post</span>
-            </button>
-        </div>
-    </aside>
-
-    <!-- MAIN VIEWPORT CONTAINER -->
-    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-[#07080c]">
-
-        <!-- MOBILE HEADER GLASS NAV -->
-        <header class="md:hidden glass-nav h-14 px-4 flex items-center justify-between z-30 shrink-0">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-brand-tiktok via-brand-instagram to-brand-twitter flex items-center justify-center text-white text-xs">
-                    <i class="fa-solid fa-shapes"></i>
-                </div>
-                <span class="text-lg font-black text-white tracking-tight">OmniMedia</span>
-            </div>
-
-            <!-- Mobile View Selector Pills -->
-            <div class="flex items-center bg-gray-900/90 border border-gray-800 p-1 rounded-xl">
-                <button onclick="switchFeed('tiktok')" id="m-btn-tiktok" class="m-feed-btn px-2.5 py-1 text-xs font-bold rounded-lg text-gray-400 transition">Watch</button>
-                <button onclick="switchFeed('instagram')" id="m-btn-instagram" class="m-feed-btn px-2.5 py-1 text-xs font-bold rounded-lg text-gray-400 transition">Feed</button>
-                <button onclick="switchFeed('twitter')" id="m-btn-twitter" class="m-feed-btn px-2.5 py-1 text-xs font-bold rounded-lg text-gray-400 transition">Tweets</button>
-            </div>
-        </header>
-
-        <!-- ========================================== -->
-        <!-- VIEW 1: TIKTOK / WATCH FEED (VERTICAL SNAP) -->
-        <!-- ========================================== -->
-        <section id="feed-tiktok" class="feed-section w-full h-full flex justify-center items-center py-0 md:py-4">
-            <div id="tiktok-scroll-container" class="tiktok-container w-full max-w-sm md:max-w-md bg-black rounded-none md:rounded-3xl shadow-2xl relative border-0 md:border border-gray-800/80 no-scrollbar">
-
-                <!-- TikTok Card 1 -->
-                <div class="tiktok-card relative w-full h-full flex items-center justify-center overflow-hidden group">
-                    <video loop muted playsinline class="tiktok-video w-full h-full object-cover" poster="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80">
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-neon-lights-in-a-futuristic-city-42861-large.mp4" type="video/mp4">
-                    </video>
-
-                    <!-- Overlay Action Buttons -->
-                    <div class="absolute right-3 bottom-24 flex flex-col items-center space-y-5 z-20">
-                        <div class="relative">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" class="w-11 h-11 rounded-full border-2 border-white object-cover">
-                            <span class="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-brand-tiktok text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">+</span>
-                        </div>
-                        <button onclick="toggleTiktokLike(this)" class="flex flex-col items-center text-white space-y-1">
-                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
-                                <i class="fa-solid fa-heart text-2xl color-heart text-white transition"></i>
-                            </div>
-                            <span class="text-xs font-semibold count-likes">184.2K</span>
-                        </button>
-                        <button onclick="openCommentDrawer('Cyberpunk City 4K')" class="flex flex-col items-center text-white space-y-1">
-                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
-                                <i class="fa-solid fa-comment-dots text-2xl"></i>
-                            </div>
-                            <span class="text-xs font-semibold">3,420</span>
-                        </button>
-                        <button onclick="toggleBookmark(this)" class="flex flex-col items-center text-white space-y-1">
-                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
-                                <i class="fa-solid fa-bookmark text-2xl bm-icon"></i>
-                            </div>
-                            <span class="text-xs font-semibold">24.1K</span>
-                        </button>
-                        <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-700 flex items-center justify-center animate-spin-vinyl shadow-lg">
-                            <i class="fa-solid fa-music text-xs text-white"></i>
-                        </div>
-                    </div>
-
-                    <!-- Bottom Details Overlay -->
-                    <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/95 via-black/50 to-transparent z-10 space-y-2">
-                        <div class="flex items-center space-x-2">
-                            <h3 class="font-bold text-white text-base">@cyber_vibe</h3>
-                            <span class="bg-brand-tiktok/80 text-white text-[10px] font-black px-1.5 py-0.5 rounded">PRO</span>
-                        </div>
-                        <p class="text-xs text-gray-200">Midnight neon aesthetics in Shibuya 🌃 #shibuya #tokyo #neon</p>
-                        <!-- Song Pill Badge -->
-                        <div class="inline-flex items-center space-x-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full text-xs text-white border border-white/10">
-                            <div class="flex items-end space-x-0.5 h-3">
-                                <span class="w-0.5 bg-brand-tiktok animate-eq-1"></span>
-                                <span class="w-0.5 bg-brand-tiktok animate-eq-2"></span>
-                                <span class="w-0.5 bg-brand-tiktok animate-eq-3"></span>
-                            </div>
-                            <span class="font-medium text-[11px] truncate max-w-[180px]">🎵 Kavinsky • Nightcall (Remix)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TikTok Card 2 -->
-                <div class="tiktok-card relative w-full h-full flex items-center justify-center overflow-hidden group">
-                    <video loop muted playsinline class="tiktok-video w-full h-full object-cover" poster="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80">
-                        <source src="https://assets.mixkit.co/videos/preview/mixkit-hands-holding-a-smartphone-with-green-screen-41544-large.mp4" type="video/mp4">
-                    </video>
-                    <div class="absolute right-3 bottom-24 flex flex-col items-center space-y-5 z-20">
-                        <button onclick="toggleTiktokLike(this)" class="flex flex-col items-center text-white space-y-1">
-                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
-                                <i class="fa-solid fa-heart text-2xl color-heart text-white transition"></i>
-                            </div>
-                            <span class="text-xs font-semibold count-likes">98.1K</span>
-                        </button>
-                        <button onclick="openCommentDrawer('Future Web UX')" class="flex flex-col items-center text-white space-y-1">
-                            <div class="w-11 h-11 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center">
-                                <i class="fa-solid fa-comment-dots text-2xl"></i>
-                            </div>
-                            <span class="text-xs font-semibold">1,102</span>
-                        </button>
-                    </div>
-                    <div class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/95 via-black/50 to-transparent z-10 space-y-2">
-                        <h3 class="font-bold text-white text-base">@design_hub</h3>
-                        <p class="text-xs text-gray-200">Building next-gen social platforms with dynamic slide carousels! 🚀</p>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- VIEW 2: INSTAGRAM FEED (RICH CAROUSELS) -->
-        <!-- ========================================== -->
-        <section id="feed-instagram" class="feed-section hidden w-full h-full overflow-y-auto px-2 md:px-6 py-4">
-            <div class="max-w-xl mx-auto space-y-6 pb-24" id="instagram-feed-container">
-
-                <!-- Stories Tray -->
-                <div class="glass-panel p-3.5 rounded-3xl flex items-center space-x-4 overflow-x-auto no-scrollbar border border-gray-800">
-                    <div onclick="openStoryViewer('Your Story', 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
-                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
-                        </div>
-                        <span class="text-[11px] font-medium text-gray-300">Your Story</span>
-                    </div>
-
-                    <div onclick="openStoryViewer('alexa_design', 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
-                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
-                        </div>
-                        <span class="text-[11px] font-medium text-gray-300">alexa_design</span>
-                    </div>
-
-                    <div onclick="openStoryViewer('travis_vibes', 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
-                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
-                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
-                        </div>
-                        <span class="text-[11px] font-medium text-gray-300">travis_vibes</span>
-                    </div>
-
-                    <div onclick="openStoryViewer('tokyo_nights', 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80')" class="flex flex-col items-center space-y-1 shrink-0 cursor-pointer group">
-                        <div class="w-16 h-16 rounded-full p-0.5 bg-gradient-to-tr from-amber-500 via-brand-instagram to-purple-600 transition group-hover:scale-105">
-                            <img src="https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&w=120&q=80" class="w-full h-full rounded-full object-cover border-2 border-gray-900">
-                        </div>
-                        <span class="text-[11px] font-medium text-gray-300">tokyo_nights</span>
-                    </div>
-                </div>
-
-                <!-- INSTAGRAM MULTI-MEDIA CAROUSEL POST 1 -->
-                <article class="glass-panel rounded-3xl overflow-hidden border border-gray-800/80 shadow-2xl">
-                    <!-- Post Header with Location & Music Badges -->
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full object-cover border border-purple-500/50">
-                            <div>
-                                <div class="flex items-center space-x-1.5">
-                                    <h4 class="text-sm font-extrabold text-white">alexa_design</h4>
-                                    <i class="fa-solid fa-circle-check text-brand-twitter text-[11px]"></i>
-                                </div>
-                                <!-- Interactive Location Tag Badge -->
-                                <button onclick="highlightLocation('Tokyo, Japan')" class="flex items-center space-x-1 text-[11px] text-purple-400 font-semibold hover:underline">
-                                    <i class="fa-solid fa-location-dot text-[10px]"></i>
-                                    <span>Tokyo, Japan</span>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Attached Song Tag Pill -->
-                        <div class="hidden sm:flex items-center space-x-2 bg-gray-900/90 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-gray-200">
-                            <div class="flex items-end space-x-0.5 h-3">
-                                <span class="w-0.5 bg-purple-400 animate-eq-1"></span>
-                                <span class="w-0.5 bg-purple-400 animate-eq-2"></span>
-                                <span class="w-0.5 bg-purple-400 animate-eq-3"></span>
-                            </div>
-                            <span class="text-[11px] font-semibold text-gray-300">🎵 Travis Scott • FE!N</span>
-                        </div>
-                    </div>
-
-                    <!-- Slide Carousel Viewport (Photos + Videos Mixed) -->
-                    <div class="relative group overflow-hidden bg-black aspect-square" id="carousel-post-1">
-                        <!-- Carousel Inner Track -->
-                        <div class="carousel-track h-full w-full" id="track-post-1" style="transform: translateX(0%);">
-                            
-                            <!-- Slide 1: Image -->
-                            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
-                                <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover">
-                            </div>
-
-                            <!-- Slide 2: Video Clip -->
-                            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
-                                <video loop muted playsinline autoplay class="w-full h-full object-cover">
-                                    <source src="https://assets.mixkit.co/videos/preview/mixkit-city-traffic-at-night-42838-large.mp4" type="video/mp4">
-                                </video>
-                                <span class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center space-x-1">
-                                    <i class="fa-solid fa-video text-brand-tiktok"></i>
-                                    <span>VIDEO</span>
-                                </span>
-                            </div>
-
-                            <!-- Slide 3: Image -->
-                            <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
-                                <img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=900&q=80" class="w-full h-full object-cover">
-                            </div>
-
-                        </div>
-
-                        <!-- Slide Navigation Arrows -->
-                        <button onclick="prevSlide('post-1')" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
-                            <i class="fa-solid fa-chevron-left text-xs"></i>
-                        </button>
-                        <button onclick="nextSlide('post-1', 3)" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
-                            <i class="fa-solid fa-chevron-right text-xs"></i>
-                        </button>
-
-                        <!-- Top Right Item Counter Badge -->
-                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white border border-white/10 shadow-lg">
-                            <span id="counter-post-1">1/3</span>
-                        </div>
-                    </div>
-
-                    <!-- Post Action Bar & Indicators -->
-                    <div class="p-4 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-5 text-xl text-white">
-                                <i onclick="toggleInstaLike(this)" class="fa-regular fa-heart cursor-pointer hover:text-brand-instagram transition active:scale-125"></i>
-                                <i onclick="openCommentDrawer('Tokyo Urban Scenes')" class="fa-regular fa-comment cursor-pointer hover:text-gray-400 transition"></i>
-                                <i class="fa-regular fa-paper-plane cursor-pointer hover:text-gray-400 transition"></i>
-                            </div>
-
-                            <!-- Carousel Dots Pagination -->
-                            <div class="flex items-center space-x-1.5" id="dots-post-1">
-                                <span class="w-2 h-2 rounded-full bg-purple-500 transition-all"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-gray-600 transition-all"></span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-gray-600 transition-all"></span>
-                            </div>
-
-                            <i onclick="toggleBookmark(this)" class="fa-regular fa-bookmark text-xl text-white cursor-pointer hover:text-amber-400 transition"></i>
-                        </div>
-
-                        <!-- Mobile Song Pill Display -->
-                        <div class="sm:hidden flex items-center space-x-2 bg-gray-900/90 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-gray-200">
-                            <i class="fa-solid fa-music text-purple-400 text-xs"></i>
-                            <span class="text-[11px] font-semibold text-gray-300">Travis Scott • FE!N</span>
-                        </div>
-
-                        <p class="text-xs font-extrabold text-white">4,289 likes</p>
-                        <p class="text-xs text-gray-300 leading-relaxed">
-                            <span class="font-extrabold text-white">alexa_design</span> Exploring Tokyo's cyberpunk vibes at night! Swipe through for photos and video clips 📸🎥✨
-                        </p>
-                        <p onclick="openCommentDrawer('Tokyo Urban Scenes')" class="text-[11px] text-gray-500 font-semibold cursor-pointer hover:underline">View all 194 comments</p>
-                    </div>
-                </article>
-
-            </div>
-        </section>
-
-        <!-- ========================================== -->
-        <!-- VIEW 3: TWITTER / X TIMELINE -->
-        <!-- ========================================== -->
-        <section id="feed-twitter" class="feed-section hidden w-full h-full overflow-y-auto">
-            <div class="max-w-3xl mx-auto px-2 md:px-6 py-4 pb-24 flex space-x-6">
-
-                <div class="flex-1 space-y-4" id="tweet-stream">
-                    <!-- Quick Tweet Box -->
-                    <div class="glass-panel p-4 rounded-3xl border border-gray-800 space-y-3">
-                        <div class="flex space-x-3">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full border border-gray-700">
-                            <textarea id="quick-tweet-input" placeholder="What is happening?!" class="w-full bg-transparent text-white placeholder-gray-500 text-sm focus:outline-none resize-none h-16"></textarea>
-                        </div>
-                        <div class="flex items-center justify-between border-t border-gray-800/80 pt-3">
-                            <div class="flex items-center space-x-4 text-brand-twitter text-sm">
-                                <i onclick="openCreateModal()" class="fa-regular fa-image cursor-pointer hover:text-white transition"></i>
-                                <i onclick="openCreateModal()" class="fa-solid fa-music cursor-pointer hover:text-white transition"></i>
-                                <i onclick="openCreateModal()" class="fa-solid fa-location-dot cursor-pointer hover:text-white transition"></i>
-                            </div>
-                            <button onclick="postQuickTweet()" class="bg-brand-twitter text-white px-5 py-1.5 rounded-full text-xs font-extrabold shadow-lg hover:brightness-110 active:scale-95 transition">Post</button>
-                        </div>
-                    </div>
-
-                    <!-- Tweet Post Item -->
-                    <article class="glass-panel p-4 rounded-3xl border border-gray-800/80 space-y-3">
-                        <div class="flex space-x-3">
-                            <img src="https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full border border-gray-700">
-                            <div class="flex-1">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center space-x-2">
-                                        <h4 class="font-bold text-white text-sm">DevSam</h4>
-                                        <span class="text-xs text-gray-500">@sam_dev · 1h</span>
-                                    </div>
-                                    <i class="fa-solid fa-ellipsis text-gray-500"></i>
-                                </div>
-                                <p class="text-xs text-gray-200 mt-1 leading-relaxed">
-                                    Just released the brand new Instagram multi-slide carousel feature inside OmniMedia! Now supporting mixed photo & video posts with attached music tracks and geo-locations! 🎵📍🔥 #webdev #uiux #javascript
-                                </p>
-
-                                <div class="flex items-center justify-between text-gray-400 text-xs mt-3 max-w-md">
-                                    <button onclick="openCommentDrawer('OmniMedia Release')" class="flex items-center space-x-2 hover:text-brand-twitter transition">
-                                        <i class="fa-regular fa-comment"></i>
-                                        <span>42</span>
-                                    </button>
-                                    <button onclick="toggleRetweet(this)" class="flex items-center space-x-2 hover:text-emerald-400 transition">
-                                        <i class="fa-solid fa-retweet"></i>
-                                        <span class="rt-count">89</span>
-                                    </button>
-                                    <button onclick="toggleTweetLike(this)" class="flex items-center space-x-2 hover:text-brand-tiktok transition">
-                                        <i class="fa-regular fa-heart"></i>
-                                        <span class="like-count">512</span>
-                                    </button>
-                                    <button class="flex items-center space-x-2 hover:text-brand-twitter transition">
-                                        <i class="fa-solid fa-chart-simple"></i>
-                                        <span>8.2K</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-
-                <!-- Right Trending Sidebar -->
-                <div class="hidden lg:block w-72 space-y-4 shrink-0">
-                    <div class="glass-panel p-4 rounded-3xl border border-gray-800 space-y-3">
-                        <h3 class="font-extrabold text-white text-base">Trends For You</h3>
-                        <div class="space-y-3">
-                            <div class="cursor-pointer hover:bg-gray-800/40 p-2 rounded-2xl transition">
-                                <p class="text-[10px] text-gray-400 font-bold">Technology · Trending</p>
-                                <p class="text-xs font-bold text-white">#OmniMediaPlatform</p>
-                                <p class="text-[11px] text-gray-500">32.4K posts</p>
-                            </div>
-                            <div class="cursor-pointer hover:bg-gray-800/40 p-2 rounded-2xl transition">
-                                <p class="text-[10px] text-gray-400 font-bold">Music · Trending</p>
-                                <p class="text-xs font-bold text-white">#FEIN_TravisScott</p>
-                                <p class="text-[11px] text-gray-500">118.9K posts</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </section>
-
+    <!-- FEED CONTAINER -->
+    <main class="feed-container" id="feedContainer">
+      <!-- Posts injected dynamically -->
     </main>
 
-    <!-- MOBILE BOTTOM NAVIGATION BAR -->
-    <nav class="md:hidden glass-nav fixed bottom-0 inset-x-0 h-16 border-t border-gray-800/80 px-6 flex items-center justify-between z-40">
-        <button onclick="switchFeed('tiktok')" id="mb-nav-tiktok" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-            <i class="fa-solid fa-play text-base"></i>
-            <span class="text-[10px] mt-0.5 font-bold">Watch</span>
-        </button>
-        <button onclick="switchFeed('instagram')" id="mb-nav-instagram" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-            <i class="fa-solid fa-camera-retro text-base"></i>
-            <span class="text-[10px] mt-0.5 font-bold">Feed</span>
-        </button>
-        <button onclick="openCreateModal()" class="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-pink-500 flex items-center justify-center text-white shadow-lg active:scale-95 transition">
-            <i class="fa-solid fa-plus text-base"></i>
-        </button>
-        <button onclick="switchFeed('twitter')" id="mb-nav-twitter" class="flex flex-col items-center text-gray-400 hover:text-white transition">
-            <i class="fa-brands fa-x-twitter text-base"></i>
-            <span class="text-[10px] mt-0.5 font-bold">Timeline</span>
-        </button>
+    <!-- BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav-bar">
+      <button class="nav-tab-item active" title="Home">
+        <i class="fa-solid fa-house"></i>
+      </button>
+      <button class="nav-tab-item" title="Search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
+      <button class="nav-tab-item" onclick="openComposerModal()" title="Create">
+        <i class="fa-regular fa-square-plus" style="font-size: 1.5rem;"></i>
+      </button>
+      <button class="nav-tab-item" title="Reels">
+        <i class="fa-solid fa-clapperboard"></i>
+      </button>
+      <button class="nav-tab-item" title="Profile">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="profile-nav-avatar" alt="Profile">
+      </button>
     </nav>
 
-    <!-- STORY VIEWER FULLSCREEN OVERLAY MODAL -->
-    <div id="story-modal" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center">
-        <div class="relative w-full max-w-md h-full md:h-[800px] bg-black md:rounded-3xl overflow-hidden flex flex-col justify-between p-4">
-            <!-- Progress Timers -->
-            <div class="w-full bg-gray-800 h-1 rounded-full overflow-hidden mb-3">
-                <div id="story-progress" class="bg-white h-full w-0 transition-all duration-100 ease-linear"></div>
-            </div>
+  </div>
 
-            <!-- Story Header -->
-            <div class="flex items-center justify-between z-10">
-                <div class="flex items-center space-x-2">
-                    <img id="story-avatar" src="" class="w-8 h-8 rounded-full border border-white">
-                    <span id="story-username" class="text-xs font-bold text-white"></span>
-                </div>
-                <button onclick="closeStoryViewer()" class="text-white text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Story Media Content -->
-            <img id="story-image" src="" class="absolute inset-0 w-full h-full object-cover">
-
-            <div class="relative z-10 w-full pt-4">
-                <input type="text" placeholder="Send message..." class="w-full bg-black/50 border border-white/20 rounded-full px-4 py-2 text-xs text-white placeholder-gray-300 focus:outline-none backdrop-blur-md">
-            </div>
-        </div>
+  <!-- FULLSCREEN STORY PLAYER MODAL -->
+  <div class="story-viewer-modal" id="storyModal">
+    <div class="story-progress-bar-container" id="storyProgressContainer"></div>
+    <div class="story-viewer-header">
+      <div class="story-user-meta">
+        <img src="" id="storyUserAvatar" class="story-user-avatar" alt="">
+        <span id="storyUsername" class="story-user-name">username</span>
+        <span id="storyTime" class="story-time-badge">2h</span>
+      </div>
+      <button class="story-close-btn" onclick="closeStoryModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
 
-    <!-- COMMENTS SLIDE-OVER DRAWER -->
-    <div id="comment-drawer" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex justify-end">
-        <div class="w-full max-w-md h-full glass-panel border-l border-gray-800 flex flex-col p-5 animate-slide-in">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                <h3 id="drawer-title" class="font-extrabold text-white text-base">Comments</h3>
-                <button onclick="closeCommentDrawer()" class="text-gray-400 hover:text-white text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div id="drawer-comments-list" class="flex-1 overflow-y-auto my-4 space-y-4 no-scrollbar">
-                <div class="flex space-x-3">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full">
-                    <div>
-                        <p class="text-xs font-bold text-white">alex_dev</p>
-                        <p class="text-xs text-gray-300 mt-0.5">The multi-slide carousel with mixed video & photos is clean! 🔥</p>
-                    </div>
-                </div>
-            </div>
-            <div class="flex space-x-2 border-t border-gray-800 pt-3">
-                <input id="drawer-input" type="text" placeholder="Add a comment..." class="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none">
-                <button onclick="sendDrawerComment()" class="bg-brand-tiktok text-white px-4 py-2 rounded-xl text-xs font-bold">Send</button>
-            </div>
-        </div>
+    <div class="story-media-content" id="storyMediaBox">
+      <!-- Media inserted dynamically -->
     </div>
 
-    <!-- MULTI-SLIDE CREATOR STUDIO MODAL -->
-    <div id="create-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-        <div class="w-full max-w-lg glass-panel p-6 rounded-3xl border border-gray-800 space-y-4 max-h-[90vh] overflow-y-auto no-scrollbar">
-            <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                <h3 class="font-extrabold text-white text-lg">Multi-Slide Composer</h3>
-                <button onclick="closeCreateModal()" class="text-gray-400 hover:text-white text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
+    <!-- Touch Navigation Areas -->
+    <div class="story-touch-zone story-touch-left" onclick="prevStory()"></div>
+    <div class="story-touch-zone story-touch-right" onclick="nextStory()"></div>
 
-            <!-- Post Caption Input -->
-            <div class="space-y-3">
-                <textarea id="modal-post-caption" placeholder="Write caption or post description..." class="w-full bg-gray-900/90 border border-gray-800 rounded-2xl p-3 text-xs text-white focus:outline-none h-20 resize-none"></textarea>
-
-                <!-- Location Selector -->
-                <div class="space-y-1">
-                    <label class="text-[11px] font-extrabold uppercase text-gray-400">Add Location</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-location-dot absolute left-3 top-2.5 text-purple-400 text-xs"></i>
-                        <input id="modal-location-input" type="text" placeholder="e.g. Tokyo, Japan or Fort Worth, TX" class="w-full bg-gray-900 border border-gray-800 rounded-xl pl-8 pr-3 py-2 text-xs text-white focus:outline-none">
-                    </div>
-                    <!-- Quick Location Pills -->
-                    <div class="flex space-x-1.5 pt-1">
-                        <span onclick="setQuickLocation('Tokyo, Japan')" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full cursor-pointer hover:bg-purple-600 hover:text-white">📍 Tokyo</span>
-                        <span onclick="setQuickLocation('Fort Worth, Texas')" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full cursor-pointer hover:bg-purple-600 hover:text-white">📍 Fort Worth, TX</span>
-                        <span onclick="setQuickLocation('New York, NY')" class="text-[10px] bg-gray-800 text-gray-300 px-2 py-0.5 rounded-full cursor-pointer hover:bg-purple-600 hover:text-white">📍 New York</span>
-                    </div>
-                </div>
-
-                <!-- Music Track Picker -->
-                <div class="space-y-1">
-                    <label class="text-[11px] font-extrabold uppercase text-gray-400">Attach Music Track</label>
-                    <div class="relative">
-                        <i class="fa-solid fa-music absolute left-3 top-2.5 text-brand-tiktok text-xs"></i>
-                        <select id="modal-music-select" class="w-full bg-gray-900 border border-gray-800 rounded-xl pl-8 pr-3 py-2 text-xs text-white focus:outline-none">
-                            <option value="🎵 Travis Scott • FE!N">🎵 Travis Scott • FE!N</option>
-                            <option value="🎵 Drake • Rich Baby Daddy">🎵 Drake • Rich Baby Daddy</option>
-                            <option value="🎵 Metro Boomin • Superhero">🎵 Metro Boomin • Superhero</option>
-                            <option value="🎵 Billie Eilish • L'AMOUR DE MA VIE">🎵 Billie Eilish • L'AMOUR DE MA VIE</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Carousel Media Slide Items Builder -->
-                <div class="space-y-2 pt-2">
-                    <div class="flex items-center justify-between">
-                        <label class="text-[11px] font-extrabold uppercase text-gray-400">Carousel Media Slides (Photos/Videos)</label>
-                        <button onclick="addCreatorSlideItem()" class="text-xs text-purple-400 font-bold hover:underline">+ Add Slide</button>
-                    </div>
-                    
-                    <div id="creator-slides-list" class="space-y-2">
-                        <!-- Default Slide Item 1 -->
-                        <div class="flex items-center space-x-2 bg-gray-900/80 p-2 rounded-xl border border-gray-800 slide-item-input">
-                            <select class="bg-gray-800 text-xs text-white rounded-lg p-1.5 focus:outline-none slide-type">
-                                <option value="image">Photo</option>
-                                <option value="video">Video</option>
-                            </select>
-                            <input type="text" placeholder="Image or Video URL..." value="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80" class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none slide-url">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="publishMultiSlidePost()" class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-extrabold py-3 rounded-2xl shadow-xl hover:brightness-110 active:scale-95 transition text-xs uppercase tracking-wider">Publish Carousel Post</button>
-        </div>
+    <div class="story-footer-input-row">
+      <input type="text" class="story-reply-input" placeholder="Send message...">
+      <button class="action-icon-btn" style="color:#fff;"><i class="fa-regular fa-heart"></i></button>
+      <button class="action-icon-btn" style="color:#fff;"><i class="fa-regular fa-paper-plane"></i></button>
     </div>
+  </div>
 
-    <script>
-        // Track slide indices for carousels
-        const slideState = {
-            'post-1': { current: 0, total: 3 }
-        };
+  <!-- CREATE MULTI-SLIDE POST MODAL -->
+  <div class="modal-overlay" id="composerModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span>Create New Post</span>
+        <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="closeComposerModal()"></i>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Media URLs (Comma-separated for slideshow)</label>
+          <input type="text" id="inputMediaUrls" class="form-input" placeholder="https://image1.jpg, https://image2.jpg">
+        </div>
+        <div class="form-group">
+          <label>Caption</label>
+          <input type="text" id="inputCaption" class="form-input" placeholder="Write a caption...">
+        </div>
+        <div class="form-group">
+          <label>Location Tag</label>
+          <input type="text" id="inputLocation" class="form-input" placeholder="e.g. Tokyo, Japan">
+        </div>
+        <div class="form-group">
+          <label>Music Track</label>
+          <input type="text" id="inputMusic" class="form-input" placeholder="e.g. Travis Scott • FE!N">
+        </div>
+        <button class="primary-btn" onclick="publishNewPost()">Share Post</button>
+      </div>
+    </div>
+  </div>
 
-        // Switch Feed Views
-        function switchFeed(feed) {
-            document.querySelectorAll('.feed-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`feed-${feed}`).classList.remove('hidden');
+  <script>
+    // INITIAL MOCK DATA
+    const mockStories = [
+      { id: 1, name: 'Your Story', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', isMyStory: true, seen: false, media: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800' },
+      { id: 2, name: 'alex_cyber', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', seen: false, media: 'https://images.unsplash.com/photo-1515260268569-9271009adfdb?w=800' },
+      { id: 3, name: 'sara.tokyo', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', seen: false, media: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800' },
+      { id: 4, name: 'drift_king', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', seen: false, media: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800' },
+      { id: 5, name: 'future_beats', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150', seen: true, media: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800' }
+    ];
 
-            document.querySelectorAll('.nav-mode-btn').forEach(btn => {
-                btn.classList.remove('bg-gray-800', 'text-white');
-            });
-            const activeDesktop = document.getElementById(`btn-mode-${feed}`);
-            if (activeDesktop) activeDesktop.classList.add('bg-gray-800', 'text-white');
+    let mockPosts = [
+      {
+        id: 101,
+        author: {
+          username: 'sara.tokyo',
+          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+          verified: true
+        },
+        location: 'Shibuya, Tokyo',
+        music: 'Ken Carson • Overseas',
+        media: [
+          { type: 'image', url: 'https://images.unsplash.com/photo-1503899036084-c55cdd92da26?w=800' },
+          { type: 'image', url: 'https://images.unsplash.com/photo-1542051841857-5f90071e7989?w=800' },
+          { type: 'image', url: 'https://images.unsplash.com/photo-1515260268569-9271009adfdb?w=800' }
+        ],
+        likes: 14230,
+        liked: false,
+        caption: 'Night walks under the neon lights ⛩️✨ swipe to see the full aesthetic',
+        commentsCount: 284,
+        timeAgo: '2 hours ago'
+      },
+      {
+        id: 102,
+        author: {
+          username: 'drift_king',
+          avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150',
+          verified: false
+        },
+        location: 'Akihabara, Japan',
+        music: 'Playboi Carti • Timeless',
+        media: [
+          { type: 'image', url: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=800' },
+          { type: 'image', url: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800' }
+        ],
+        likes: 8920,
+        liked: true,
+        caption: 'Late night build test run. What color should I wrap it next? 🏎️💨',
+        commentsCount: 112,
+        timeAgo: '5 hours ago'
+      }
+    ];
 
-            document.querySelectorAll('.m-feed-btn').forEach(btn => {
-                btn.classList.remove('bg-purple-600', 'text-white');
-            });
-            const activeMobile = document.getElementById(`m-btn-${feed}`);
-            if (activeMobile) activeMobile.classList.add('bg-purple-600', 'text-white');
+    // RENDER STORIES
+    function renderStories() {
+      const wrapper = document.getElementById('storiesWrapper');
+      wrapper.innerHTML = mockStories.map((story, index) => `
+        <div class="story-item" onclick="openStoryModal(${index})">
+          <div class="story-ring ${story.seen ? 'seen' : ''} ${story.isMyStory ? 'my-story' : ''}">
+            <img src="${story.avatar}" class="story-avatar" alt="${story.name}">
+            ${story.isMyStory ? '<div class="add-story-plus"><i class="fa-solid fa-plus"></i></div>' : ''}
+          </div>
+          <span class="story-username">${story.name}</span>
+        </div>
+      `).join('');
+    }
 
-            const tiktokVideos = document.querySelectorAll('.tiktok-video');
-            if (feed === 'tiktok') {
-                tiktokVideos.forEach(v => v.play().catch(() => {}));
-            } else {
-                tiktokVideos.forEach(v => v.pause());
-            }
-        }
+    // RENDER FEED POSTS
+    function renderPosts() {
+      const container = document.getElementById('feedContainer');
+      container.innerHTML = mockPosts.map(post => {
+        const isMulti = post.media.length > 1;
 
-        // Slide Navigation Logic
-        function nextSlide(postId, totalSlides) {
-            if (!slideState[postId]) slideState[postId] = { current: 0, total: totalSlides };
-            let state = slideState[postId];
-            if (state.current < state.total - 1) {
-                state.current++;
-                updateCarouselUI(postId);
-            }
-        }
-
-        function prevSlide(postId) {
-            if (!slideState[postId]) return;
-            let state = slideState[postId];
-            if (state.current > 0) {
-                state.current--;
-                updateCarouselUI(postId);
-            }
-        }
-
-        function updateCarouselUI(postId) {
-            const state = slideState[postId];
-            const track = document.getElementById(`track-${postId}`);
-            const counter = document.getElementById(`counter-${postId}`);
-            const dotsContainer = document.getElementById(`dots-${postId}`);
-
-            if (track) {
-                track.style.transform = `translateX(-${state.current * 100}%)`;
-            }
-            if (counter) {
-                counter.innerText = `${state.current + 1}/${state.total}`;
-            }
-            if (dotsContainer) {
-                const dots = dotsContainer.children;
-                for (let i = 0; i < dots.length; i++) {
-                    if (i === state.current) {
-                        dots[i].className = 'w-2 h-2 rounded-full bg-purple-500 transition-all';
-                    } else {
-                        dots[i].className = 'w-1.5 h-1.5 rounded-full bg-gray-600 transition-all';
-                    }
-                }
-            }
-        }
-
-        // Particle Heart Burst
-        function triggerParticleHeart(container, e) {
-            const rect = container.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const heart = document.createElement('i');
-            heart.className = 'fa-solid fa-heart text-red-500 text-6xl absolute pointer-events-none z-30 drop-shadow-2xl animate-heart-burst';
-            heart.style.left = `${x - 30}px`;
-            heart.style.top = `${y - 30}px`;
-
-            container.appendChild(heart);
-            setTimeout(() => heart.remove(), 850);
-        }
-
-        // Creator Studio Helper
-        function addCreatorSlideItem() {
-            const container = document.getElementById('creator-slides-list');
-            const itemHTML = `
-                <div class="flex items-center space-x-2 bg-gray-900/80 p-2 rounded-xl border border-gray-800 slide-item-input">
-                    <select class="bg-gray-800 text-xs text-white rounded-lg p-1.5 focus:outline-none slide-type">
-                        <option value="image">Photo</option>
-                        <option value="video">Video</option>
-                    </select>
-                    <input type="text" placeholder="Image or Video URL..." class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none slide-url">
-                    <button onclick="this.parentElement.remove()" class="text-red-400 text-xs px-1"><i class="fa-solid fa-trash"></i></button>
+        return `
+          <article class="post-card" id="post-${post.id}">
+            <!-- Header -->
+            <header class="post-header">
+              <div class="post-author-info">
+                <div class="author-avatar-ring">
+                  <img src="${post.author.avatar}" class="author-avatar" alt="${post.author.username}">
                 </div>
-            `;
-            container.insertAdjacentHTML('beforeend', itemHTML);
-        }
-
-        function setQuickLocation(loc) {
-            document.getElementById('modal-location-input').value = loc;
-        }
-
-        function highlightLocation(loc) {
-            alert(`📍 Filtering posts near ${loc}`);
-        }
-
-        // Story Viewer Logic
-        let storyInterval;
-        function openStoryViewer(username, imgUrl) {
-            document.getElementById('story-username').innerText = username;
-            document.getElementById('story-avatar').src = `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80`;
-            document.getElementById('story-image').src = imgUrl;
-            document.getElementById('story-modal').classList.remove('hidden');
-
-            const bar = document.getElementById('story-progress');
-            bar.style.width = '0%';
-            let p = 0;
-            clearInterval(storyInterval);
-            storyInterval = setInterval(() => {
-                p += 2;
-                bar.style.width = `${p}%`;
-                if (p >= 100) {
-                    clearInterval(storyInterval);
-                    closeStoryViewer();
-                }
-            }, 80);
-        }
-
-        function closeStoryViewer() {
-            clearInterval(storyInterval);
-            document.getElementById('story-modal').classList.add('hidden');
-        }
-
-        // Publish Carousel Post to Feed
-        function publishMultiSlidePost() {
-            const caption = document.getElementById('modal-post-caption').value;
-            const location = document.getElementById('modal-location-input').value || 'Global';
-            const music = document.getElementById('modal-music-select').value;
-            
-            const slideInputs = document.querySelectorAll('.slide-item-input');
-            const slides = [];
-            slideInputs.forEach(item => {
-                const type = item.querySelector('.slide-type').value;
-                const url = item.querySelector('.slide-url').value;
-                if (url.trim()) slides.push({ type, url });
-            });
-
-            if (slides.length === 0) {
-                alert('Please provide at least one valid photo or video slide URL!');
-                return;
-            }
-
-            const newPostId = `post-${Date.now()}`;
-            slideState[newPostId] = { current: 0, total: slides.length };
-
-            // Render Multi-Slide Post Item
-            let slidesHTML = '';
-            let dotsHTML = '';
-            slides.forEach((s, idx) => {
-                dotsHTML += `<span class="${idx === 0 ? 'w-2 h-2 rounded-full bg-purple-500' : 'w-1.5 h-1.5 rounded-full bg-gray-600'} transition-all"></span>`;
-                if (s.type === 'video') {
-                    slidesHTML += `
-                        <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
-                            <video loop muted playsinline autoplay class="w-full h-full object-cover">
-                                <source src="${s.url}" type="video/mp4">
-                            </video>
-                            <span class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white flex items-center space-x-1">
-                                <i class="fa-solid fa-video text-brand-tiktok"></i>
-                                <span>VIDEO</span>
-                            </span>
-                        </div>
-                    `;
-                } else {
-                    slidesHTML += `
-                        <div class="w-full h-full shrink-0 relative flex items-center justify-center bg-gray-950" ondoubleclick="triggerParticleHeart(this, event)">
-                            <img src="${s.url}" class="w-full h-full object-cover">
-                        </div>
-                    `;
-                }
-            });
-
-            const newPostHTML = `
-                <article class="glass-panel rounded-3xl overflow-hidden border border-gray-800/80 shadow-2xl">
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full object-cover border border-purple-500/50">
-                            <div>
-                                <div class="flex items-center space-x-1.5">
-                                    <h4 class="text-sm font-extrabold text-white">You</h4>
-                                    <i class="fa-solid fa-circle-check text-brand-twitter text-[11px]"></i>
-                                </div>
-                                <button onclick="highlightLocation('${location}')" class="flex items-center space-x-1 text-[11px] text-purple-400 font-semibold hover:underline">
-                                    <i class="fa-solid fa-location-dot text-[10px]"></i>
-                                    <span>${location}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="hidden sm:flex items-center space-x-2 bg-gray-900/90 border border-purple-500/30 px-3 py-1 rounded-full text-xs text-gray-200">
-                            <i class="fa-solid fa-music text-purple-400 text-xs"></i>
-                            <span class="text-[11px] font-semibold text-gray-300">${music}</span>
-                        </div>
-                    </div>
-
-                    <div class="relative group overflow-hidden bg-black aspect-square" id="carousel-${newPostId}">
-                        <div class="carousel-track h-full w-full" id="track-${newPostId}" style="transform: translateX(0%);">
-                            ${slidesHTML}
-                        </div>
-                        ${slides.length > 1 ? `
-                            <button onclick="prevSlide('${newPostId}')" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
-                                <i class="fa-solid fa-chevron-left text-xs"></i>
-                            </button>
-                            <button onclick="nextSlide('${newPostId}', ${slides.length})" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-xl">
-                                <i class="fa-solid fa-chevron-right text-xs"></i>
-                            </button>
-                        ` : ''}
-                        <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-extrabold text-white border border-white/10 shadow-lg">
-                            <span id="counter-${newPostId}">1/${slides.length}</span>
-                        </div>
-                    </div>
-
-                    <div class="p-4 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-5 text-xl text-white">
-                                <i onclick="toggleInstaLike(this)" class="fa-regular fa-heart cursor-pointer hover:text-brand-instagram transition active:scale-125"></i>
-                                <i onclick="openCommentDrawer('Your Post')" class="fa-regular fa-comment cursor-pointer hover:text-gray-400 transition"></i>
-                            </div>
-                            <div class="flex items-center space-x-1.5" id="dots-${newPostId}">
-                                ${dotsHTML}
-                            </div>
-                            <i onclick="toggleBookmark(this)" class="fa-regular fa-bookmark text-xl text-white cursor-pointer hover:text-amber-400 transition"></i>
-                        </div>
-                        <p class="text-xs font-extrabold text-white">1 like</p>
-                        <p class="text-xs text-gray-300"><span class="font-extrabold text-white">You</span> ${caption}</p>
-                    </div>
-                </article>
-            `;
-
-            document.getElementById('instagram-feed-container').insertAdjacentHTML('afterbegin', newPostHTML);
-            closeCreateModal();
-            switchFeed('instagram');
-        }
-
-        // Likes & Toggles
-        function toggleTiktokLike(btn) {
-            const icon = btn.querySelector('.color-heart');
-            icon.classList.toggle('text-red-500');
-            icon.classList.toggle('text-white');
-        }
-
-        function toggleInstaLike(icon) {
-            if (icon.classList.contains('fa-solid')) {
-                icon.classList.remove('fa-solid', 'text-brand-instagram');
-                icon.classList.add('fa-regular');
-            } else {
-                icon.classList.add('fa-solid', 'text-brand-instagram');
-                icon.classList.remove('fa-regular');
-            }
-        }
-
-        function toggleTweetLike(btn) {
-            const icon = btn.querySelector('i');
-            const count = btn.querySelector('.like-count');
-            let num = parseInt(count.innerText);
-            if (icon.classList.contains('fa-solid')) {
-                icon.classList.remove('fa-solid', 'text-brand-tiktok');
-                icon.classList.add('fa-regular');
-                count.innerText = num - 1;
-            } else {
-                icon.classList.add('fa-solid', 'text-brand-tiktok');
-                icon.classList.remove('fa-regular');
-                count.innerText = num + 1;
-            }
-        }
-
-        function toggleRetweet(btn) {
-            const count = btn.querySelector('.rt-count');
-            let num = parseInt(count.innerText);
-            if (btn.classList.contains('text-emerald-400')) {
-                btn.classList.remove('text-emerald-400');
-                count.innerText = num - 1;
-            } else {
-                btn.classList.add('text-emerald-400');
-                count.innerText = num + 1;
-            }
-        }
-
-        function toggleBookmark(btn) {
-            const icon = btn.querySelector('i') || btn;
-            icon.classList.toggle('text-amber-400');
-        }
-
-        // Drawers & Modals
-        function openCommentDrawer(title) {
-            document.getElementById('drawer-title').innerText = `Comments - ${title}`;
-            document.getElementById('comment-drawer').classList.remove('hidden');
-        }
-
-        function closeCommentDrawer() {
-            document.getElementById('comment-drawer').classList.add('hidden');
-        }
-
-        function sendDrawerComment() {
-            const input = document.getElementById('drawer-input');
-            if (!input.value.trim()) return;
-            const container = document.getElementById('drawer-comments-list');
-            const commentHTML = `
-                <div class="flex space-x-3">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-8 h-8 rounded-full">
-                    <div>
-                        <p class="text-xs font-bold text-white">You</p>
-                        <p class="text-xs text-gray-300 mt-0.5">${input.value}</p>
-                    </div>
+                <div class="author-details">
+                  <div class="author-name-row">
+                    <span class="author-username">${post.author.username}</span>
+                    ${post.author.verified ? '<i class="fa-solid fa-circle-check verified-badge"></i>' : ''}
+                  </div>
+                  <div class="post-sub-info">
+                    ${post.location ? `<span>📍 ${post.location}</span>` : ''}
+                    ${post.music ? `
+                      <div class="pill-badge">
+                        <div class="soundwave-icon"><span></span><span></span><span></span></div>
+                        <span>${post.music}</span>
+                      </div>
+                    ` : ''}
+                  </div>
                 </div>
-            `;
-            container.insertAdjacentHTML('beforeend', commentHTML);
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
-        }
+              </div>
+              <button class="action-icon-btn" style="font-size: 1rem;"><i class="fa-solid fa-ellipsis"></i></button>
+            </header>
 
-        function openCreateModal() {
-            document.getElementById('create-modal').classList.remove('hidden');
-        }
+            <!-- Media Carousel with Touch/Swipe -->
+            <div class="media-viewport" onwheel="handleCarouselWheel(event, ${post.id})">
+              <div class="heart-burst" id="burst-${post.id}">
+                <i class="fa-solid fa-heart"></i>
+              </div>
 
-        function closeCreateModal() {
-            document.getElementById('create-modal').classList.add('hidden');
-        }
+              ${isMulti ? `<div class="carousel-count-badge" id="badge-${post.id}">1/${post.media.length}</div>` : ''}
 
-        function postQuickTweet() {
-            const input = document.getElementById('quick-tweet-input');
-            if (!input.value.trim()) return;
-            const stream = document.getElementById('tweet-stream');
-            const tweetHTML = `
-                <article class="glass-panel p-4 rounded-3xl border border-gray-800/80 space-y-3">
-                    <div class="flex space-x-3">
-                        <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=120&q=80" class="w-10 h-10 rounded-full border border-gray-700">
-                        <div class="flex-1">
-                            <div class="flex items-center space-x-2">
-                                <h4 class="font-bold text-white text-sm">You</h4>
-                                <span class="text-xs text-gray-500">@user · Just now</span>
-                            </div>
-                            <p class="text-xs text-gray-200 mt-1 leading-relaxed">${input.value}</p>
-                        </div>
-                    </div>
-                </article>
-            `;
-            stream.insertAdjacentHTML('afterbegin', tweetHTML);
-            input.value = '';
-        }
+              <div class="media-slider" id="slider-${post.id}" onscroll="updateCarouselIndicators(${post.id}, ${post.media.length})">
+                ${post.media.map(m => `
+                  <div class="media-slide" ondblclick="triggerDoubleTapLike(${post.id})">
+                    <img src="${m.url}" loading="lazy" alt="Post media">
+                  </div>
+                `).join('')}
+              </div>
+            </div>
 
-        window.onload = function() {
-            switchFeed('tiktok');
-        };
-    </script>
+            <!-- Post Actions -->
+            <div class="post-actions">
+              <div class="left-actions">
+                <button class="action-icon-btn ${post.liked ? 'liked' : ''}" id="like-btn-${post.id}" onclick="toggleLike(${post.id})">
+                  <i class="${post.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>
+                </button>
+                <button class="action-icon-btn"><i class="fa-regular fa-comment"></i></button>
+                <button class="action-icon-btn"><i class="fa-regular fa-paper-plane"></i></button>
+              </div>
+
+              ${isMulti ? `
+                <div class="carousel-dots-indicator" id="dots-${post.id}">
+                  ${post.media.map((_, i) => `<div class="dot-node ${i === 0 ? 'active' : ''}"></div>`).join('')}
+                </div>
+              ` : ''}
+
+              <button class="action-icon-btn"><i class="fa-regular fa-bookmark"></i></button>
+            </div>
+
+            <!-- Likes & Caption -->
+            <div class="post-details">
+              <div class="likes-count-row">
+                <div class="likes-avatars">
+                  <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100">
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100">
+                </div>
+                <span id="likes-count-${post.id}">${post.likes.toLocaleString()} likes</span>
+              </div>
+
+              <div class="caption-box">
+                <span class="caption-author">${post.author.username}</span>
+                <span>${post.caption}</span>
+              </div>
+
+              <div class="comments-view-link">
+                View all ${post.commentsCount} comments
+              </div>
+
+              <div class="post-time-ago">${post.timeAgo}</div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    // CAROUSEL SWIPE & SCROLL INDICATOR UPDATES
+    function updateCarouselIndicators(postId, totalSlides) {
+      const slider = document.getElementById(`slider-${postId}`);
+      if (!slider) return;
+
+      const scrollLeft = slider.scrollLeft;
+      const slideWidth = slider.clientWidth;
+      const currentIndex = Math.round(scrollLeft / slideWidth);
+
+      // Update counter badge
+      const badge = document.getElementById(`badge-${postId}`);
+      if (badge) badge.innerText = `${currentIndex + 1}/${totalSlides}`;
+
+      // Update dot nodes
+      const dotsContainer = document.getElementById(`dots-${postId}`);
+      if (dotsContainer) {
+        const dots = dotsContainer.querySelectorAll('.dot-node');
+        dots.forEach((dot, idx) => {
+          if (idx === currentIndex) dot.classList.add('active');
+          else dot.classList.remove('active');
+        });
+      }
+    }
+
+    // DOUBLE TAP TO LIKE
+    function triggerDoubleTapLike(postId) {
+      const post = mockPosts.find(p => p.id === postId);
+      if (!post) return;
+
+      // Animate heart
+      const burst = document.getElementById(`burst-${postId}`);
+      if (burst) {
+        burst.classList.remove('animate');
+        void burst.offsetWidth; // Trigger reflow
+        burst.classList.add('animate');
+      }
+
+      if (!post.liked) {
+        toggleLike(postId);
+      }
+    }
+
+    // TOGGLE LIKE STATE
+    function toggleLike(postId) {
+      const post = mockPosts.find(p => p.id === postId);
+      if (!post) return;
+
+      post.liked = !post.liked;
+      post.likes += post.liked ? 1 : -1;
+
+      const likeBtn = document.getElementById(`like-btn-${postId}`);
+      const likesCount = document.getElementById(`likes-count-${postId}`);
+
+      if (likeBtn) {
+        likeBtn.className = `action-icon-btn ${post.liked ? 'liked' : ''}`;
+        likeBtn.innerHTML = `<i class="${post.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart'}"></i>`;
+      }
+
+      if (likesCount) {
+        likesCount.innerText = `${post.likes.toLocaleString()} likes`;
+      }
+    }
+
+    // STORY PLAYER MODAL LOGIC
+    let activeStoryIndex = 0;
+    let storyTimer = null;
+
+    function openStoryModal(index) {
+      activeStoryIndex = index;
+      const story = mockStories[activeStoryIndex];
+      story.seen = true;
+      renderStories();
+
+      const modal = document.getElementById('storyModal');
+      modal.classList.add('active');
+
+      document.getElementById('storyUserAvatar').src = story.avatar;
+      document.getElementById('storyUsername').innerText = story.name;
+      document.getElementById('storyMediaBox').innerHTML = `<img src="${story.media}" alt="Story">`;
+
+      // Setup Progress Tracks
+      const progressContainer = document.getElementById('storyProgressContainer');
+      progressContainer.innerHTML = mockStories.map((_, i) => `
+        <div class="progress-track">
+          <div class="progress-fill" id="pfill-${i}"></div>
+        </div>
+      `).join('');
+
+      startStoryProgress();
+    }
+
+    function startStoryProgress() {
+      clearInterval(storyTimer);
+      
+      // Reset all tracks
+      mockStories.forEach((_, i) => {
+        const fill = document.getElementById(`pfill-${i}`);
+        if (fill) {
+          if (i < activeStoryIndex) fill.style.width = '100%';
+          else fill.style.width = '0%';
+        }
+      });
+
+      let progress = 0;
+      const currentFill = document.getElementById(`pfill-${activeStoryIndex}`);
+
+      storyTimer = setInterval(() => {
+        progress += 2;
+        if (currentFill) currentFill.style.width = `${progress}%`;
+
+        if (progress >= 100) {
+          clearInterval(storyTimer);
+          nextStory();
+        }
+      }, 100);
+    }
+
+    function nextStory() {
+      if (activeStoryIndex < mockStories.length - 1) {
+        openStoryModal(activeStoryIndex + 1);
+      } else {
+        closeStoryModal();
+      }
+    }
+
+    function prevStory() {
+      if (activeStoryIndex > 0) {
+        openStoryModal(activeStoryIndex - 1);
+      } else {
+        startStoryProgress();
+      }
+    }
+
+    function closeStoryModal() {
+      clearInterval(storyTimer);
+      document.getElementById('storyModal').classList.remove('active');
+    }
+
+    // COMPOSER MODAL
+    function openComposerModal() {
+      document.getElementById('composerModal').classList.add('active');
+    }
+
+    function closeComposerModal() {
+      document.getElementById('composerModal').classList.remove('active');
+    }
+
+    function publishNewPost() {
+      const urlsInput = document.getElementById('inputMediaUrls').value.trim();
+      const caption = document.getElementById('inputCaption').value.trim();
+      const location = document.getElementById('inputLocation').value.trim();
+      const music = document.getElementById('inputMusic').value.trim();
+
+      if (!urlsInput) {
+        alert('Please enter at least one media image URL');
+        return;
+      }
+
+      const mediaArr = urlsInput.split(',').map(url => ({ type: 'image', url: url.trim() }));
+
+      const newPost = {
+        id: Date.now(),
+        author: {
+          username: 'my_profile',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+          verified: true
+        },
+        location: location || 'Fort Worth, TX',
+        music: music || 'Travis Scott • FE!N',
+        media: mediaArr,
+        likes: 1,
+        liked: true,
+        caption: caption || 'New post update! 🔥',
+        commentsCount: 0,
+        timeAgo: 'Just now'
+      };
+
+      mockPosts.unshift(newPost);
+      renderPosts();
+      closeComposerModal();
+
+      // Clear form
+      document.getElementById('inputMediaUrls').value = '';
+      document.getElementById('inputCaption').value = '';
+      document.getElementById('inputLocation').value = '';
+      document.getElementById('inputMusic').value = '';
+    }
+
+    // INITIALIZE
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStories();
+      renderPosts();
+    });
+  </script>
 </body>
 </html>
